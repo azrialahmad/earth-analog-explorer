@@ -1,0 +1,643 @@
+{
+  "_note": "Experiment output for issue #46. Describes DEM tiles and their features by source, before any model is trained. Not used by Terrain Match, the ranking or the app.",
+  "settings": {
+    "tile_km": 3.0,
+    "site_window_km": 12.0,
+    "work_res_m": 30.0,
+    "seed": 46,
+    "moon_random_tiles": 2000,
+    "earth_random_tiles_per_site": 170,
+    "depression_min_depth_m": 2.0,
+    "water_rule": {
+      "flat_slope_deg": 0.5,
+      "flat_share_max": 0.2
+    },
+    "features": [
+      "slope_mean_deg",
+      "slope_p90_deg",
+      "roughness_m",
+      "roughness_330m_m",
+      "detrended_relief_m",
+      "relief_m",
+      "hypsometric_integral",
+      "curvature_abs_mean",
+      "depression_share",
+      "depression_max_depth_m"
+    ]
+  },
+  "sampling": {
+    "lola/site_window": {
+      "attempted": 32,
+      "kept": 32,
+      "rejected_missing": 0,
+      "rejected_water_like": 0
+    },
+    "lola/random": {
+      "attempted": 2000,
+      "kept": 2000,
+      "rejected_missing": 0,
+      "rejected_water_like": 0
+    },
+    "srtm/site_window": {
+      "attempted": 128,
+      "kept": 110,
+      "rejected_missing": 0,
+      "rejected_water_like": 18
+    },
+    "srtm/random": {
+      "attempted": 1360,
+      "kept": 1097,
+      "rejected_missing": 0,
+      "rejected_water_like": 263
+    },
+    "copernicus/site_window": {
+      "attempted": 64,
+      "kept": 56,
+      "rejected_missing": 0,
+      "rejected_water_like": 8
+    },
+    "copernicus/random": {
+      "attempted": 680,
+      "kept": 535,
+      "rejected_missing": 45,
+      "rejected_water_like": 100
+    }
+  },
+  "malapert_located": [
+    -85.98858640539046,
+    2.0674228980090588
+  ],
+  "native_spacing": {
+    "lola": {
+      "cell_m": 20.0
+    },
+    "N37E014.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 24.532136072323055,
+      "ns_m": 30.92208077590933
+    },
+    "N37E015.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 24.532136072323055,
+      "ns_m": 30.92208077590933
+    },
+    "S08E112.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 30.65753808826119,
+      "ns_m": 30.92208077590933
+    },
+    "S08E113.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 30.65753808826119,
+      "ns_m": 30.92208077590933
+    },
+    "S09E116.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 30.582428415532895,
+      "ns_m": 30.92208077590933
+    },
+    "Copernicus_DSM_COG_10_N65_00_W017_00_DEM.tif": {
+      "lon_arcsec": 2.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 25.646219476835636,
+      "ns_m": 30.92208077590933
+    },
+    "Copernicus_DSM_COG_10_N75_00_W090_00_DEM.tif": {
+      "lon_arcsec": 3.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 23.226594421041266,
+      "ns_m": 30.92208077590933
+    },
+    "Copernicus_DSM_COG_10_S78_00_E160_00_DEM.tif": {
+      "lon_arcsec": 3.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 20.0785092172025,
+      "ns_m": 30.92208077590933
+    },
+    "S25W070.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 28.13789592099358,
+      "ns_m": 30.92208077590933
+    },
+    "S25W071.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 28.13789592099358,
+      "ns_m": 30.92208077590933
+    },
+    "N19W156.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 29.148436330275956,
+      "ns_m": 30.92208077590933
+    },
+    "N43W114.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 22.430084893216385,
+      "ns_m": 30.92208077590933
+    },
+    "N35W112.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 25.174145819535397,
+      "ns_m": 30.92208077590933
+    },
+    "N28W014.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 27.174853744984702,
+      "ns_m": 30.92208077590933
+    },
+    "N29W014.hgt": {
+      "lon_arcsec": 1.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 26.913209133626356,
+      "ns_m": 30.92208077590933
+    },
+    "Copernicus_DSM_COG_10_N79_00_E012_00_DEM.tif": {
+      "lon_arcsec": 3.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 16.90508381225631,
+      "ns_m": 30.92208077590933
+    },
+    "Copernicus_DSM_COG_10_N79_00_E013_00_DEM.tif": {
+      "lon_arcsec": 3.0,
+      "lat_arcsec": 1.0,
+      "ew_m": 16.90508381225631,
+      "ns_m": 30.92208077590933
+    }
+  },
+  "reproduction_vs_terrain_json_rel_diff": {
+    "etna": {
+      "slope_mean_deg": 0.0005812727971481724,
+      "slope_p90_deg": 0.0006303295192478437,
+      "roughness_m": 0.011865614597778415
+    },
+    "bromo": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 2.1748159282107928e-16
+    },
+    "rinjani": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 2.230907979649368e-16,
+      "roughness_m": 3.9495684927484485e-15
+    },
+    "askja": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 1.9799954015965983e-14
+    },
+    "haughton": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 3.115481371024751e-15
+    },
+    "dry_valleys": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 1.9971191511790135e-16,
+      "roughness_m": 2.3808948572930505e-14
+    },
+    "yungay": {
+      "slope_mean_deg": 0.0007046070994694132,
+      "slope_p90_deg": 0.0006118712779486808,
+      "roughness_m": 0.002282653446159534
+    },
+    "mauna_kea": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 2.9252860221536405e-14
+    },
+    "craters_moon": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 1.5313943896523105e-14
+    },
+    "black_point": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 0.0
+    },
+    "lanzarote": {
+      "slope_mean_deg": 0.0,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 1.681624284849645e-15
+    },
+    "svalbard": {
+      "slope_mean_deg": 3.1224534294808404e-13,
+      "slope_p90_deg": 0.0,
+      "roughness_m": 2.656065331437749e-15
+    }
+  },
+  "feature_quantiles": {
+    "slope_mean_deg": {
+      "lola": {
+        "n": 2000,
+        "p10": 4.151220567125604,
+        "p50": 8.715927673074553,
+        "p90": 16.241217064173654
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 1.6200867168220119,
+        "p50": 4.908774436637412,
+        "p90": 13.832051514187114
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 1.769075559903307,
+        "p50": 6.358898344829673,
+        "p90": 18.166204916167317
+      }
+    },
+    "slope_p90_deg": {
+      "lola": {
+        "n": 2000,
+        "p10": 7.33592184975644,
+        "p50": 13.542443369027815,
+        "p90": 22.166404878659165
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 2.722786620489685,
+        "p50": 8.228137515339675,
+        "p90": 24.836314491825974
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 3.0763353164276928,
+        "p50": 14.050960059006227,
+        "p90": 36.304811837336885
+      }
+    },
+    "roughness_m": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.5132592804802628,
+        "p50": 0.6981272126203897,
+        "p90": 0.9608045185360629
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.16098155118643856,
+        "p50": 0.7367886892547548,
+        "p90": 2.345716515721925
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.2829459492943471,
+        "p50": 0.6955714337552961,
+        "p90": 2.1726820348689255
+      }
+    },
+    "roughness_330m_m": {
+      "lola": {
+        "n": 2000,
+        "p10": 1.3180764522675439,
+        "p50": 1.7567694807522194,
+        "p90": 2.4044188703141267
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.2146616540664132,
+        "p50": 1.6180216984468225,
+        "p90": 6.9116111563725955
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.7115463764242533,
+        "p50": 2.1996043911289136,
+        "p90": 7.90679262521067
+      }
+    },
+    "detrended_relief_m": {
+      "lola": {
+        "n": 2000,
+        "p10": 13.918894890453576,
+        "p50": 33.08571272408649,
+        "p90": 71.80901497992237
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 3.433178883914297,
+        "p50": 13.24522690277677,
+        "p90": 61.03130635771905
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 6.028632688760216,
+        "p50": 28.925111376847912,
+        "p90": 117.9106329706163
+      }
+    },
+    "relief_m": {
+      "lola": {
+        "n": 2000,
+        "p10": 111.51314331054687,
+        "p50": 361.8902801513671,
+        "p90": 803.6835324096684
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 41.0622268295288,
+        "p50": 160.86901550292964,
+        "p90": 429.63157623291
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 38.91285522460935,
+        "p50": 144.62162437438957,
+        "p90": 618.267449645996
+      }
+    },
+    "hypsometric_integral": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.3700278126873979,
+        "p50": 0.5091473685003916,
+        "p90": 0.6582949613796106
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.3012066713807565,
+        "p50": 0.4576631037164517,
+        "p90": 0.5850823651995973
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.2620473224536147,
+        "p50": 0.4587010580985584,
+        "p90": 0.6414587906719138
+      }
+    },
+    "curvature_abs_mean": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.9158364122178819,
+        "p50": 1.3145052897135416,
+        "p90": 1.9972060735066732
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.5563196858723958,
+        "p50": 1.6015289306640625,
+        "p90": 4.31508972371353
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.8171269042968751,
+        "p50": 1.8034713406032985,
+        "p90": 3.9867992974175355
+      }
+    },
+    "depression_share": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.0,
+        "p50": 0.0073,
+        "p90": 0.09531
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.016679999999999993
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.0,
+        "p50": 0.0005,
+        "p90": 0.024720000000000006
+      }
+    },
+    "depression_max_depth_m": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.18022141456604013,
+        "p50": 13.493896484375,
+        "p90": 51.68762207031253
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.0,
+        "p50": 1.25146484375,
+        "p90": 9.827466011047362
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.4366546630859376,
+        "p50": 2.9490966796875,
+        "p90": 12.496051025390626
+      }
+    },
+    "zero_slope_share": {
+      "lola": {
+        "n": 2000,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      },
+      "srtm": {
+        "n": 1097,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.016339999999999986
+      },
+      "copernicus": {
+        "n": 535,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    }
+  },
+  "single_feature_auc": {
+    "slope_mean_deg": {
+      "moon_vs_earth": 0.6771363357843136,
+      "lola_vs_srtm": 0.705098906107566,
+      "lola_vs_copernicus": 0.6198,
+      "srtm_vs_copernicus": 0.44129869908586716
+    },
+    "slope_p90_deg": {
+      "moon_vs_earth": 0.6099773284313725,
+      "lola_vs_srtm": 0.6674088422971741,
+      "lola_vs_copernicus": 0.4922158878504673,
+      "srtm_vs_copernicus": 0.3768493512468159
+    },
+    "roughness_m": {
+      "moon_vs_earth": 0.48393167892156863,
+      "lola_vs_srtm": 0.4835419325432999,
+      "lola_vs_copernicus": 0.48473084112149534,
+      "srtm_vs_copernicus": 0.46455669242368736
+    },
+    "roughness_330m_m": {
+      "moon_vs_earth": 0.49371568627450985,
+      "lola_vs_srtm": 0.5287762078395624,
+      "lola_vs_copernicus": 0.42182523364485974,
+      "srtm_vs_copernicus": 0.39874764651257893
+    },
+    "detrended_relief_m": {
+      "moon_vs_earth": 0.6664169730392158,
+      "lola_vs_srtm": 0.7352798541476755,
+      "lola_vs_copernicus": 0.5252158878504672,
+      "srtm_vs_copernicus": 0.3307133303231413
+    },
+    "relief_m": {
+      "moon_vs_earth": 0.7400052083333334,
+      "lola_vs_srtm": 0.7558176845943483,
+      "lola_vs_copernicus": 0.7075822429906542,
+      "srtm_vs_copernicus": 0.48778912752707043
+    },
+    "hypsometric_integral": {
+      "moon_vs_earth": 0.6394096200980393,
+      "lola_vs_srtm": 0.6514767547857794,
+      "lola_vs_copernicus": 0.6146663551401869,
+      "srtm_vs_copernicus": 0.48603753652697673
+    },
+    "curvature_abs_mean": {
+      "moon_vs_earth": 0.4038308823529412,
+      "lola_vs_srtm": 0.42742114858705565,
+      "lola_vs_copernicus": 0.3554598130841121,
+      "srtm_vs_copernicus": 0.44745141805604066
+    },
+    "depression_share": {
+      "moon_vs_earth": 0.7210655637254901,
+      "lola_vs_srtm": 0.7395941203281677,
+      "lola_vs_copernicus": 0.6830733644859813,
+      "srtm_vs_copernicus": 0.4218045817394934
+    },
+    "depression_max_depth_m": {
+      "moon_vs_earth": 0.7885998774509804,
+      "lola_vs_srtm": 0.8070815861440293,
+      "lola_vs_copernicus": 0.750703738317757,
+      "srtm_vs_copernicus": 0.36716448427742604
+    },
+    "zero_slope_share": {
+      "moon_vs_earth": 0.3762254901960784,
+      "lola_vs_srtm": 0.33226982680036465,
+      "lola_vs_copernicus": 0.4663551401869159,
+      "srtm_vs_copernicus": 0.6301399739306008
+    }
+  },
+  "flattest_decile": {
+    "lola": {
+      "n": 200,
+      "slope_mean_deg_max": 4.151220567125604,
+      "roughness_m": {
+        "n": 200,
+        "p10": 0.4517339874953738,
+        "p50": 0.5906566513072815,
+        "p90": 0.8028467192468035
+      },
+      "curvature_abs_mean": {
+        "n": 200,
+        "p10": 0.7546030029296875,
+        "p50": 1.052736585828993,
+        "p90": 1.4327473117404514
+      },
+      "zero_slope_share": {
+        "n": 200,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    },
+    "srtm": {
+      "n": 110,
+      "slope_mean_deg_max": 1.6200867168220119,
+      "roughness_m": {
+        "n": 110,
+        "p10": 0.1410513064774766,
+        "p50": 0.16155330450877853,
+        "p90": 0.5923800587888398
+      },
+      "curvature_abs_mean": {
+        "n": 110,
+        "p10": 0.5305351942274306,
+        "p50": 0.6218289593458175,
+        "p90": 1.181467489554816
+      },
+      "zero_slope_share": {
+        "n": 110,
+        "p10": 0.0,
+        "p50": 0.0010999999999999998,
+        "p90": 0.034630000000000036
+      }
+    },
+    "copernicus": {
+      "n": 54,
+      "slope_mean_deg_max": 1.769075559903307,
+      "roughness_m": {
+        "n": 54,
+        "p10": 0.17011934277267923,
+        "p50": 0.2820123903658393,
+        "p90": 0.487813134003381
+      },
+      "curvature_abs_mean": {
+        "n": 54,
+        "p10": 0.44282818332248275,
+        "p50": 0.7362433946397569,
+        "p90": 1.0227247507731119
+      },
+      "zero_slope_share": {
+        "n": 54,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    }
+  },
+  "moon_pole_distance_spearman": {
+    "slope_mean_deg": {
+      "rho": -0.06058308314577078,
+      "p": 0.006725206490400994
+    },
+    "slope_p90_deg": {
+      "rho": -0.06753412988353247,
+      "p": 0.0025129299387270506
+    },
+    "roughness_m": {
+      "rho": -0.20740745035186256,
+      "p": 7.128423007937841e-21
+    },
+    "roughness_330m_m": {
+      "rho": -0.07692266223066556,
+      "p": 0.0005752193558299144
+    },
+    "detrended_relief_m": {
+      "rho": -0.07247322011830504,
+      "p": 0.0011813706420755478
+    },
+    "relief_m": {
+      "rho": -0.04419269154817288,
+      "p": 0.04814491528962495
+    },
+    "hypsometric_integral": {
+      "rho": -0.005090272272568069,
+      "p": 0.8200325963622187
+    },
+    "curvature_abs_mean": {
+      "rho": -0.33087558471889617,
+      "p": 2.6598978238478477e-52
+    },
+    "depression_share": {
+      "rho": -0.03577661636412421,
+      "p": 0.10971161661545137
+    },
+    "depression_max_depth_m": {
+      "rho": -0.040878295036486025,
+      "p": 0.06758648231615721
+    },
+    "zero_slope_share": {
+      "rho": null,
+      "p": null
+    }
+  }
+}
