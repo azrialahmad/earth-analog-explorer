@@ -9,7 +9,6 @@ import MismatchCallout from './components/MismatchCallout'
 import WeightsPanel from './components/WeightsPanel'
 import DataDrawer from './components/DataDrawer'
 import EvidencePanel from './components/EvidencePanel'
-import TargetPicker from './screens/TargetPicker'
 import DemoTour from './components/DemoTour'
 import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
@@ -30,8 +29,6 @@ export default function App() {
   const [siteId, setSiteId] = useState<string | null>(null)
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
-  const [picking, setPicking] = useState(true)
-  const [picked, setPicked] = useState(false)
   const [demo, setDemo] = useState<DemoStep[] | null>(null)
 
   useEffect(() => {
@@ -65,11 +62,10 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       setPanel('none')
-      if (picked) setPicking(false) // the first visit has no target yet, so the picker stays
     }
     addEventListener('keydown', onKey)
     return () => removeEventListener('keydown', onKey)
-  }, [picked])
+  }, [])
 
   if (error) return <div className="app-status" role="alert">Could not load the data files ({error}). Reload the page; if it persists, the build is missing public/data.</div>
   if (!data || !target || !weights) return <div className="app-status" aria-live="polite">Loading terrain data…</div>
@@ -79,7 +75,7 @@ export default function App() {
   const playDemo = () => {
     const steps = buildDemoSteps(data)
     if (!steps.length) return
-    setPanel('none'); setPicking(false); setPicked(true); setDemo(steps)
+    setPanel('none'); setDemo(steps)
   }
 
   return (
@@ -89,7 +85,6 @@ export default function App() {
         targets={data.targets}
         targetId={target.id}
         onPickTarget={pickTarget}
-        onOpenPicker={() => { setPanel('none'); setPicking(true) }}
         onPlayDemo={playDemo}
         fixture={data.config._fixture === true}
         panel={panel}
@@ -140,15 +135,6 @@ export default function App() {
             resetWeights: () => setWeights(defaultWeights(data.config)),
           }}
           onEnd={() => setDemo(null)}
-        />
-      )}
-      {picking && (
-        <TargetPicker
-          targets={data.targets}
-          config={data.config}
-          onPick={id => { pickTarget(id); setPicked(true); setPicking(false) }}
-          onClose={picked ? () => setPicking(false) : undefined}
-          onPlayDemo={playDemo}
         />
       )}
     </div>
