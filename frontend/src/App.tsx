@@ -32,7 +32,7 @@ export default function App() {
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
   const [demo, setDemo] = useState<DemoStep[] | null>(null)
-  // "Why this rank?" for the selected card: opened by clicking the card that is already selected
+  // "Why this rank?" for the selected card: picking a card opens it, clicking the open card again closes it
   const [explain, setExplain] = useState(false)
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export default function App() {
           targetName={target.name}
           selectedId={selected?.site.id ?? null}
           explainOpen={explain}
-          onSelect={id => { setSiteId(id); setRelit(false) }}
+          onSelect={id => { setSiteId(id); setRelit(false); setPanel('none'); setExplain(true) }}
           onExplain={() => { setPanel('none'); setExplain(o => !o) }}
         />
       </div>

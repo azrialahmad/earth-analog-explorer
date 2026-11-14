@@ -14,7 +14,7 @@ export interface SiteShelfProps {
   /** Whether the "why this rank" explanation for the selected card is open. */
   explainOpen: boolean
   onSelect: (id: string) => void
-  /** Clicking the card that is already selected toggles its explanation. */
+  /** Picking a card opens its explanation (onSelect); clicking the selected card again toggles it. */
   onExplain: () => void
 }
 
@@ -102,10 +102,7 @@ export default function SiteShelf({ ranked, stability, body, targetId, targetNam
               aria-controls={isSelected && explainOpen ? 'rank-explainer' : undefined}
               onClick={() => (isSelected ? onExplain() : onSelect(r.site.id))}
             >
-              <span className="rk num">
-                {String(r.rank).padStart(2, '0')}
-                {isSelected && <span className="why">{explainOpen ? 'hide why' : 'why?'}</span>}
-              </span>
+              <span className="rk num">{String(r.rank).padStart(2, '0')}</span>
               <span className="stab num">{r.terrainMatch === null ? 'not scored' : stab === undefined ? 'stability missing' : `top-3 ${pct(stab)}`}</span>
               <span className="body">
                 <Rings tm={r.terrainMatch} sun={moon ? r.lowSunShare : null} moon={moon} />
