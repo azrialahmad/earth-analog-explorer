@@ -26,6 +26,7 @@ SITES_PATH = ROOT / "config" / "sites.json"
 WEIGHTS_PATH = ROOT / "config" / "weights.yaml"
 TERRAIN_PATH = ROOT / "results" / "terrain.json"
 LIGHTING_PATH = ROOT / "results" / "lighting.json"
+MARS_PATH = ROOT / "results" / "mars.json"
 DATA_DIR = ROOT / "frontend" / "public" / "data"
 IMG_DIR = ROOT / "frontend" / "public" / "img"
 RELIEF_DIR = DATA_DIR / "relief"
@@ -209,7 +210,10 @@ def main() -> None:
     weights = yaml.safe_load(WEIGHTS_PATH.read_text(encoding="utf-8"))
     terrain_rows = read_json(TERRAIN_PATH)
     lighting_rows = read_json(LIGHTING_PATH)
+    mars_document = read_json(MARS_PATH) if MARS_PATH.exists() else []
+    mars_rows = mars_document if isinstance(mars_document, list) else [mars_document]
     terrain_by_id = {row["id"]: row for row in terrain_rows}
+    mars_by_id = {row["id"]: row for row in mars_rows}
     sizes = load_window_sizes()
     main_window = str(int(weights["main_window_km"]))
 
@@ -240,15 +244,28 @@ def main() -> None:
         targets.append(target)
 
     for item in mars_targets:
-        windows = {
-            str(int(km)): {"slope_mean_deg": None, "slope_p90_deg": None, "roughness_m": None}
-            for km in sizes
-        }
+        row = mars_by_id.get(item["id"])
+        if row is None:
+            windows = {
+                str(int(km)): {"slope_mean_deg": None, "slope_p90_deg": None, "roughness_m": None}
+                for km in sizes
+            }
+            targets.append({
+                "id": item["id"], "name": item["name"], "lat": item["lat"], "lon": item["lon"],
+                "note": item["why"], "body": "mars",
+                "params": ordered_params({}, None, None), "windows": windows,
+                "low_sun_share": None, "hillshade": "", "relief": None,
+            })
+            continue
         targets.append({
-            "id": item["id"], "name": item["name"], "lat": item["lat"], "lon": item["lon"],
-            "note": item["why"], "body": "mars",
-            "params": ordered_params({}, None, None), "windows": windows,
-            "low_sun_share": None, "hillshade": "", "relief": None,
+            "id": item["id"], "name": item["name"], "lat": row["lat"], "lon": row["lon"],
+            "note": "Terrain only. Lighting axis does not apply to Mars targets.",
+            "body": "mars",
+            "params": ordered_params(row["windows"].get(main_window, {}), row.get("source"), source_res_m(row)),
+            "windows": ordered_windows(row, sizes),
+            "low_sun_share": None,
+            "hillshade": "img/target_jezero.png" if (IMG_DIR / "target_jezero.png").exists() else "",
+            "relief": "data/relief/jezero.json" if (RELIEF_DIR / "jezero.json").exists() else None,
         })
 
     evidence, etna_evidence = build_evidence()
@@ -284,8 +301,7 @@ def main() -> None:
             "known_analog": False, "flags": flags, "hillshade": hillshade, "relief": relief,
         })
 
-    # Include the lunar data products in the target array, and render imagery/relief only
-    # where a sourced DEM exists. Mars is intentionally missing until its terrain issue.
+    # Include all targets, preserving null terrain and empty imagery until a sourced DEM exists.
     write_json(DATA_DIR / "config.json", build_config(weights, sites_manifest))
     write_json(DATA_DIR / "targets.json", targets)
     write_json(DATA_DIR / "sites.json", sites)

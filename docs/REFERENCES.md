@@ -8,6 +8,7 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | LOLA LDEM 85S 20 m float DEM | NASA Goddard Space Flight Center, LOLA Team | Lunar elevation for Shackleton and the Malapert search area | [PDS Geosciences Node product directory](https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/float_img/) | not stated | yes |
 | SRTM 1 arc-second (Skadi tiles) | NASA / USGS; tiles served by the AWS elevation-tiles mirror | Earth elevation for sites between 60°S and 60°N | [AWS Skadi tile example](https://s3.amazonaws.com/elevation-tiles-prod/skadi/N37/N37E014.hgt.gz) | not stated | yes |
 | Copernicus DEM GLO-30 | Copernicus DEM programme / ESA | Approved substitute for the four high-latitude Earth sites | [AWS Copernicus DEM GLO-30 archive](https://copernicus-dem-30m.s3.amazonaws.com/) | not stated | no |
+| Mars 2020 TRN CTX DTM Mosaic | Fergason et al.; USGS Astrogeology Science Center; NASA MRO CTX source imagery | Jezero crater terrain windows and display relief | [USGS DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8) | CC0 | yes |
 | Etna-LRNT dataset | Original owner not identified in the cited source; result reported by LuMon authors | Cited Etna depth-from-image result | [LuMon, Table 2](https://arxiv.org/abs/2604.09352) | not stated | no |
 | Etna-S3LI dataset | DLR S3LI project | Cited Etna depth-from-image result | [DLR S3LI dataset page](https://datasets.arches-projekt.de/s3li_dataset/) | CC BY-NC-SA 4.0 | no |
 | Chang'e-3 benchmark data | LuMon authors (Table 2 result; original mission-data owner not stated in the cited source) | Cited lunar depth-from-image result | [LuMon, Table 2](https://arxiv.org/abs/2604.09352) | not stated | no |
@@ -43,4 +44,8 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 ## P3 evidence and display assets
 
 - **LuMon Table 2:** cited depth-from-image `delta1` values required by issue #4: Etna-LRNT 1.00, Etna-S3LI 0.88, Chang'e-3 0.95, and CHERI 0.32. Source: A. Sekmen et al., *LuMon: A Comprehensive Benchmark and Development Suite with Novel Datasets for Lunar Monocular Depth Estimation*, arXiv:2604.09352, Table 2 ([arXiv](https://arxiv.org/abs/2604.09352)). These are cited evidence, not project-computed metrics.
-- **Hillshade rendering:** display-only grayscale images are generated from each available 12 km elevation window on the shared 30 m grid using Matplotlib `LightSource` (azimuth 315°, altitude 45°, vertical exaggeration 1). This is a cartographic rendering choice, not an analysis or scoring input. Jezero has no elevation input in P3, so no image is fabricated for it.
+- **Hillshade rendering:** display-only grayscale images are generated from each available 12 km elevation window on the shared 30 m grid using Matplotlib `LightSource` (azimuth 315°, altitude 45°, vertical exaggeration 1). This is a cartographic rendering choice, not an analysis or scoring input. The Jezero image uses the Mars 2020 TRN CTX DTM row above.
+
+## P4 Jezero input metadata
+
+- The downloaded single-band GeoTIFF is float32, 1596 × 1512, with 20 m projected pixel spacing and nodata `-3.4028226550889045e+38`. Its source CRS is equirectangular (`+proj=eqc`, true-scale latitude 0°) with the source-encoded spherical radius 3,396,190 m. USGS catalog metadata states vertical coordinate units are metres. The local Azimuthal Equidistant analysis grid uses the same radius and 30 m cells; nodata is not filled.

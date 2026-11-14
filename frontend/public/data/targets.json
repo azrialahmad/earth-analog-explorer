@@ -108,44 +108,47 @@
     "name": "Jezero crater floor",
     "lat": 18.44,
     "lon": 77.45,
-    "note": "Perseverance landing and driving area; DTM made for its landing navigation",
+    "note": "Terrain only. Lighting axis does not apply to Mars targets.",
     "body": "mars",
     "params": {
       "slope_mean_deg": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 2.9304507364792096,
+        "tier": "computed",
+        "source": "Mars 2020 TRN CTX DTM Mosaic (USGS / NASA MRO CTX), 20 m",
+        "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 5.351470397388955,
+        "tier": "computed",
+        "source": "Mars 2020 TRN CTX DTM Mosaic (USGS / NASA MRO CTX), 20 m",
+        "res_m": 30.0
       },
       "roughness_m": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.5418322593666531,
+        "tier": "computed",
+        "source": "Mars 2020 TRN CTX DTM Mosaic (USGS / NASA MRO CTX), 20 m",
+        "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": null,
-        "slope_p90_deg": null,
-        "roughness_m": null
+        "slope_mean_deg": 2.362287087331694,
+        "slope_p90_deg": 4.186097906410605,
+        "roughness_m": 0.49317736928246775
       },
       "6": {
-        "slope_mean_deg": null,
-        "slope_p90_deg": null,
-        "roughness_m": null
+        "slope_mean_deg": 2.9304507364792096,
+        "slope_p90_deg": 5.351470397388955,
+        "roughness_m": 0.5418322593666531
       },
       "12": {
-        "slope_mean_deg": null,
-        "slope_p90_deg": null,
-        "roughness_m": null
+        "slope_mean_deg": 3.07570544045383,
+        "slope_p90_deg": 6.54633212699838,
+        "roughness_m": 0.5378317151801395
       }
     },
     "low_sun_share": null,
-    "hillshade": "",
-    "relief": null
+    "hillshade": "img/target_jezero.png",
+    "relief": "data/relief/jezero.json"
   }
 ]
