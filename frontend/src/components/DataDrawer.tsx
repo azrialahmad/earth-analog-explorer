@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import type { Config, Evidence, RankedSite, Target } from '../types'
 import { WINDOW_KEYS } from '../types'
 import { weakestParam } from '../engine'
-import { asset, fmt, pct, TierBadge, Bar } from '../ui'
-import DepthEvidence from './DepthEvidence'
+import { fmt, pct, TierBadge, Bar } from '../ui'
+import Hillshade from './Hillshade'
 import './DataDrawer.css'
 
 export interface DataDrawerProps {
@@ -21,20 +20,6 @@ const coord = (lat: number, lon: number) =>
   `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(3)}°${lon >= 0 ? 'E' : 'W'}`
 
 const Missing = ({ text = 'missing' }: { text?: string }) => <span className="missing-text">{text}</span>
-
-/** A hillshade image with its data source, or a plain note when the image does not exist yet. */
-function Hillshade({ path, title, source }: { path: string; title: string; source: string | null }) {
-  const [failed, setFailed] = useState<string | null>(null)
-  const ok = path !== '' && failed !== path
-  return (
-    <figure className="hill">
-      {ok
-        ? <img src={asset(path)} alt={`Hillshade of ${title}`} loading="lazy" onError={() => setFailed(path)} />
-        : <div className="hill-empty">No hillshade image yet</div>}
-      <figcaption><b>{title}</b> · {source ?? <Missing text="source missing" />}</figcaption>
-    </figure>
-  )
-}
 
 /** Exact numbers for the selected site, in the order of brief F3. */
 export default function DataDrawer({ open, entry, target, config, stability, evidence, onClose }: DataDrawerProps) {
@@ -162,7 +147,6 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
         </section>
       )}
 
-      <DepthEvidence evidence={evidence} />
     </aside>
   )
 }

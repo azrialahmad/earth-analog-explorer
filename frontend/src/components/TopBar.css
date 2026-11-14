@@ -44,3 +44,6 @@
   .brand h1, .tool-label, .target-group .label { display: none; }
   .targets { order: 3; margin-inline: 0; inline-size: 100%; overflow-x: auto; }
 }
+
+.brand-btn { display: flex; align-items: center; gap: 10px; border-radius: var(--radius-sm); }
+.brand-btn:hover h1 { color: var(--terrain); }

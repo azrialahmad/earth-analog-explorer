@@ -8,9 +8,11 @@ import SiteShelf from './components/SiteShelf'
 import MismatchCallout from './components/MismatchCallout'
 import WeightsPanel from './components/WeightsPanel'
 import DataDrawer from './components/DataDrawer'
+import EvidencePanel from './components/EvidencePanel'
+import TargetPicker from './screens/TargetPicker'
 import AskPanel from './chat/AskPanel'
 
-type Panel = 'none' | 'weights' | 'data' | 'ask'
+type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
 
 async function loadJson<T>(path: string): Promise<T> {
   const res = await fetch(asset(path))
@@ -26,6 +28,8 @@ export default function App() {
   const [siteId, setSiteId] = useState<string | null>(null)
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
+  const [picking, setPicking] = useState(true)
+  const [picked, setPicked] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -55,15 +59,20 @@ export default function App() {
   const selected = ranked.find(r => r.site.id === siteId) ?? ranked[0] ?? null
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPanel('none') }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setPanel('none')
+      if (picked) setPicking(false) // the first visit has no target yet, so the picker stays
+    }
     addEventListener('keydown', onKey)
     return () => removeEventListener('keydown', onKey)
-  }, [])
+  }, [picked])
 
   if (error) return <div className="app-status" role="alert">Could not load the data files ({error}). Reload the page; if it persists, the build is missing public/data.</div>
   if (!data || !target || !weights) return <div className="app-status" aria-live="polite">Loading terrain data…</div>
 
   const toggle = (p: Panel) => setPanel(cur => (cur === p ? 'none' : p))
+  const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false) }
 
   return (
     <div className="app">
@@ -71,7 +80,8 @@ export default function App() {
       <TopBar
         targets={data.targets}
         targetId={target.id}
-        onPickTarget={id => { setTargetId(id); setSiteId(null); setRelit(false) }}
+        onPickTarget={pickTarget}
+        onOpenPicker={() => { setPanel('none'); setPicking(true) }}
         fixture={data.config._fixture === true}
         panel={panel}
         onTogglePanel={toggle}
@@ -101,12 +111,21 @@ export default function App() {
         evidence={data.evidence}
         onClose={() => setPanel('none')}
       />
+      <EvidencePanel open={panel === 'evidence'} evidence={data.evidence} onClose={() => setPanel('none')} />
       <AskPanel
         open={panel === 'ask'}
         run={{ target, ranked, stability, config: data.config, weights, evidence: data.evidence }}
         onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
         onClose={() => setPanel('none')}
       />
+      {picking && (
+        <TargetPicker
+          targets={data.targets}
+          config={data.config}
+          onPick={id => { pickTarget(id); setPicked(true); setPicking(false) }}
+          onClose={picked ? () => setPicking(false) : undefined}
+        />
+      )}
     </div>
   )
 }

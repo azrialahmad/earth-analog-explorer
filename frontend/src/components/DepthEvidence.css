@@ -1,0 +1,23 @@
+.depth-evidence { display: grid; gap: 18px; }
+.depth-evidence section { display: grid; gap: 8px; padding-block-start: 14px; border-block-start: 1px solid var(--edge); }
+.ev-scope { font-size: 12.5px; color: var(--muted); text-wrap: pretty; }
+.ev-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; }
+.ev-src { font-size: 11.5px; color: var(--muted); overflow-wrap: anywhere; }
+.ev-note { font-size: 12.5px; text-wrap: pretty; }
+.ev-none { font-size: 12.5px; color: var(--muted); font-style: italic; }
+.ev-list { margin: 0; padding-inline-start: 18px; font-size: 12.5px; display: grid; gap: 4px; }
+
+.ev-images { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.ev-images figure { margin: 0; display: grid; gap: 4px; }
+.ev-images img { inline-size: 100%; border-radius: 10px; background: rgb(255 255 255 / 0.04); }
+.ev-images figcaption { font-size: 11px; color: var(--muted); }
+
+/* The model and the flat-ground baseline always sit side by side, framed as one pair. */
+.ev-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ev-row { display: grid; gap: 8px; padding: 10px 12px; border-radius: 12px; background: rgb(255 255 255 / 0.04); }
+.ev-row-head { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.ev-pair, .ev-skill { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0; }
+.ev-pair { padding: 8px 10px; border-radius: 10px; background: var(--terrain-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--terrain) 35%, transparent); }
+.ev-pair dt, .ev-skill dt { font-size: 11px; color: var(--muted); }
+.ev-pair dd { margin: 2px 0 0; font-size: 18px; }
+.ev-skill dd { margin: 1px 0 0; font-size: 13px; }
