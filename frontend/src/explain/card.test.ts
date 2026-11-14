@@ -48,7 +48,7 @@ describe('explainCard', () => {
   })
 
   it('keeps lighting for the Moon and marks it not applicable (null) for Mars', () => {
-    expect(explainCard(byId('a'), ranked, target, config, null, w).lowSun).toEqual({ site: 0.1, target: 1 })
+    expect(explainCard(byId('a'), ranked, target, config, null, w).lowSun).toMatchObject({ site: 0.1, target: 1 })
     const mars = makeTarget([10, 20, 1], 'mars')
     const r = rankSites([a, b], mars, config, w)
     const e = explainCard(r[0], r, mars, config, null, w)
@@ -60,6 +60,18 @@ describe('explainCard', () => {
     const adj = { ...w, roughness_m: w.roughness_m + 1 }
     const r = rankSites([a, b], target, config, adj)
     expect(explainCard(r[0], r, target, config, null, adj).weights).toBe('adjusted')
+  })
+})
+
+describe('explainCard: identity, sources and windows', () => {
+  it('passes the site caveats, value sources and per-window Terrain Match through unchanged', () => {
+    const e = explainCard(byId('a'), ranked, target, config, null, w)
+    expect(e.site.flags).toEqual(a.flags)
+    expect(e.site.coordsApproximate).toBe(a.flags.includes('coordinates approximate'))
+    expect(e.params.map(p => p.tier)).toEqual(PARAM_KEYS.map(k => a.params[k].tier))
+    expect(e.params.map(p => p.source)).toEqual(PARAM_KEYS.map(k => a.params[k].source))
+    expect(e.windows.map(x => x.terrainMatch)).toEqual(Object.values(byId('a').windowSensitivity))
+    expect(e.windows.filter(x => x.main).map(x => x.km)).toEqual([config.main_window_km])
   })
 })
 

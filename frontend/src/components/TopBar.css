@@ -1,15 +1,13 @@
+/* first row of the workbench shell (index.css) */
 .topbar {
-  position: absolute;
-  z-index: 5;
-  inset-block-start: calc(14px + env(safe-area-inset-top, 0px));
-  inset-inline: var(--gutter) var(--gutter-r);
+  position: relative;
+  z-index: 7;
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  pointer-events: none;
+  min-inline-size: 0;
 }
-.topbar > * { pointer-events: auto; }
 
 .brand { display: flex; align-items: center; gap: 10px; padding: 8px 14px 8px 10px; border-radius: var(--radius-sm); }
 .brand svg { inline-size: 22px; block-size: 22px; flex: none; }
@@ -42,8 +40,8 @@
 .tools { display: flex; gap: 8px; }
 .tools svg { inline-size: 16px; block-size: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 
-/* Below this width the tools go icon-only. The label stays in the accessibility tree as the button's name. */
-@media (max-width: 1280px) {
+/* Below this width the tools go icon-only, so the top bar stays on one row beside the panes. The label stays in the accessibility tree as the button's name. */
+@media (max-width: 1520px) {
   .tools .btn { padding-inline: 11px; }
   .tool-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }

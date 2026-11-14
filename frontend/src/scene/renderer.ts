@@ -1,14 +1,22 @@
-// One WebGL renderer, two scenes (target | site), one shared camera, split with a scissor.
-// Loaded on demand by SplitScene so three.js stays out of the first paint.
+// One WebGL renderer, two scenes (target | site), one shared camera drawn into two complete
+// viewports, side by side ('row') or stacked ('column'). Sharing the camera links orbit and zoom.
+// Loaded on demand by TerrainViews so three.js stays out of the first paint.
 import * as THREE from 'three'
 import { GRID, SPAN } from './terrain'
 
 export type Side = 'left' | 'right'
-/** polar: sun ~2° up, no sky light, black sky. mars: dusty day. earth: Earth day with blue sky fill. */
-export type LightPreset = 'polar' | 'mars' | 'earth'
+/**
+ * inspect: the same neutral display light on both views, for comparing shapes (illustrative, not a simulation).
+ * polar: sun ~2° up, no sky light, black sky. mars: dusty day. earth: Earth day with blue sky fill.
+ */
+export type LightPreset = 'inspect' | 'polar' | 'mars' | 'earth'
+export type ViewLayout = 'row' | 'column'
+/** Gap between the two viewports, in CSS pixels (TerrainViews.css uses the same value). */
+export const VIEW_GAP = 8
 
 // Display settings only (how the scene looks), not analysis parameters.
 const LIGHTS: Record<LightPreset, { el: number; hemi: number; bg: number; stars: number; sun: number; sunI: number; fogNear: number }> = {
+  inspect: { el: 32, hemi: 0.5, bg: 0x12151b, stars: 0, sun: 0xffffff, sunI: 1.9, fogNear: 900 },
   polar: { el: 2, hemi: 0.2, bg: 0x030407, stars: 0.9, sun: 0xffffff, sunI: 3.2, fogNear: 900 },
   mars: { el: 28, hemi: 0.45, bg: 0xb98c68, stars: 0, sun: 0xfff0dd, sunI: 1.7, fogNear: 300 },
   earth: { el: 42, hemi: 0.42, bg: 0x8fb2d8, stars: 0, sun: 0xffffff, sunI: 1.7, fogNear: 300 },
@@ -19,16 +27,21 @@ const N = GRID - 1
 
 export interface SplitRenderer {
   setTerrain(side: Side, heights: Float32Array, tone: number, instant: boolean): void
+  /** Hide a side's ground (while its relief loads, or when there is none) so it never shows another place's surface. */
+  setVisible(side: Side, visible: boolean): void
   setLight(side: Side, preset: LightPreset, instant: boolean): void
-  setSplit(fraction: number): void
+  setLayout(layout: ViewLayout): void
   setAutoRotate(on: boolean): void
   orbit(dAzimuth: number, dElevation: number): void
   zoom(factor: number): void
+  /** Back to the starting angle and zoom. */
+  resetView(): void
   dispose(): void
 }
 
 interface World {
   scene: THREE.Scene
+  ground: THREE.Object3D[]
   geo: THREE.PlaneGeometry
   skirt: THREE.BufferGeometry
   edge: [number, number][]
@@ -101,7 +114,7 @@ function makeWorld(): World {
   scene.background = bg
   scene.fog = new THREE.Fog(0, 300, 800)
   return {
-    scene, geo, skirt, edge, sun, hemi, stars, starMat, tone: new THREE.Color(0x888888),
+    scene, ground: [mesh, skirtMesh], geo, skirt, edge, sun, hemi, stars, starMat, tone: new THREE.Color(0x888888),
     cur: null, from: null, to: null, t0: 0,
     el: 20, elTo: 20, hemiI: 0.4, hemiTo: 0.4, starO: 0, starTo: 0, bg, bgTo: new THREE.Color(0),
     disposables: [geo, mat, skirt, skirtMat, starGeo, starMat],
@@ -141,7 +154,7 @@ function applyHeights(w: World, h: Float32Array) {
 
 /** Throws when WebGL is unavailable; the caller shows a fallback. */
 export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: () => boolean): SplitRenderer {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
   renderer.setPixelRatio(Math.min(2, devicePixelRatio))
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -150,7 +163,8 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
 
   const cam = new THREE.PerspectiveCamera(38, 1, 1, 2000)
   const worlds: Record<Side, World> = { left: makeWorld(), right: makeWorld() }
-  let az = 0.75, elev = 0.7, radius = 285, auto = false, split = 0.5
+  const HOME = { az: 0.75, elev: 0.7, radius: 285 }
+  let az = HOME.az, elev = HOME.elev, radius = HOME.radius, auto = false, layout: ViewLayout = 'row'
   let last = performance.now(), frame = 0
 
   const placeSun = (w: World) => {
@@ -166,13 +180,19 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
     const W = canvas.clientWidth, H = canvas.clientHeight
     if (W === 0 || H === 0) return
     const pr = renderer.getPixelRatio()
-    if (canvas.width !== Math.floor(W * pr) || canvas.height !== Math.floor(H * pr)) {
-      renderer.setSize(W, H, false)
-      cam.aspect = W / H
-      cam.updateProjectionMatrix()
-    }
+    if (canvas.width !== Math.floor(W * pr) || canvas.height !== Math.floor(H * pr)) renderer.setSize(W, H, false)
     if (auto && !reducedMotion()) az += dt * 0.05
-    const r = radius * (W < 700 ? 1.35 : 1)
+    // two complete viewports; WebGL counts y from the bottom, so the first (target) view is the top one in a column
+    const row = layout === 'row'
+    const vw = row ? (W - VIEW_GAP) / 2 : W
+    const vh = row ? H : (H - VIEW_GAP) / 2
+    const views: [World, number, number][] = row
+      ? [[worlds.left, 0, 0], [worlds.right, vw + VIEW_GAP, 0]]
+      : [[worlds.left, 0, vh + VIEW_GAP], [worlds.right, 0, 0]]
+    cam.aspect = vw / vh
+    cam.updateProjectionMatrix()
+    // frame the tile to the viewport: pull back in tall or narrow views, move in a little in wide, short ones
+    const r = radius * (vw < 420 ? 1.35 : 1) * (cam.aspect < 1 ? 1 / Math.max(0.6, cam.aspect) : cam.aspect > 1.7 ? 0.82 : 1)
     cam.position.set(Math.sin(az) * Math.cos(elev) * r, Math.sin(elev) * r, Math.cos(az) * Math.cos(elev) * r)
     cam.lookAt(0, -24, 0)
 
@@ -197,13 +217,16 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
       placeSun(w)
     }
 
-    const sx = Math.round(W * split)
+    // clear the whole canvas first so the gap between the views stays transparent
+    renderer.setScissorTest(false)
+    renderer.setClearColor(0x000000, 0)
+    renderer.clear()
     renderer.setScissorTest(true)
-    renderer.setViewport(0, 0, W, H)
-    renderer.setScissor(0, 0, sx, H)
-    renderer.render(worlds.left.scene, cam)
-    renderer.setScissor(sx, 0, W - sx, H)
-    renderer.render(worlds.right.scene, cam)
+    for (const [w, x, y] of views) {
+      renderer.setViewport(x, y, vw, vh)
+      renderer.setScissor(x, y, vw, vh)
+      renderer.render(w.scene, cam)
+    }
   }
   frame = requestAnimationFrame(tick)
 
@@ -222,7 +245,9 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
       fog.near = p.fogNear; fog.far = p.fogNear + 500
       if (instant || reducedMotion()) { w.el = p.el; w.hemiI = p.hemi; w.starO = p.stars; w.bg.copy(w.bgTo) }
     },
-    setSplit(f) { split = f },
+    setVisible(side, visible) { for (const o of worlds[side].ground) o.visible = visible },
+    setLayout(l) { layout = l },
+    resetView() { az = HOME.az; elev = HOME.elev; radius = HOME.radius },
     setAutoRotate(on) { auto = on },
     orbit(dAz, dEl) { az += dAz; elev = Math.max(0.12, Math.min(1.25, elev + dEl)) },
     zoom(f) { radius = Math.max(120, Math.min(380, radius * f)) },

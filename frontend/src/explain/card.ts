@@ -1,5 +1,5 @@
-import type { Config, ParamKey, RankedSite, Target, Weights } from '../types'
-import { PARAM_KEYS } from '../types'
+import type { Config, ParamKey, RankedSite, Target, Tier, Weights, WindowKey } from '../types'
+import { PARAM_KEYS, WINDOW_KEYS } from '../types'
 import { defaultWeights } from '../engine'
 
 /**
@@ -17,6 +17,9 @@ export interface ParamLine {
   similarity: number | null
   weight: number
   range: number
+  /** Provenance of the site's value, as supplied. */
+  tier: Tier
+  source: string | null
 }
 
 /** A parameter where this site's similarity differs from a neighbour's (shown to 2 decimals, so smaller gaps are left out). */
@@ -37,6 +40,7 @@ export interface CardExplanation {
   rank: number
   total: number
   siteName: string
+  site: { lat: number; lon: number; why: string; flags: string[]; knownAnalog: boolean; coordsApproximate: boolean }
   targetName: string
   body: Target['body']
   terrainMatch: number | null
@@ -51,7 +55,12 @@ export interface CardExplanation {
   topN: number
   noiseRel: number
   /** Moon only; null for Mars, where lighting comparison does not apply. */
-  lowSun: { site: number | null; target: number | null } | null
+  lowSun: {
+    site: number | null; target: number | null
+    siteTier: Tier; siteSource: string | null; targetTier: Tier; targetSource: string | null
+  } | null
+  /** Terrain Match in each configured window size, as the engine computed it. */
+  windows: { km: number; terrainMatch: number | null; main: boolean }[]
   warning: { fired: boolean; text: string | null; terrainMatchMin: number; lowSunMax: number }
   mainWindowKm: number
   weights: 'default' | 'adjusted'
@@ -102,6 +111,14 @@ export function explainCard(
     rank: entry.rank,
     total: ranked.length,
     siteName: entry.site.name,
+    site: {
+      lat: entry.site.lat,
+      lon: entry.site.lon,
+      why: entry.site.why,
+      flags: entry.site.flags,
+      knownAnalog: entry.site.known_analog,
+      coordsApproximate: entry.site.flags.includes('coordinates approximate'),
+    },
     targetName: target.name,
     body: target.body,
     terrainMatch: entry.terrainMatch,
@@ -115,6 +132,8 @@ export function explainCard(
       similarity: p.similarity,
       weight: p.weight,
       range: config.params[p.key].range,
+      tier: entry.site.params[p.key].tier,
+      source: entry.site.params[p.key].source,
     })),
     missing: entry.missing.map(k => config.params[k].label),
     above: i > 0 ? neighbour(entry, ranked[i - 1], config) : null,
@@ -123,7 +142,19 @@ export function explainCard(
     stabilityRuns: config.stability.runs,
     topN: config.stability.top_n,
     noiseRel: config.stability.noise_rel,
-    lowSun: moon ? { site: entry.lowSunShare, target: target.low_sun_share?.value ?? null } : null,
+    lowSun: moon ? {
+      site: entry.lowSunShare,
+      target: target.low_sun_share?.value ?? null,
+      siteTier: entry.site.conditions.low_sun_share.tier,
+      siteSource: entry.site.conditions.low_sun_share.source,
+      targetTier: target.low_sun_share?.tier ?? 'missing',
+      targetSource: target.low_sun_share?.source ?? null,
+    } : null,
+    windows: WINDOW_KEYS.map((k: WindowKey) => ({
+      km: Number(k),
+      terrainMatch: entry.windowSensitivity[k],
+      main: Number(k) === config.main_window_km,
+    })),
     warning: {
       fired: entry.warning.fired,
       text: entry.warning.text,
