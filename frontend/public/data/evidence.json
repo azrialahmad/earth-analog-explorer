@@ -1,21 +1,46 @@
 {
   "cited": {
-    "source_id": "fixture",
-    "source": "FIXTURE for development, not data",
-    "model": "fixture",
+    "source_id": "lumon_table2",
+    "source": "LuMon, arXiv 2604.09352, Table 2",
+    "model": "Depth Anything V2",
     "metric": "delta1",
-    "rows": []
+    "rows": [
+      {
+        "dataset": "Etna-LRNT",
+        "kind": "Analog",
+        "delta1": 1.0,
+        "site_id": "etna"
+      },
+      {
+        "dataset": "Etna-S3LI",
+        "kind": "Analog",
+        "delta1": 0.88,
+        "site_id": "etna"
+      },
+      {
+        "dataset": "Chang'e-3",
+        "kind": "In-situ",
+        "delta1": 0.95,
+        "site_id": null
+      },
+      {
+        "dataset": "CHERI",
+        "kind": "Analog",
+        "delta1": 0.32,
+        "site_id": null
+      }
+    ]
   },
   "ours": {
-    "source_id": "fixture",
-    "source": "FIXTURE for development, not data",
-    "model": "fixture",
-    "metric_note": "fixture",
+    "source_id": "not_computed",
+    "source": "No project benchmark results supplied for Issue #4",
+    "model": "not available",
+    "metric_note": "No project benchmark results supplied for Issue #4",
     "rows": [],
     "images": []
   },
   "not_shown": [
-    "FIXTURE: replaced by brief P3"
+    "Project benchmark results are not included in this issue's inputs."
   ],
   "sky_caveat": "Earth's sky scatters light into shadows. The Moon has no air, so its shadows are black."
 }

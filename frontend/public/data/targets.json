@@ -1,141 +1,147 @@
 [
   {
-    "id": "fixture-moon-a",
+    "id": "shackleton_rim",
     "name": "Shackleton rim",
-    "lat": 0,
-    "lon": 0,
-    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "lat": -90.0,
+    "lon": 0.0,
+    "note": "Crater centre 89.67S 129.78E, diameter ~21 km, so the rim crest passes within ~0.5 km of the pole",
     "body": "moon",
     "params": {
       "slope_mean_deg": {
-        "value": 14,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 22.824709935203323,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": 26,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 33.15753205082187,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       },
       "roughness_m": {
-        "value": 1.6,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 1.3918473491012535,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 15.4,
-        "slope_p90_deg": 28.6,
-        "roughness_m": 1.76
+        "slope_mean_deg": 23.327712316532008,
+        "slope_p90_deg": 33.39668760632948,
+        "roughness_m": 1.4056274243255586
       },
       "6": {
-        "slope_mean_deg": 14,
-        "slope_p90_deg": 26,
-        "roughness_m": 1.6
+        "slope_mean_deg": 22.824709935203323,
+        "slope_p90_deg": 33.15753205082187,
+        "roughness_m": 1.3918473491012535
       },
       "12": {
-        "slope_mean_deg": 12.6,
-        "slope_p90_deg": 23.4,
-        "roughness_m": 1.44
+        "slope_mean_deg": 21.124580825697528,
+        "slope_p90_deg": 32.92076365303437,
+        "roughness_m": 1.2850566250261366
       }
     },
     "low_sun_share": {
-      "value": 1,
+      "value": 1.0,
       "tier": "by definition",
-      "source": "Lunar pole: the sun is always under 10° (by definition)"
+      "source": "lunar obliquity about 1.5 degrees"
     },
-    "hillshade": "",
-    "relief": null
+    "hillshade": "img/shackleton_rim.png",
+    "relief": "data/relief/shackleton_rim.json"
   },
   {
-    "id": "fixture-moon-b",
+    "id": "malapert",
     "name": "Malapert massif",
-    "lat": 0,
-    "lon": 0,
-    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "lat": -85.98858640539046,
+    "lon": 2.0674228980090588,
+    "note": "Summit of the massif: the highest LOLA point between 85.6S and 86.4S within 30 km of longitude 0",
     "body": "moon",
     "params": {
       "slope_mean_deg": {
-        "value": 10,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 12.228003482950372,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": 19,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 18.840180250398273,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       },
       "roughness_m": {
-        "value": 1.1,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": 0.971555913112473,
+        "tier": "computed",
+        "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+        "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 11,
-        "slope_p90_deg": 20.9,
-        "roughness_m": 1.21
+        "slope_mean_deg": 10.243613005139082,
+        "slope_p90_deg": 18.141124757256726,
+        "roughness_m": 1.006666761918193
       },
       "6": {
-        "slope_mean_deg": 10,
-        "slope_p90_deg": 19,
-        "roughness_m": 1.1
+        "slope_mean_deg": 12.228003482950372,
+        "slope_p90_deg": 18.840180250398273,
+        "roughness_m": 0.971555913112473
       },
       "12": {
-        "slope_mean_deg": 9,
-        "slope_p90_deg": 17.1,
-        "roughness_m": 0.99
+        "slope_mean_deg": 15.618501948283855,
+        "slope_p90_deg": 23.520544162308628,
+        "roughness_m": 1.0284164031380567
       }
     },
     "low_sun_share": {
-      "value": 1,
+      "value": 1.0,
       "tier": "by definition",
-      "source": "Lunar pole: the sun is always under 10° (by definition)"
+      "source": "lunar obliquity about 1.5 degrees"
     },
-    "hillshade": "",
-    "relief": null
+    "hillshade": "img/malapert.png",
+    "relief": "data/relief/malapert.json"
   },
   {
-    "id": "fixture-mars",
-    "name": "Jezero crater",
-    "lat": 0,
-    "lon": 0,
-    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "id": "jezero",
+    "name": "Jezero crater floor",
+    "lat": 18.44,
+    "lon": 77.45,
+    "note": "Perseverance landing and driving area; DTM made for its landing navigation",
     "body": "mars",
     "params": {
       "slope_mean_deg": {
-        "value": 4.4,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": null,
+        "tier": "missing",
+        "source": null
       },
       "slope_p90_deg": {
-        "value": 9.6,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": null,
+        "tier": "missing",
+        "source": null
       },
       "roughness_m": {
-        "value": 0.52,
-        "tier": "estimated",
-        "source": "FIXTURE for development, not data"
+        "value": null,
+        "tier": "missing",
+        "source": null
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 4.84,
-        "slope_p90_deg": 10.56,
-        "roughness_m": 0.57
+        "slope_mean_deg": null,
+        "slope_p90_deg": null,
+        "roughness_m": null
       },
       "6": {
-        "slope_mean_deg": 4.4,
-        "slope_p90_deg": 9.6,
-        "roughness_m": 0.52
+        "slope_mean_deg": null,
+        "slope_p90_deg": null,
+        "roughness_m": null
       },
       "12": {
-        "slope_mean_deg": 3.96,
-        "slope_p90_deg": 8.64,
-        "roughness_m": 0.47
+        "slope_mean_deg": null,
+        "slope_p90_deg": null,
+        "roughness_m": null
       }
     },
     "low_sun_share": null,
