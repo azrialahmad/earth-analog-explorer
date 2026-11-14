@@ -1,0 +1,100 @@
+/* Local design trial. Uses the real app's components, design tokens and state. */
+.app {
+  --sites-width: 290px;
+  --details-width: 400px;
+  --details-min: 300px;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.app .workspace {
+  grid-template-columns: var(--sites-width) minmax(0, 1fr) minmax(var(--details-min), var(--details-width));
+}
+
+/* One shared column width aligns the brand's edge with the candidate sidebar. */
+.app .topbar {
+  display: grid;
+  grid-template-columns: minmax(230px, var(--sites-width)) minmax(0, 1fr) minmax(var(--details-min), var(--details-width));
+  gap: 10px;
+  align-items: center;
+}
+
+.app .brand { min-inline-size: 0; inline-size: 100%; min-block-size: 64px; }
+.app .brand-lockup, .app .brand-text { min-inline-size: 0; }
+.app .brand h1 { font-size: 14px; }
+.app .mission { font-size: 9px; letter-spacing: .04em; white-space: normal; line-height: 1.4; text-wrap: balance; }
+.app .brand:has(.fixture-tag) { flex-wrap: wrap; }
+
+.header-center {
+  grid-column: 2;
+  min-inline-size: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  container: header-center / inline-size;
+}
+.header-view-controls { min-inline-size: 0; }
+.app .header-view-controls .views-tools { flex-wrap: nowrap; justify-content: flex-start; gap: 6px; }
+.app .header-view-controls .btn { min-block-size: 36px; padding: 7px 10px; font-size: 12px; white-space: nowrap; }
+.app .header-view-controls .btn[aria-pressed='true'] { background: var(--terrain-soft); color: var(--terrain); border-color: var(--terrain-mid); }
+.app .header-view-controls .btn:nth-child(3)[aria-pressed='true'] { background: var(--sun-soft); color: var(--sun); border-color: var(--sun); }
+
+.app .targets { order: 0; margin-inline: 0; justify-self: end; min-inline-size: 0; max-inline-size: 100%; gap: 3px; padding: 4px; }
+.app .target-group .label { font-size: 9px; padding-inline: 5px 3px; }
+.app .targets button { padding: 7px 9px 7px 7px; gap: 6px; font-size: 12px; min-block-size: 36px; }
+.app .orb { inline-size: 14px; block-size: 14px; }
+.app .tools { gap: 6px; justify-self: end; }
+.app .tools .btn { padding: 0; min-inline-size: 38px; min-block-size: 38px; justify-content: center; }
+.app .tool-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Controls now live in the header; the terrain starts at the sidebar's top edge. */
+.app .views-pane { grid-template-rows: minmax(0, 1fr) auto; }
+
+@media (max-width: 1299px) {
+  .app .topbar { gap: 8px; }
+  .app .header-view-controls .views-tools, .app .tools { gap: 4px; }
+  .app .header-view-controls .btn { padding-inline: 8px; }
+  .app .targets button { padding-inline: 6px; gap: 5px; }
+  .app .target-group .label { padding-inline: 3px; }
+  .app .tools .btn { min-inline-size: 36px; }
+}
+
+/* Below desktop, wrap groups deliberately rather than clip labels or controls. */
+@media (max-width: 1199px) {
+  .app { --sites-width: 240px; --details-width: 330px; --details-min: 280px; }
+  .app .topbar { grid-template-columns: minmax(210px, var(--sites-width)) minmax(0, 1fr) minmax(var(--details-min), var(--details-width)); }
+}
+
+/* Adapt the controls to the space in the center pane, independent of browser width/zoom. */
+@container header-center (max-width: 680px) {
+  .app .targets {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: end;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 899px) {
+  .app { grid-template-rows: auto auto minmax(0, 1fr); }
+  .app .workspace { grid-template-columns: minmax(0, 1fr); }
+  .app .topbar { grid-template-columns: 40px minmax(0, 1fr); gap: 8px; }
+  .app .brand { min-block-size: 40px; padding: 8px; justify-content: center; }
+  .app .brand-text { display: none; }
+  .app .header-center { grid-column: 2; grid-template-columns: minmax(0, 1fr); justify-items: end; gap: 4px; }
+  .app .header-view-controls { justify-self: end; }
+  .app .header-view-controls .btn { min-block-size: 40px; }
+  .app .targets { grid-column: 1 / -1; inline-size: 100%; overflow-x: auto; }
+  .app .target-group .label { display: none; }
+  .app .targets button { min-block-size: 40px; }
+  .app .tools { grid-column: 1 / -1; }
+  .app .tools .btn { min-inline-size: 40px; min-block-size: 40px; }
+}
+
+@media (pointer: coarse) {
+  .app .header-view-controls .btn, .app .targets button,
+  .app .tools .btn { min-block-size: 44px; }
+  .app .tools .btn { min-inline-size: 44px; }
+}
