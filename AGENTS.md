@@ -19,6 +19,18 @@ These files are used by both sides. Changing them needs a pull request that the 
 - `config/weights.yaml`
 - `config/sites.json`
 
+## Project starting point
+
+The app and pipeline start from the current checked-in state of this repository. Base each change on the active issue and files or inputs present here; do not assume other implementation, assets, or datasets exist. External research, sources, and downloaded scientific data are permitted only when the issue authorizes them, and their provenance must be recorded.
+
+## Project skills
+
+- [earth-analog-ui](.agents/skills/earth-analog-ui/SKILL.md): product UI, scientific presentation, accessibility, and visual checks.
+- [earth-analog-data](.agents/skills/earth-analog-data/SKILL.md): terrain and lighting inputs, CRS, nodata, provenance, and data checks.
+- [modern-web-guidance](.agents/skills/modern-web-guidance/SKILL.md): upstream web-platform guidance and browser fallbacks.
+
+These skills supplement this file, not replace it. Repository rules, issue scope, ownership, and approval requirements still apply to every skill. A skill does not authorize installing dependencies, changing contracts, or adding unrequested features.
+
 ## Rules
 
 1. Never make up a number, a source or a result. Unknown values are `null` and the app shows "missing".
