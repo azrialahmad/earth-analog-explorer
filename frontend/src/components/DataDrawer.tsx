@@ -99,6 +99,22 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
             ) : <p className="muted small">Lighting: not applicable to Mars targets</p>}
           </section>
 
+          <section aria-label="Ground cover">
+            <h3 className="label">Ground cover</h3>
+            <dl className="pair one">
+              <div>
+                <dt>Bare ground <TierBadge tier={site.conditions.bare_ground_share.tier} /></dt>
+                <dd className="num">
+                  {site.conditions.bare_ground_share.value === null
+                    ? <Missing />
+                    : <>{pct(site.conditions.bare_ground_share.value)} <small>of land in the {config.main_window_km} km window is bare or sparsely vegetated</small></>}
+                </dd>
+              </div>
+            </dl>
+            <p className="src">{site.conditions.bare_ground_share.source ?? 'No land-cover value for this site.'}</p>
+            <p className="muted small">A site condition only: it does not change Terrain Match or the rank.</p>
+          </section>
+
           <section aria-label="Window sensitivity">
             <h3 className="label">Terrain Match by window size</h3>
             <dl className="windows">

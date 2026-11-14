@@ -12,6 +12,7 @@ from matplotlib.colors import LightSource
 from scipy.ndimage import map_coordinates
 import yaml
 
+from landcover import bare_ground_value
 from terrain import (
     WORK_RES_M,
     load_window_sizes,
@@ -27,6 +28,7 @@ WEIGHTS_PATH = ROOT / "config" / "weights.yaml"
 TERRAIN_PATH = ROOT / "results" / "terrain.json"
 LIGHTING_PATH = ROOT / "results" / "lighting.json"
 MARS_PATH = ROOT / "results" / "mars.json"
+LANDCOVER_PATH = ROOT / "results" / "landcover.json"
 DATA_DIR = ROOT / "frontend" / "public" / "data"
 IMG_DIR = ROOT / "frontend" / "public" / "img"
 RELIEF_DIR = DATA_DIR / "relief"
@@ -54,10 +56,6 @@ def value(number: float | None, tier: str, source: str | None, res_m: float | No
     if res_m is not None:
         item["res_m"] = float(res_m)
     return item
-
-
-def missing_value() -> dict[str, Any]:
-    return {"value": None, "tier": "missing", "source": None}
 
 
 def ordered_params(values: dict[str, float | None], source: str | None, res_m: float | None) -> dict[str, Any]:
@@ -210,6 +208,8 @@ def main() -> None:
     weights = yaml.safe_load(WEIGHTS_PATH.read_text(encoding="utf-8"))
     terrain_rows = read_json(TERRAIN_PATH)
     lighting_rows = read_json(LIGHTING_PATH)
+    # Optional: without results/landcover.json every site keeps bare_ground_share missing.
+    landcover_rows = read_json(LANDCOVER_PATH) if LANDCOVER_PATH.exists() else {}
     mars_document = read_json(MARS_PATH) if MARS_PATH.exists() else []
     mars_rows = mars_document if isinstance(mars_document, list) else [mars_document]
     terrain_by_id = {row["id"]: row for row in terrain_rows}
@@ -286,7 +286,7 @@ def main() -> None:
         params = ordered_params(row["windows"].get(main_window, {}), source, source_res_m(row))
         conditions = {
             "low_sun_share": value(light.get("value"), light.get("tier", "missing"), light.get("source")),
-            "bare_ground_share": missing_value(),
+            "bare_ground_share": bare_ground_value(landcover_rows.get(item["id"])),
         }
         hillshade = ""
         relief = None

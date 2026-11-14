@@ -47,6 +47,7 @@
 
 .pair, .windows { display: grid; gap: 8px; margin: 0; }
 .pair { grid-template-columns: 1fr 1fr; }
+.pair.one { grid-template-columns: 1fr; }
 .pair div, .windows div { padding: 8px 10px; border-radius: 12px; background: rgb(255 255 255 / 0.04); }
 .pair dt { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .pair dd { margin: 4px 0 0; font-size: 16px; }
