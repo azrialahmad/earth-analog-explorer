@@ -50,9 +50,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.7322694444444444,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [
@@ -129,9 +129,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.29032302867507964,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -193,9 +193,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.0001780220636095086,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -257,9 +257,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.95055921948184,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -322,9 +322,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.9049424162924096,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -452,9 +452,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.9971944444444445,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -516,9 +516,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.36425099536193334,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -580,9 +580,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.6952916666666666,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -645,9 +645,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.5079765953190638,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -709,9 +709,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.9374388888888889,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],
@@ -773,9 +773,9 @@
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": null,
-        "tier": "missing",
-        "source": null
+        "value": 0.6421803938968554,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
     },
     "depth_evidence": [],

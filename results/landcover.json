@@ -1,0 +1,201 @@
+{
+  "etna": {
+    "window_km": 6.0,
+    "value": 0.7322694444444444,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 263617,
+      "land": 360000,
+      "water": 0,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "N36E012",
+      "N36E015"
+    ],
+    "tiles_absent": []
+  },
+  "bromo": {
+    "window_km": 6.0,
+    "value": 0.29032302867507964,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 104516,
+      "land": 359999,
+      "water": 1,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "S09E111"
+    ],
+    "tiles_absent": []
+  },
+  "rinjani": {
+    "window_km": 6.0,
+    "value": 0.0001780220636095086,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 64,
+      "land": 359506,
+      "water": 494,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "S09E114"
+    ],
+    "tiles_absent": []
+  },
+  "askja": {
+    "window_km": 6.0,
+    "value": 0.95055921948184,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 342169,
+      "land": 359966,
+      "water": 0,
+      "nodata": 34,
+      "total": 360000
+    },
+    "tiles": [
+      "N63W018"
+    ],
+    "tiles_absent": []
+  },
+  "haughton": {
+    "window_km": 6.0,
+    "value": 0.9049424162924096,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 325620,
+      "land": 359824,
+      "water": 0,
+      "nodata": 176,
+      "total": 360000
+    },
+    "tiles": [
+      "N75W090"
+    ],
+    "tiles_absent": []
+  },
+  "dry_valleys": {
+    "window_km": 6.0,
+    "value": null,
+    "tier": "missing",
+    "source": null,
+    "tiles": [],
+    "tiles_absent": [
+      "S78E159"
+    ],
+    "note": "no ESA WorldCover tile covers this window"
+  },
+  "yungay": {
+    "window_km": 6.0,
+    "value": 0.9971944444444445,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 358990,
+      "land": 360000,
+      "water": 0,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "S27W072"
+    ],
+    "tiles_absent": []
+  },
+  "mauna_kea": {
+    "window_km": 6.0,
+    "value": 0.36425099536193334,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 130918,
+      "land": 359417,
+      "water": 0,
+      "nodata": 583,
+      "total": 360000
+    },
+    "tiles": [
+      "N18W156"
+    ],
+    "tiles_absent": []
+  },
+  "craters_moon": {
+    "window_km": 6.0,
+    "value": 0.6952916666666666,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 250305,
+      "land": 360000,
+      "water": 0,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "N42W114"
+    ],
+    "tiles_absent": []
+  },
+  "black_point": {
+    "window_km": 6.0,
+    "value": 0.5079765953190638,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 182835,
+      "land": 359928,
+      "water": 72,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "N33W114"
+    ],
+    "tiles_absent": []
+  },
+  "lanzarote": {
+    "window_km": 6.0,
+    "value": 0.9374388888888889,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 337478,
+      "land": 360000,
+      "water": 0,
+      "nodata": 0,
+      "total": 360000
+    },
+    "tiles": [
+      "N27W015"
+    ],
+    "tiles_absent": []
+  },
+  "svalbard": {
+    "window_km": 6.0,
+    "value": 0.6421803938968554,
+    "tier": "computed",
+    "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m",
+    "counts": {
+      "bare": 167891,
+      "land": 261439,
+      "water": 98319,
+      "nodata": 242,
+      "total": 360000
+    },
+    "tiles": [
+      "N78E012"
+    ],
+    "tiles_absent": []
+  }
+}

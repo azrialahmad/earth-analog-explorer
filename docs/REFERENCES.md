@@ -9,6 +9,7 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | SRTM 1 arc-second (Skadi tiles) | NASA / USGS; tiles served by the AWS elevation-tiles mirror | Earth elevation for sites between 60°S and 60°N | [AWS Skadi tile example](https://s3.amazonaws.com/elevation-tiles-prod/skadi/N37/N37E014.hgt.gz) | not stated | yes |
 | Copernicus DEM GLO-30 | Copernicus DEM programme / ESA | Approved substitute for the four high-latitude Earth sites | [AWS Copernicus DEM GLO-30 archive](https://copernicus-dem-30m.s3.amazonaws.com/) | not stated | no |
 | Mars 2020 TRN CTX DTM Mosaic | Fergason et al.; USGS Astrogeology Science Center; NASA MRO CTX source imagery | Jezero crater terrain windows and display relief | [USGS DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8) | CC0 | yes |
+| ESA WorldCover 10 m 2021 v200 | ESA WorldCover consortium (Zanaga et al. 2022) | Bare-ground share per Earth site (class 60, "Bare / sparse vegetation") | [Zenodo DOI 10.5281/zenodo.7254221](https://doi.org/10.5281/zenodo.7254221); tiles read from the [AWS Open Data bucket](https://registry.opendata.aws/esa-worldcover-vito/) | CC BY 4.0 | no |
 | Etna-LRNT dataset | Original owner not identified in the cited source; result reported by LuMon authors | Cited Etna depth-from-image result | [LuMon, Table 2](https://arxiv.org/abs/2604.09352) | not stated | no |
 | Etna-S3LI dataset | DLR S3LI project | Cited Etna depth-from-image result | [DLR S3LI dataset page](https://datasets.arches-projekt.de/s3li_dataset/) | CC BY-NC-SA 4.0 | no |
 | Chang'e-3 benchmark data | LuMon authors (Table 2 result; original mission-data owner not stated in the cited source) | Cited lunar depth-from-image result | [LuMon, Table 2](https://arxiv.org/abs/2604.09352) | not stated | no |
@@ -22,6 +23,7 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | NAIF generic kernels: `de440s.bsp` (DE440 planetary ephemeris), `moon_pa_de440_200625.bpc` and `moon_de440_250416.tf` (DE440 lunar orientation and the `MOON_ME` frame), `pck00011.tpc` (IAU 2015 body orientation and radii), `naif0012.tls` (leap seconds) | NASA JPL Navigation and Ancillary Information Facility (NAIF); DE440 by Park et al. 2021; IAU orientation from Archinal et al. 2018 | Sun position seen from the Moon and Mars targets, for the targets' low-sun share | [NAIF generic kernels](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/) | not stated (NASA public data) | yes |
 | SpiceyPy | Andrew Annex and contributors; wraps NAIF CSPICE | Read the NAIF kernels from Python | [SpiceyPy repository](https://github.com/AndrewAnnex/SpiceyPy) | MIT | no |
 | PyYAML | YAML and Python communities | Read the authoritative terrain windows and app weights from YAML | [PyYAML repository](https://github.com/yaml/pyyaml) | MIT | no |
+| Requests | Python Software Foundation / Requests maintainers | Check which WorldCover tiles exist before reading them | [Requests repository](https://github.com/psf/requests) | Apache-2.0 | no |
 | Rasterio | Rasterio maintainers | Read source DEMs and reproject/resample terrain windows | [Rasterio documentation](https://rasterio.readthedocs.io/) | BSD-3-Clause | no |
 | SciPy | SciPy Developers | Sample processed elevation arrays onto the relief-grid output | [SciPy repository](https://github.com/scipy/scipy) | BSD-3-Clause | no |
 | React | React team | App component rendering and state | [React repository](https://github.com/react/react) | MIT | no |
@@ -67,3 +69,10 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 ## P4 Jezero input metadata
 
 - The downloaded single-band GeoTIFF is float32, 1596 × 1512, with 20 m projected pixel spacing and nodata `-3.4028226550889045e+38`. Its source CRS is equirectangular (`+proj=eqc`, true-scale latitude 0°) with the source-encoded spherical radius 3,396,190 m. USGS catalog metadata states vertical coordinate units are metres. The local Azimuthal Equidistant analysis grid uses the same radius and 30 m cells; nodata is not filled.
+
+## S2 bare-ground share (issue #41)
+
+- **ESA WorldCover 10 m 2021 v200:** single-band uint8 Cloud Optimized GeoTIFFs in EPSG:4326, 3° × 3° tiles named by the lower-left corner (for example `N36E015`), class `0` = no data. `pipeline/landcover.py` reads only each site's window over HTTP range requests (GDAL `/vsicurl/`); no tile is downloaded in full or stored in the repo.
+- **Method:** the same square as the terrain numbers (the `main_window_km` window, 6 km, centred on the site on a local Azimuthal Equidistant grid with the 6,378,137 m sphere used by `terrain.py`), nearest-neighbour onto 10 m cells. `bare_ground_share` = class `60` cells ÷ land cells, where land cells exclude class `80` (permanent water) and `0` (no data). Snow and ice, moss and lichen, built-up and vegetation classes count as land that is not bare. Class 60 allows up to 10% plant cover, so the value means bare or sparsely vegetated ground. Per-site cell counts are in `results/landcover.json`.
+- **Coverage:** WorldCover has no tile for the Antarctic Dry Valleys window (`S78E159` returns HTTP 404), so that site is `null` and shown as missing. Svalbard (`N78E012`) is covered.
+- **Use:** a site condition only. It does not enter Terrain Match, the rank, stability or the warning.
