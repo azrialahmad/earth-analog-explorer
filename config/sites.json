@@ -122,7 +122,7 @@
       "name": "Jezero crater floor",
       "lat": 18.44,
       "lon": 77.45,
-      "confirmed": false,
+      "confirmed": true,
       "why": "Perseverance landing and driving area; DTM made for its landing navigation"
     }
   ]
