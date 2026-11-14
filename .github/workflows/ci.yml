@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and test
+        run: |
+          if [ ! -f frontend/package.json ]; then echo "No frontend yet, skipping"; exit 0; fi
+          cd frontend
+          npm ci
+          npx tsc -b
+          npm test
+          npm run build
+
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Python checks
+        run: |
+          if [ ! -f pyproject.toml ]; then echo "No pipeline yet, skipping"; else
+            uv sync
+            uv run python -m compileall -q pipeline
+          fi
+      - name: JSON checks
+        run: |
+          files=$(find config frontend/public/data -name '*.json' 2>/dev/null || true)
+          for f in $files; do
+            if grep -Eq '\bNaN\b|\bInfinity\b' "$f"; then echo "NaN or Infinity in $f"; exit 1; fi
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" || { echo "Invalid JSON: $f"; exit 1; }
+          done
+          echo "JSON ok"

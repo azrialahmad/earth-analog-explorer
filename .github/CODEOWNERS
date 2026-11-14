@@ -1,0 +1,5 @@
+# Shared contract files need the other person's approval.
+/frontend/src/types.ts  @azrialahmad @ganendraditya
+/config/weights.yaml    @azrialahmad @ganendraditya
+/config/sites.json      @azrialahmad @ganendraditya
+/.github/CODEOWNERS     @azrialahmad @ganendraditya
