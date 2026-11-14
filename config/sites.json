@@ -1,0 +1,129 @@
+{
+  "_note": "Proposed test areas. Coordinates are approximate and must be confirmed by a human on a satellite map; set confirmed to true per entry when done. Malapert lat/lon are located from LOLA by the pipeline (the PoC found 85.988S, 2.058E).",
+  "lunar": [
+    {
+      "id": "shackleton_rim",
+      "name": "Shackleton rim",
+      "lat": -90.0,
+      "lon": 0.0,
+      "why": "Crater centre 89.67S 129.78E, diameter ~21 km, so the rim crest passes within ~0.5 km of the pole",
+      "confirmed": false
+    },
+    {
+      "id": "malapert",
+      "name": "Malapert massif",
+      "lat": null,
+      "lon": null,
+      "why": "Summit of the massif: the highest LOLA point between 85.6S and 86.4S within 30 km of longitude 0",
+      "confirmed": false
+    }
+  ],
+  "earth": [
+    {
+      "id": "etna",
+      "name": "Etna, Italy",
+      "lat": 37.722,
+      "lon": 15.005,
+      "why": "Upper south flank near Cratere del Laghetto, ~2600 m, the area used for DLR rover tests",
+      "confirmed": false
+    },
+    {
+      "id": "bromo",
+      "name": "Bromo / Tengger, Indonesia",
+      "lat": -7.925,
+      "lon": 112.955,
+      "why": "Tengger sand sea north of the Bromo cone",
+      "confirmed": false
+    },
+    {
+      "id": "rinjani",
+      "name": "Rinjani, Indonesia",
+      "lat": -8.36,
+      "lon": 116.5,
+      "why": "Upper north-east flank, away from the Segara Anak lake",
+      "confirmed": false
+    },
+    {
+      "id": "askja",
+      "name": "Askja, Iceland",
+      "lat": 65.1,
+      "lon": -16.72,
+      "why": "Lava and pumice field north of the caldera, away from Lake Oskjuvatn; Apollo training area",
+      "confirmed": false
+    },
+    {
+      "id": "haughton",
+      "name": "Haughton crater, Devon Island",
+      "lat": 75.38,
+      "lon": -89.67,
+      "why": "Impact structure interior, Haughton-Mars Project area",
+      "confirmed": false
+    },
+    {
+      "id": "dry_valleys",
+      "name": "McMurdo Dry Valleys, Antarctica",
+      "lat": -77.85,
+      "lon": 160.6,
+      "why": "Beacon Valley, ice-free and lake-free",
+      "confirmed": false
+    },
+    {
+      "id": "yungay",
+      "name": "Atacama Yungay, Chile",
+      "lat": -24.1,
+      "lon": -70.02,
+      "why": "Hyper-arid core used for rover and life-detection tests",
+      "confirmed": false
+    },
+    {
+      "id": "mauna_kea",
+      "name": "Mauna Kea, Hawaii",
+      "lat": 19.76,
+      "lon": -155.46,
+      "why": "Upper south flank cinder terrain used for NASA ISRU field tests",
+      "confirmed": false
+    },
+    {
+      "id": "craters_moon",
+      "name": "Craters of the Moon, Idaho",
+      "lat": 43.43,
+      "lon": -113.53,
+      "why": "Lava field along the Great Rift",
+      "confirmed": false
+    },
+    {
+      "id": "black_point",
+      "name": "Black Point lava flow, Arizona",
+      "lat": 35.68,
+      "lon": -111.47,
+      "why": "NASA Desert RATS site",
+      "confirmed": false
+    },
+    {
+      "id": "lanzarote",
+      "name": "Lanzarote, Spain",
+      "lat": 29.0,
+      "lon": -13.74,
+      "why": "Timanfaya lava fields, ESA Pangaea training area",
+      "confirmed": false
+    },
+    {
+      "id": "svalbard",
+      "name": "Svalbard, Norway",
+      "lat": 79.44,
+      "lon": 13.33,
+      "why": "Bockfjorden volcanic complex, AMASE expedition area",
+      "confirmed": false
+    }
+  ],
+  "mars": [
+    {
+      "id": "jezero",
+      "name": "Jezero crater floor",
+      "lat": 18.44,
+      "lon": 77.45,
+      "confirmed": false,
+      "why": "Perseverance landing and driving area; DTM made for its landing navigation"
+    }
+  ]
+}
