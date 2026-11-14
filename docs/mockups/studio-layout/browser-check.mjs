@@ -1,0 +1,114 @@
+// No browser dependencies or downloads. Connect to an isolated Firefox instance
+// started with --headless --remote-debugging-port 9223 and a temporary profile.
+import assert from 'node:assert/strict'
+import { mkdirSync, writeFileSync } from 'node:fs'
+
+const ws = new WebSocket(process.env.BIDI_URL ?? 'ws://127.0.0.1:9223/session')
+await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject })
+let id = 0
+const pending = new Map()
+ws.onmessage = event => {
+  const message = JSON.parse(event.data)
+  const entry = pending.get(message.id)
+  if (!entry) return
+  pending.delete(message.id)
+  if (message.type === 'error') entry.reject(new Error(JSON.stringify(message)))
+  else entry.resolve(message.result)
+}
+const send = (method, params) => new Promise((resolve, reject) => {
+  pending.set(++id, { resolve, reject })
+  ws.send(JSON.stringify({ id, method, params }))
+})
+
+const results = []
+try {
+  const session = await send('session.new', { capabilities: {} })
+  console.log(session.capabilities.browserName, session.capabilities.browserVersion)
+  const { context } = await send('browsingContext.create', { type: 'tab' })
+  const evaluate = async expression => {
+    const answer = await send('script.evaluate', { expression, target: { context }, awaitPromise: true })
+    if (answer.type === 'exception') throw new Error(JSON.stringify(answer.exceptionDetails))
+    return answer.result.value
+  }
+  const settle = () => evaluate('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r(true))))')
+  for (const [width, height] of [[1920, 1080], [1512, 780], [1440, 900], [1280, 720], [1024, 600], [900, 600], [899, 700], [768, 1024], [390, 844]]) {
+    await send('browsingContext.setViewport', { context, viewport: { width, height }, devicePixelRatio: 1 })
+    await send('browsingContext.navigate', { context, url: 'http://localhost:4177/earth-analog-explorer/', wait: 'complete' })
+    await evaluate(`(async () => {
+      if (!document.querySelector('#ask-input')) await new Promise(resolve => {
+        const observer = new MutationObserver(() => {
+          if (document.querySelector('#ask-input')) { observer.disconnect(); resolve() }
+        }); observer.observe(document.body, { childList: true, subtree: true });
+      });
+      await document.fonts.ready;
+      document.querySelector('#tab-view')?.click();
+      return true;
+    })()`)
+    await settle()
+    for (const target of ['Shackleton rim', 'Jezero crater floor']) {
+      await evaluate(`(() => { [...document.querySelectorAll('.targets button')].find(b => b.textContent.includes(${JSON.stringify(target)}))?.click(); return true })()`)
+      await settle()
+      for (const layout of ['row', 'column']) {
+        await evaluate(`(() => { document.querySelectorAll('.studio-view-toolbar > button')[${layout === 'row' ? 0 : 1}].click(); return true })()`)
+        await settle()
+        const measure = JSON.parse(await evaluate(`JSON.stringify((() => {
+          const rect = s => { const e = typeof s === 'string' ? document.querySelector(s) : s; const r = e.getBoundingClientRect(); return { x:r.x, y:r.y, right:r.right, bottom:r.bottom, width:r.width, height:r.height } };
+          const pane = document.querySelector('#pane-view');
+          const inputs = [...document.querySelectorAll('.weight input')].map(rect);
+          return { viewport: [innerWidth, innerHeight], pane: rect(pane), overflow: pane.scrollHeight - pane.clientHeight, horizontalOverflow: pane.scrollWidth - pane.clientWidth, viewer:rect('.views'), visual:rect('.studio-visual'), weights:rect('#weights-panel'), chat:rect('#ask-panel'), form:rect('.ask-form'), prompt:rect('#ask-input'), send:rect('.ask-form button'), toolbar:rect('.studio-view-toolbar'), inputs, layout:document.querySelector('.views').className, standaloneCaveat:!!document.querySelector('.views-pane > .views-foot'), info:document.querySelector('.studio-view-info').textContent };
+        })())`))
+        const label = `${width}x${height} ${target} ${layout}`
+        results.push({ width, height, target, layout, ...measure })
+        assert.equal(measure.standaloneCaveat, false, label)
+        assert.equal(measure.horizontalOverflow, 0, label)
+        assert.ok(measure.viewer.height > 0, label)
+        assert.ok(Math.abs(measure.weights.y - measure.viewer.bottom - 8) < 2, `${label}: visual/weights gap`)
+        assert.ok(Math.abs(measure.chat.y - measure.weights.bottom - 8) < 2, `${label}: weights/chat gap`)
+        for (const input of measure.inputs) {
+          assert.ok(input.y >= measure.weights.y && input.bottom <= measure.weights.bottom - 8, `${label}: slider containment`)
+          assert.ok(input.x >= measure.weights.x && input.right <= measure.weights.right, `${label}: slider horizontal containment`)
+        }
+        assert.ok(measure.toolbar.x >= measure.viewer.x && measure.toolbar.right <= measure.viewer.right, `${label}: toolbar horizontal containment`)
+        assert.ok(measure.toolbar.y >= measure.viewer.y && measure.toolbar.bottom <= measure.viewer.bottom, `${label}: toolbar vertical containment`)
+        assert.equal(measure.prompt.height, measure.send.height, `${label}: prompt/send alignment`)
+        assert.ok(measure.form.bottom <= measure.chat.bottom + 1, `${label}: composer overflows chat`)
+        if (width >= 1000) {
+          assert.ok(measure.overflow <= 1, `${label}: center overflows by ${measure.overflow}px`)
+          assert.ok(measure.form.bottom <= measure.pane.bottom + 1, `${label}: composer bottom ${measure.form.bottom}, pane bottom ${measure.pane.bottom}`)
+        }
+        if (width === 1512 && target === 'Shackleton rim' && layout === 'row') {
+          const { data } = await send('browsingContext.captureScreenshot', { context })
+          mkdirSync('.openchamber/screenshots', { recursive: true })
+          writeFileSync('.openchamber/screenshots/firefox-studio-1512x780-moon.png', Buffer.from(data, 'base64'))
+        }
+      }
+    }
+    if (width === 1440 || width === 1280 || width === 390) {
+      const { data } = await send('browsingContext.captureScreenshot', { context })
+      mkdirSync('.openchamber/screenshots', { recursive: true })
+      writeFileSync(`.openchamber/screenshots/firefox-studio-${width}x${height}.png`, Buffer.from(data, 'base64'))
+    }
+    console.log(`PASS ${width}x${height}: Moon/Mars, side by side/stacked`)
+  }
+  // Exercise the disclosure and a real native range-key event without an API call.
+  await evaluate("document.querySelector('.studio-view-info summary').click(); true")
+  await settle()
+  assert.equal(await evaluate("document.querySelector('.studio-view-info').open"), true)
+  assert.ok(await evaluate("document.querySelector('.studio-view-info .views-foot').getBoundingClientRect().height > 0"))
+  await evaluate("document.querySelector('.studio-view-info summary').click(); document.querySelector('.weight input').focus(); true")
+  const weightBefore = Number(await evaluate("document.querySelector('.weight input').value"))
+  await send('input.performActions', { context, actions: [{ type: 'key', id: 'keyboard', actions: [{ type: 'keyDown', value: '\uE014' }, { type: 'keyUp', value: '\uE014' }] }] })
+  await settle()
+  assert.ok(Number(await evaluate("document.querySelector('.weight input').value")) > weightBefore)
+  await evaluate("document.querySelector('.ask-examples button').click(); true")
+  await settle()
+  assert.ok(await evaluate("document.querySelector('.ask-line.error')?.textContent.includes('Layout preview only')"))
+  assert.ok(await evaluate("document.querySelector('.ask-form').getBoundingClientRect().bottom <= document.querySelector('#ask-panel').getBoundingClientRect().bottom"))
+  console.log('PASS info disclosure, native slider keyboard input, and chat error layout')
+  console.log(`${results.length} browser layout checks passed`)
+} finally {
+  mkdirSync('.openchamber', { recursive: true })
+  writeFileSync('.openchamber/studio-browser-check.json', JSON.stringify(results, null, 2))
+  await send('session.end', {}).catch(() => {})
+  ws.close()
+}
