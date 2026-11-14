@@ -26,6 +26,8 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | Requests | Python Software Foundation / Requests maintainers | Check which WorldCover tiles exist before reading them | [Requests repository](https://github.com/psf/requests) | Apache-2.0 | no |
 | Rasterio | Rasterio maintainers | Read source DEMs and reproject/resample terrain windows | [Rasterio documentation](https://rasterio.readthedocs.io/) | BSD-3-Clause | no |
 | SciPy | SciPy Developers | Sample processed elevation arrays onto the relief-grid output | [SciPy repository](https://github.com/scipy/scipy) | BSD-3-Clause | no |
+| scikit-learn | scikit-learn developers | Moon-vs-Earth terrain-tile classifier and site-held-out splits (experiment, issue #46) | [scikit-learn repository](https://github.com/scikit-learn/scikit-learn) | BSD-3-Clause | no |
+| SHAP | Scott Lundberg and SHAP contributors | Per-feature explanations of the Moon-vs-Earth classifier (experiment, issue #46) | [SHAP repository](https://github.com/shap/shap) | MIT | no |
 | React | React team | App component rendering and state | [React repository](https://github.com/react/react) | MIT | no |
 | React DOM | React team | Mount the app in the browser DOM | [React repository](https://github.com/react/react) | MIT | no |
 | Three.js | Three.js contributors | Render the two linked 3D terrain views (target and selected site) | [Three.js repository](https://github.com/mrdoob/three.js) | MIT | no |
