@@ -1,7 +1,11 @@
 .demo {
-  /* first in the bottom dock (index.css), so it always sits above the callout, context and shelf */
-  align-self: center;
-  inline-size: min(560px, calc(100% - 32px));
+  /* over the bottom of the terrain views, clear of the view labels at the top */
+  position: absolute;
+  z-index: 3;
+  inset-block-end: 40px;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(560px, calc(100% - 24px));
   padding: 12px 16px 10px;
   border-radius: var(--radius);
   display: grid;
@@ -24,6 +28,3 @@
   .demo-progress { display: none; }
 }
 
-@media (max-width: 700px) {
-  .demo { inset-block-end: calc(380px + env(safe-area-inset-bottom, 0px)); }
-}

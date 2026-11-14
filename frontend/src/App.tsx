@@ -1,21 +1,30 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { AppData, Config, Evidence, Site, Target, Weights } from './types'
+import { PARAM_KEYS } from './types'
 import { defaultWeights, rankSites, stability as computeStability } from './engine'
-import { asset } from './ui'
+import { asset, useMediaQuery } from './ui'
 import TopBar from './components/TopBar'
-import SplitScene from './components/SplitScene'
-import SiteShelf from './components/SiteShelf'
-import MismatchCallout from './components/MismatchCallout'
+import TerrainViews from './components/TerrainViews'
+import SiteList from './components/SiteList'
+import SiteDetails from './components/SiteDetails'
 import WeightsPanel from './components/WeightsPanel'
 import DataDrawer from './components/DataDrawer'
 import EvidencePanel from './components/EvidencePanel'
 import DemoTour from './components/DemoTour'
 import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
-import RankExplainer from './components/RankExplainer'
 import { explainCard } from './explain/card'
 
 type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
+const PANEL_IDS: Record<Exclude<Panel, 'none'>, string> = { weights: 'weights-panel', data: 'data-drawer', evidence: 'evidence-panel', ask: 'ask-panel' }
+
+/** Narrow screens show one pane at a time behind a Sites / View / Details switcher. */
+type Pane = 'sites' | 'view' | 'details'
+const PANES: { id: Pane; label: string }[] = [
+  { id: 'sites', label: 'Sites' },
+  { id: 'view', label: 'View' },
+  { id: 'details', label: 'Details' },
+]
 
 async function loadJson<T>(path: string): Promise<T> {
   const res = await fetch(asset(path))
@@ -32,8 +41,8 @@ export default function App() {
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
   const [demo, setDemo] = useState<DemoStep[] | null>(null)
-  // "Why this rank?" for the selected card: picking a card opens it, clicking the open card again closes it
-  const [explain, setExplain] = useState(false)
+  const narrow = useMediaQuery('(max-width: 899px)')
+  const [pane, setPane] = useState<Pane>('sites')
 
   useEffect(() => {
     Promise.all([
@@ -59,41 +68,59 @@ export default function App() {
     [data, target, weights],
   )
 
-  // Keep a valid selection: the top-ranked site whenever the current one is gone.
+  // One selection drives all three panes: the chosen site, or the top-ranked one when it is gone.
   const selected = ranked.find(r => r.site.id === siteId) ?? ranked[0] ?? null
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      setPanel('none')
-      setExplain(open => {
-        // hand focus back to the card the explanation belongs to
-        if (open) setTimeout(() => document.querySelector<HTMLElement>('.site-card[aria-pressed="true"]')?.focus(), 0)
-        return false
-      })
-    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPanel('none') }
     addEventListener('keydown', onKey)
     return () => removeEventListener('keydown', onKey)
   }, [])
 
+  // When an auxiliary panel closes, give focus back to the toolbar button that opened it
+  // (unless the viewer has already moved focus somewhere else).
+  const lastPanel = useRef<Panel>('none')
+  useEffect(() => {
+    const prev = lastPanel.current
+    lastPanel.current = panel
+    if (prev === 'none' || panel !== 'none') return
+    const el = document.activeElement
+    if (el === null || el === document.body || el.closest(`#${PANEL_IDS[prev]}`)) {
+      document.querySelector<HTMLElement>(`[aria-controls="${PANEL_IDS[prev]}"]`)?.focus()
+    }
+  }, [panel])
+
   if (error) return <div className="app-status" role="alert">Could not load the data files ({error}). Reload the page; if it persists, the build is missing public/data.</div>
   if (!data || !target || !weights) return <div className="app-status" aria-live="polite">Loading terrain data…</div>
 
-  const toggle = (p: Panel) => { setExplain(false); setPanel(cur => (cur === p ? 'none' : p)) }
-  const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false); setExplain(false) }
-  const closeExplain = () => {
-    setExplain(false)
-    document.querySelector<HTMLElement>('.site-card[aria-pressed="true"]')?.focus()
-  }
+  const toggle = (p: Panel) => setPanel(cur => (cur === p ? 'none' : p))
+  const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false) }
   const playDemo = () => {
     const steps = buildDemoSteps(data)
     if (!steps.length) return
-    setPanel('none'); setExplain(false); setDemo(steps)
+    setPanel('none'); setPane('view'); setDemo(steps)
+  }
+
+  const defaults = defaultWeights(data.config)
+  const adjusted = PARAM_KEYS.some(k => weights[k] !== defaults[k])
+  const weightsText = adjusted ? 'Adjusted weights' : data.config.provisional ? 'Provisional default weights' : 'Default weights'
+  const explanation = selected
+    ? explainCard(selected, ranked, target, data.config, stability[selected.site.id] ?? null, weights)
+    : null
+
+  // On narrow screens each pane is a tab panel; on wide screens all three are shown together.
+  const paneProps = (p: Pane) => (narrow ? { role: 'tabpanel', 'aria-labelledby': `tab-${p}`, hidden: pane !== p } : {})
+  const onTabKey = (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+    const i = PANES.findIndex(x => x.id === pane)
+    const next = e.key === 'ArrowRight' ? (i + 1) % PANES.length : e.key === 'ArrowLeft' ? (i + PANES.length - 1) % PANES.length : -1
+    if (next < 0) return
+    e.preventDefault()
+    setPane(PANES[next].id)
+    document.getElementById(`tab-${PANES[next].id}`)?.focus()
   }
 
   return (
     <div className="app">
-      <SplitScene target={target} site={selected?.site ?? null} relit={relit && target.body === 'moon'} />
       <TopBar
         targets={data.targets}
         targetId={target.id}
@@ -103,67 +130,87 @@ export default function App() {
         panel={panel}
         onTogglePanel={toggle}
       />
-      {/* bottom dock: stacks upward, so the demo caption, callout or explanation never overlaps the cards */}
-      <div className="dock">
-        {demo && (
-          <DemoTour
-            steps={demo}
-            actions={{
-              pickTarget: id => { setTargetId(id); setSiteId(null) },
-              selectSite: setSiteId,
-              setRelit,
-              setWeights,
-              resetWeights: () => setWeights(defaultWeights(data.config)),
-            }}
-            onEnd={() => setDemo(null)}
+      {narrow && (
+        <div className="pane-tabs" role="tablist" aria-label="Workbench panes">
+          {PANES.map(p => (
+            <button
+              key={p.id}
+              id={`tab-${p.id}`}
+              type="button"
+              role="tab"
+              aria-selected={pane === p.id}
+              aria-controls={`pane-${p.id}`}
+              tabIndex={pane === p.id ? 0 : -1}
+              onClick={() => setPane(p.id)}
+              onKeyDown={onTabKey}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <main className="workspace">
+        <div id="pane-sites" className="pane pane-sites glass" {...paneProps('sites')}>
+          <SiteList
+            ranked={ranked}
+            target={target}
+            selectedId={selected?.site.id ?? null}
+            onSelect={setSiteId}
+            mainWindowKm={data.config.main_window_km}
+            weightsText={weightsText}
           />
-        )}
-        {/* the explanation repeats the warning text, so the callout steps aside while it is open */}
-        {!(explain && selected) && (
-          <MismatchCallout entry={selected} body={target.body} relit={relit} onToggleRelit={() => setRelit(r => !r)} />
-        )}
-        {explain && selected && (
-          <RankExplainer
-            ex={explainCard(selected, ranked, target, data.config, stability[selected.site.id] ?? null, weights)}
-            onClose={closeExplain}
+        </div>
+        <div id="pane-view" className="pane pane-view" {...paneProps('view')}>
+          <TerrainViews
+            target={target}
+            site={selected?.site ?? null}
+            relit={relit && target.body === 'moon'}
+            onToggleRelit={() => setRelit(r => !r)}
+            mainWindowKm={data.config.main_window_km}
           />
-        )}
-        <SiteShelf
-          ranked={ranked}
-          stability={stability}
-          body={target.body}
-          targetId={target.id}
-          targetName={target.name}
-          selectedId={selected?.site.id ?? null}
-          explainOpen={explain}
-          onSelect={id => { setSiteId(id); setRelit(false); setPanel('none'); setExplain(true) }}
-          onExplain={() => { setPanel('none'); setExplain(o => !o) }}
+          {demo && (
+            <DemoTour
+              steps={demo}
+              actions={{
+                pickTarget: id => { setTargetId(id); setSiteId(null) },
+                selectSite: setSiteId,
+                setRelit,
+                setWeights,
+                resetWeights: () => setWeights(defaultWeights(data.config)),
+              }}
+              onEnd={() => setDemo(null)}
+            />
+          )}
+        </div>
+        <div id="pane-details" className="pane pane-details glass" {...paneProps('details')}>
+          <SiteDetails ex={explanation} />
+        </div>
+
+        <WeightsPanel
+          open={panel === 'weights'}
+          config={data.config}
+          weights={weights}
+          onWeights={setWeights}
+          onReset={() => setWeights(defaultWeights(data.config))}
+          onClose={() => setPanel('none')}
         />
-      </div>
-      <WeightsPanel
-        open={panel === 'weights'}
-        config={data.config}
-        weights={weights}
-        onWeights={setWeights}
-        onReset={() => setWeights(defaultWeights(data.config))}
-        onClose={() => setPanel('none')}
-      />
-      <DataDrawer
-        open={panel === 'data'}
-        entry={selected}
-        target={target}
-        config={data.config}
-        stability={selected ? stability[selected.site.id] ?? null : null}
-        evidence={data.evidence}
-        onClose={() => setPanel('none')}
-      />
-      <EvidencePanel open={panel === 'evidence'} evidence={data.evidence} onClose={() => setPanel('none')} />
-      <AskPanel
-        open={panel === 'ask'}
-        run={{ target, ranked, stability, config: data.config, weights, evidence: data.evidence }}
-        onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
-        onClose={() => setPanel('none')}
-      />
+        <DataDrawer
+          open={panel === 'data'}
+          entry={selected}
+          target={target}
+          config={data.config}
+          stability={selected ? stability[selected.site.id] ?? null : null}
+          evidence={data.evidence}
+          onClose={() => setPanel('none')}
+        />
+        <EvidencePanel open={panel === 'evidence'} evidence={data.evidence} onClose={() => setPanel('none')} />
+        <AskPanel
+          open={panel === 'ask'}
+          run={{ target, ranked, stability, config: data.config, weights, evidence: data.evidence }}
+          onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
+          onClose={() => setPanel('none')}
+        />
+      </main>
     </div>
   )
 }

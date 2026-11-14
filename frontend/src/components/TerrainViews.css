@@ -1,0 +1,62 @@
+.views-pane { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; min-block-size: 0; min-inline-size: 0; }
+
+.views-tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.views-tools .btn { padding: 6px 12px; font-size: 12.5px; }
+
+/* the canvas fills this box; the renderer draws two complete viewports into it with an 8px gap (VIEW_GAP) */
+.views { position: relative; min-block-size: 0; overflow: hidden; border-radius: var(--radius); }
+.views-gl { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: block; cursor: grab; touch-action: none; border-radius: inherit; }
+.views-gl:active { cursor: grabbing; }
+.views-gl:focus-visible { outline-offset: -3px; }
+
+/* label overlay laid out exactly like the two viewports */
+.view-cells { position: absolute; inset: 0; display: grid; gap: 8px; pointer-events: none; }
+.views.row .view-cells { grid-template-columns: 1fr 1fr; }
+.views.column .view-cells { grid-template-rows: 1fr 1fr; }
+.view-cell { position: relative; min-inline-size: 0; min-block-size: 0; }
+.view-label {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline: 12px;
+  display: grid;
+  justify-items: start;
+  gap: 3px;
+}
+.view-label .label { color: var(--muted); }
+.view-label h2 {
+  font-family: var(--f-dot);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 0.7);
+}
+.view-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--sun);
+}
+.views-note { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
+
+.src-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgb(0 0 0 / 0.45);
+  color: var(--muted);
+}
+.src-tag.data { color: var(--terrain); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--terrain) 45%, transparent); }
+.src-tag.none { color: var(--sun); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sun) 55%, transparent); }
+
+.views-foot { font-size: 11.5px; color: var(--muted); text-wrap: pretty; }

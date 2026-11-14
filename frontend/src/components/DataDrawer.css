@@ -1,9 +1,9 @@
 .drawer {
   position: absolute;
   z-index: 6;
-  inset-block-start: calc(72px + env(safe-area-inset-top, 0px));
-  inset-block-end: calc(200px + env(safe-area-inset-bottom, 0px));
-  inset-inline-end: var(--gutter-r);
+  /* inside the workspace (index.css), over the details pane */
+  inset-block: 0;
+  inset-inline-end: 0;
   inline-size: min(380px, calc(100% - 32px));
   overflow-y: auto;
   overscroll-behavior: contain;

@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react'
 import type { Tier } from './types'
 
 /** A number with fixed digits, or the word "missing". Never 0 or a blank for unknown values. */
@@ -45,4 +46,13 @@ export function scoreColor(x: number | null): string {
 /** Resolve a path under public/ against the deploy base (GitHub Pages serves under /<repo>/). */
 export function asset(path: string): string {
   return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
+}
+
+/** Whether a CSS media query matches, kept in sync as the viewport changes. */
+export function useMediaQuery(query: string): boolean {
+  return useSyncExternalStore(
+    cb => { const m = matchMedia(query); m.addEventListener('change', cb); return () => m.removeEventListener('change', cb) },
+    () => matchMedia(query).matches,
+    () => false,
+  )
 }
