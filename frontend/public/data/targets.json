@@ -45,8 +45,8 @@
     },
     "low_sun_share": {
       "value": 1.0,
-      "tier": "by definition",
-      "source": "lunar obliquity about 1.5 degrees"
+      "tier": "computed",
+      "source": "NASA NAIF SPICE: DE440 ephemeris and DE440 lunar orientation (MOON_ME); hourly UTC samples in 2026; geometric elevation; no terrain shading"
     },
     "hillshade": "img/shackleton_rim.png",
     "relief": "data/relief/shackleton_rim.json"
@@ -97,8 +97,8 @@
     },
     "low_sun_share": {
       "value": 1.0,
-      "tier": "by definition",
-      "source": "lunar obliquity about 1.5 degrees"
+      "tier": "computed",
+      "source": "NASA NAIF SPICE: DE440 ephemeris and DE440 lunar orientation (MOON_ME); hourly UTC samples in 2026; geometric elevation; no terrain shading"
     },
     "hillshade": "img/malapert.png",
     "relief": "data/relief/malapert.json"
@@ -108,7 +108,7 @@
     "name": "Jezero crater floor",
     "lat": 18.44,
     "lon": 77.45,
-    "note": "Terrain only. Lighting axis does not apply to Mars targets.",
+    "note": "Terrain only. Lighting is not compared for Mars targets; low-sun share is shown for reference.",
     "body": "mars",
     "params": {
       "slope_mean_deg": {
@@ -147,7 +147,11 @@
         "roughness_m": 0.5378317151801395
       }
     },
-    "low_sun_share": null,
+    "low_sun_share": {
+      "value": 0.1232301415886729,
+      "tier": "computed",
+      "source": "NASA NAIF SPICE: DE440 ephemeris and IAU 2015 Mars orientation (pck00011); hourly samples over one Mars year from 2026-01-01 UTC; geometric elevation; no terrain shading or dust"
+    },
     "hillshade": "img/target_jezero.png",
     "relief": "data/relief/jezero.json"
   }

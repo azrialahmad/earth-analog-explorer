@@ -134,7 +134,13 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
 
         <section aria-labelledby="ex-sun">
           <h3 id="ex-sun" className="label">Lighting</h3>
-          {ex.lowSun ? (
+          {ex.lowSun && !ex.lowSun.compared ? (
+            <p>
+              Lighting is not compared for Mars targets and plays no part in this ranking. For reference, the share of daylight
+              with the sun under 10° is <b className="num sun">{pct(ex.lowSun.site)}</b> at this site and{' '}
+              <b className="num">{pct(ex.lowSun.target)}</b> at {ex.targetName}.
+            </p>
+          ) : ex.lowSun ? (
             <>
               <p>
                 Low sun (share of daylight with the sun under 10°): this site <b className="num sun">{pct(ex.lowSun.site)}</b>,{' '}
