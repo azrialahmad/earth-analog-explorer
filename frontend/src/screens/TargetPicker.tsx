@@ -1,6 +1,7 @@
 import type { Config, Target } from '../types'
 import { PARAM_KEYS } from '../types'
 import Hillshade from '../components/Hillshade'
+import { fmtUnit } from '../ui'
 import './TargetPicker.css'
 
 export interface TargetPickerProps {
@@ -34,7 +35,7 @@ function TargetCard({ target: t, config, onPick }: { target: Target; config: Con
           return (
             <div key={k}>
               <dt>{meta.label}</dt>
-              <dd className="num">{v === null ? <span className="missing-text">missing</span> : `${v}${meta.unit === '°' ? '°' : ` ${meta.unit}`}`}</dd>
+              <dd className="num">{v === null ? <span className="missing-text">missing</span> : fmtUnit(v, meta.unit)}</dd>
             </div>
           )
         })}

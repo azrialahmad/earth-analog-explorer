@@ -91,6 +91,8 @@ export default function App() {
         ranked={ranked}
         stability={stability}
         body={target.body}
+        targetId={target.id}
+        targetName={target.name}
         selectedId={selected?.site.id ?? null}
         onSelect={id => { setSiteId(id); setRelit(false) }}
       />

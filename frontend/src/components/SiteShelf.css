@@ -10,6 +10,7 @@
   list-style: none;
   overflow-x: auto;
   scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter) var(--gutter-r);
   scrollbar-width: none;
 }
 .shelf > li { flex: none; scroll-snap-align: start; }
@@ -70,4 +71,20 @@
 
 @media (max-width: 600px) {
   .site-card { inline-size: 180px; }
+}
+
+.shelf-note {
+  position: absolute;
+  z-index: 5;
+  inset-block-end: calc(206px + env(safe-area-inset-bottom, 0px));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: max-content;
+  max-inline-size: calc(100% - 32px);
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  text-align: center;
+  color: var(--sun);
+  border-color: color-mix(in srgb, var(--sun) 45%, transparent);
 }

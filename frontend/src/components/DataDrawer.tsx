@@ -1,7 +1,7 @@
 import type { Config, Evidence, RankedSite, Target } from '../types'
 import { WINDOW_KEYS } from '../types'
 import { weakestParam } from '../engine'
-import { fmt, pct, TierBadge, Bar } from '../ui'
+import { fmt, fmtUnit, pct, TierBadge, Bar } from '../ui'
 import Hillshade from './Hillshade'
 import './DataDrawer.css'
 
@@ -26,7 +26,6 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
   const moon = target.body === 'moon'
   const site = entry?.site
   const weak = entry ? weakestParam(entry.perParam) : null
-  const unitOf = (u: string) => (u === '°' ? '°' : ` ${u}`)
 
   return (
     <aside id="data-drawer" className="drawer panel glass" aria-label="Site data" hidden={!open}>
@@ -63,7 +62,6 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
               {entry.perParam.map(p => {
                 const meta = config.params[p.key]
                 const v = site.params[p.key]
-                const unit = unitOf(meta.unit)
                 return (
                   <tr key={p.key}>
                     <td>
@@ -71,8 +69,8 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
                       <div className="src"><TierBadge tier={v.tier} /> weight <span className="num">{fmt(p.weight, 1)}</span></div>
                       <div className="src">{v.source ?? <Missing text="no source" />}</div>
                     </td>
-                    <td className="num">{p.site === null ? <Missing /> : `${p.site}${unit}`}</td>
-                    <td className="num">{p.target === null ? <Missing /> : `${p.target}${unit}`}</td>
+                    <td className="num">{p.site === null ? <Missing /> : fmtUnit(p.site, meta.unit)}</td>
+                    <td className="num">{p.target === null ? <Missing /> : fmtUnit(p.target, meta.unit)}</td>
                     <td className="num">{fmt(p.similarity)}<Bar value={p.similarity} label={`${meta.label} similarity`} /></td>
                   </tr>
                 )

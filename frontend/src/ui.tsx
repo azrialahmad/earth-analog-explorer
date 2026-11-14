@@ -5,6 +5,12 @@ export function fmt(x: number | null | undefined, digits = 2): string {
   return x === null || x === undefined || !Number.isFinite(x) ? 'missing' : x.toFixed(digits)
 }
 
+/** A terrain value with its unit: degrees to 1 decimal ("22.8°"), anything else to 2 ("1.39 m"), or "missing". */
+export function fmtUnit(x: number | null | undefined, unit: string): string {
+  if (x === null || x === undefined || !Number.isFinite(x)) return 'missing'
+  return unit === '°' ? `${x.toFixed(1)}°` : `${x.toFixed(2)} ${unit}`
+}
+
 /** A share 0..1 as a whole percent ("16%"), or "missing". */
 export function pct(x: number | null | undefined): string {
   return x === null || x === undefined || !Number.isFinite(x) ? 'missing' : `${Math.round(x * 100)}%`

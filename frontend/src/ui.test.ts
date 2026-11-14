@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmt, pct } from './ui'
+import { fmt, fmtUnit, pct } from './ui'
 
 describe('fmt', () => {
   it('formats numbers with fixed digits', () => {
@@ -23,4 +23,12 @@ describe('pct', () => {
     expect(pct(null)).toBe('missing')
     expect(pct(Number.POSITIVE_INFINITY)).toBe('missing')
   })
+})
+
+describe('fmtUnit', () => {
+  it('rounds degrees to 1 decimal and metres to 2', () => {
+    expect(fmtUnit(22.824709935203323, '°')).toBe('22.8°')
+    expect(fmtUnit(1.3918473491012535, 'm')).toBe('1.39 m')
+  })
+  it('shows missing for unknown values', () => expect(fmtUnit(null, '°')).toBe('missing'))
 })
