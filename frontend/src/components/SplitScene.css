@@ -1,0 +1,66 @@
+.scene { position: absolute; inset: 0; overflow: hidden; }
+.half { position: absolute; inset-block: 0; }
+.half.left { inset-inline: 0 calc(100% - var(--split)); }
+.half.right { inset-inline: var(--split) 0; }
+.half.moon, .half.relit { background: radial-gradient(ellipse at 50% 70%, #1b1f27, #030407 70%); }
+.half.mars { background: radial-gradient(ellipse at 50% 70%, #d9a77f, #9b6545 80%); }
+.half.earth { background: radial-gradient(ellipse at 50% 80%, #c9dcf0, #7fa6d3 75%); }
+
+.scene-note {
+  position: absolute;
+  inset-block-start: calc(72px + env(safe-area-inset-top, 0px));
+  inset-inline: 0;
+  text-align: center;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+.side { position: absolute; z-index: 3; inset-block-start: calc(96px + env(safe-area-inset-top, 0px)); max-inline-size: 42%; pointer-events: none; }
+.side.l { inset-inline-start: max(24px, env(safe-area-inset-left, 0px)); }
+.side.r { inset-inline-end: max(24px, env(safe-area-inset-right, 0px)); text-align: end; }
+.side h2 {
+  margin-block: 4px 2px;
+  font-family: var(--f-dot);
+  font-weight: 800;
+  font-size: clamp(24px, 3.6vw, 46px);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.6);
+}
+.side p { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; opacity: 0.75; }
+
+.divider {
+  position: absolute;
+  z-index: 4;
+  inset-block: 0;
+  inset-inline-start: var(--split);
+  inline-size: 44px;
+  margin-inline-start: -22px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.divider::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 21px;
+  inset-block: 0;
+  inline-size: 1.5px;
+  background: linear-gradient(transparent, rgb(255 255 255 / 0.7) 20%, rgb(255 255 255 / 0.7) 80%, transparent);
+}
+.divider .grip {
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block-start: 44%;
+  inline-size: 38px;
+  block-size: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.divider svg { inline-size: 18px; block-size: 18px; fill: none; stroke: var(--fg); stroke-width: 1.6; stroke-linecap: round; }
+
+.half { transition: background 0.9s; }
+@media (prefers-reduced-motion: reduce) {
+  .half { transition-duration: 0.01s; }
+}
