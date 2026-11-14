@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { config, makeSite, makeTarget } from './fixture'
-import { defaultWeights, rankSites, scoreSite, similarity, terrainMatch } from './scoring'
+import { defaultWeights, rankSites, scoreSite, similarity, terrainMatch, weakestParam } from './scoring'
 
 const w = defaultWeights(config)
 const range = config.params.slope_mean_deg.range
@@ -101,5 +101,16 @@ describe('rankSites', () => {
     expect(s.windowSensitivity['3']).toBe(1)
     expect(s.windowSensitivity['6']).toBe(1)
     expect(s.windowSensitivity['12']).toBeNull()
+  })
+})
+
+describe('weakestParam', () => {
+  const target = makeTarget([10, 20, 1])
+  it('names the lowest similarity and skips missing values', () => {
+    const s = scoreSite(makeSite('a', [12, 20, null]), target, config, w)
+    expect(weakestParam(s.perParam)?.key).toBe('slope_mean_deg')
+  })
+  it('is null when every value is missing', () => {
+    expect(weakestParam(scoreSite(makeSite('a', [null, null, null]), target, config, w).perParam)).toBeNull()
   })
 })

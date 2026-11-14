@@ -104,3 +104,10 @@ export function compareScores(a: { terrainMatch: number | null; siteId: string }
   if (b.terrainMatch !== a.terrainMatch) return b.terrainMatch - a.terrainMatch
   return a.siteId.localeCompare(b.siteId)
 }
+
+/** The parameter with the lowest similarity, skipping missing ones; ties go to the first in PARAM_KEYS order. Null if none. */
+export function weakestParam(perParam: ParamScore[]): ParamScore | null {
+  let worst: ParamScore | null = null
+  for (const p of perParam) if (p.similarity !== null && (worst === null || p.similarity < worst.similarity!)) worst = p
+  return worst
+}
