@@ -12,6 +12,8 @@ import EvidencePanel from './components/EvidencePanel'
 import DemoTour from './components/DemoTour'
 import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
+import ComparisonContext from './components/ComparisonContext'
+import { comparisonSummary } from './context/summary'
 
 type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
 
@@ -90,16 +92,33 @@ export default function App() {
         panel={panel}
         onTogglePanel={toggle}
       />
-      <MismatchCallout entry={selected} body={target.body} relit={relit} onToggleRelit={() => setRelit(r => !r)} />
-      <SiteShelf
-        ranked={ranked}
-        stability={stability}
-        body={target.body}
-        targetId={target.id}
-        targetName={target.name}
-        selectedId={selected?.site.id ?? null}
-        onSelect={id => { setSiteId(id); setRelit(false) }}
-      />
+      {/* bottom dock: stacks upward, so taller context or a callout never overlaps the cards */}
+      <div className="dock">
+        {demo && (
+          <DemoTour
+            steps={demo}
+            actions={{
+              pickTarget: id => { setTargetId(id); setSiteId(null) },
+              selectSite: setSiteId,
+              setRelit,
+              setWeights,
+              resetWeights: () => setWeights(defaultWeights(data.config)),
+            }}
+            onEnd={() => setDemo(null)}
+          />
+        )}
+        <MismatchCallout entry={selected} body={target.body} relit={relit} onToggleRelit={() => setRelit(r => !r)} />
+        <ComparisonContext summary={comparisonSummary(target, data.config, data.sites.length, weights)} />
+        <SiteShelf
+          ranked={ranked}
+          stability={stability}
+          body={target.body}
+          targetId={target.id}
+          targetName={target.name}
+          selectedId={selected?.site.id ?? null}
+          onSelect={id => { setSiteId(id); setRelit(false) }}
+        />
+      </div>
       <WeightsPanel
         open={panel === 'weights'}
         config={data.config}
@@ -124,19 +143,6 @@ export default function App() {
         onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
         onClose={() => setPanel('none')}
       />
-      {demo && (
-        <DemoTour
-          steps={demo}
-          actions={{
-            pickTarget: id => { setTargetId(id); setSiteId(null) },
-            selectSite: setSiteId,
-            setRelit,
-            setWeights,
-            resetWeights: () => setWeights(defaultWeights(data.config)),
-          }}
-          onEnd={() => setDemo(null)}
-        />
-      )}
     </div>
   )
 }

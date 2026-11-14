@@ -147,6 +147,14 @@ input[type='range']:focus-visible { outline: 2px solid var(--sun); outline-offse
 
 /* App frame: the scene fills the viewport, overlays are positioned by their own components */
 .app { position: relative; block-size: 100%; overflow: hidden; }
+/* Bottom dock: demo caption, mismatch callout, comparison context and the site shelf stack upward from the bottom edge */
+.dock {
+  position: absolute; z-index: 5; inset-inline: 0;
+  inset-block-end: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.dock > * { pointer-events: auto; }
 .app-status { position: absolute; inset: 0; display: grid; place-items: center; padding: 40px; text-align: center; color: var(--muted); }
 .fixture-tag {
   font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;

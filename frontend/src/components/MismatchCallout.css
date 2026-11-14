@@ -1,9 +1,5 @@
 .callout {
-  position: absolute;
-  z-index: 5;
-  inset-inline-start: 50%;
-  translate: -50% 0;
-  inset-block-end: calc(206px + env(safe-area-inset-bottom, 0px));
+  align-self: center;
   inline-size: min(720px, calc(100% - 32px));
   display: flex;
   align-items: center;
