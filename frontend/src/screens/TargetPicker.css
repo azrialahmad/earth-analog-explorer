@@ -24,7 +24,9 @@
 .picker-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; }
 .picker-card { border-radius: var(--radius-lg); padding: 16px; display: grid; gap: 10px; align-content: start; }
 .pc-top { display: flex; align-items: center; gap: 8px; }
-.picker-card h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.picker-group { display: grid; gap: 12px; }
+.picker-group > .label { color: var(--fg); font-size: 11px; }
+.picker-card h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
 .pc-note { font-size: 12.5px; color: var(--muted); min-block-size: 2.8em; text-wrap: pretty; }
 .picker-card .hill img, .picker-card .hill-empty { aspect-ratio: 16 / 9; }
 .pc-values { display: grid; gap: 4px; margin: 0; font-size: 12.5px; }
