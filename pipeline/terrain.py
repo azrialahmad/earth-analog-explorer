@@ -54,13 +54,19 @@ WATER_FLAT_SHARE = 0.2
 LOLA_NAME = "ldem_85s_20m_float.img"
 LOLA_SIZE = 15168
 LOLA_CELL_M = 20.0
-LOLA_POLE_PX = 7583.5  # pole lies between pixels 7583 and 7584
+# PDS labels the projection offset in 1-based sample/line coordinates as 7583.5.
+# Convert that to the zero-based array coordinate of the pole between pixel centers.
+LOLA_PROJECTION_OFFSET_PDS = 7583.5
+LOLA_POLE_PX = LOLA_PROJECTION_OFFSET_PDS - 1.0
 LOLA_KM_TO_M = 1000.0
 MOON_RADIUS_M = 1737.4e3
 
 # Earth DEM directories the human fills under data/raw.
 SRTM_DIR = RAW_DIR / "srtm"
 ASTER_DIR = RAW_DIR / "aster"
+# Copernicus GLO-30 is only used for |lat| > 60 when ASTER is absent and a human
+# has approved the substitute (issue #2); the source label stays "Copernicus GLO-30 (ESA)".
+COPERNICUS_DIR = RAW_DIR / "copernicus"
 
 # Malapert is located from LOLA instead of being given a coordinate (issue #2).
 MALAPERT_LAT_RANGE = (-86.4, -85.6)  # south latitudes
@@ -165,7 +171,7 @@ def window_cells(km: float, res_m: float = WORK_RES_M) -> int:
 def analysis_grid(km: float, lat: float, lon: float, radius_m: float):
     """Grid covering the km window plus a BUFFER_CELLS margin on each side.
 
-    Returns (transform, width, height, crs, in_window_slice).
+    Returns (transform, width, height, crs, analysis-window cell count).
     """
     from affine import Affine
     from rasterio.crs import CRS
@@ -198,15 +204,23 @@ def open_lola() -> "np.memmap":
             f"missing lunar DEM {path} (raw float32 {LOLA_SIZE}x{LOLA_SIZE}, "
             f"{LOLA_CELL_M:.0f} m cells, km values)"
         )
+    expected_size = LOLA_SIZE * LOLA_SIZE * np.dtype("<f4").itemsize
+    actual_size = path.stat().st_size
+    if actual_size != expected_size:
+        raise ValueError(
+            f"incomplete or unexpected LOLA file {path}: {actual_size} bytes; "
+            f"expected {expected_size}"
+        )
     return np.memmap(path, dtype="<f4", mode="r", shape=(LOLA_SIZE, LOLA_SIZE))
 
 
 def lola_latlon_to_pixel(lat: float, lon: float) -> tuple[float, float]:
     """South polar stereographic lat/lon -> (col, row) in LOLA pixels.
 
-    Assumes rho = 2 R tan(45 + lat/2), central meridian 0, +x toward +lon,
-    +y toward the pole, pole at (7583.5, 7583.5). Orientation must be checked
-    against the real file before the numbers are trusted.
+    Uses the PDS label's spherical polar stereographic projection, central
+    meridian 0, +x toward +longitude, +y toward the pole. The PDS projection
+    offset is 7583.5 in 1-based sample/line coordinates, or 7582.5 in the
+    zero-based pixel-center coordinate used here.
     """
     phi = math.radians(lat)
     lam = math.radians(lon)
@@ -233,11 +247,12 @@ def locate_malapert(lola: "np.memmap") -> tuple[float, float, float]:
     """Highest LOLA point in the Malapert search box (issue #2). Returns lat, lon, elev_m."""
     lat_lo, lat_hi = MALAPERT_LAT_RANGE  # e.g. -86.4 .. -85.6
     r_outer = _polar_radius(lat_hi)
+    r_inner = _polar_radius(lat_lo)
 
     col_lo = int(math.floor(LOLA_POLE_PX - MALAPERT_LON_HALF_WIDTH_M / LOLA_CELL_M)) - 1
     col_hi = int(math.ceil(LOLA_POLE_PX + MALAPERT_LON_HALF_WIDTH_M / LOLA_CELL_M)) + 1
     row_lo = int(math.floor(LOLA_POLE_PX - r_outer / LOLA_CELL_M)) - 1
-    row_hi = int(math.ceil(LOLA_POLE_PX)) + 1
+    row_hi = int(math.ceil(LOLA_POLE_PX - r_inner / LOLA_CELL_M)) + 1
     col_lo, row_lo = max(col_lo, 0), max(row_lo, 0)
     col_hi, row_hi = min(col_hi, LOLA_SIZE), min(row_hi, LOLA_SIZE)
 
@@ -273,8 +288,8 @@ def read_lola_window(lat: float, lon: float, km: float):
         f"+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +R={MOON_RADIUS_M} +units=m +no_defs"
     )
     src_transform = Affine(
-        LOLA_CELL_M, 0.0, -LOLA_POLE_PX * LOLA_CELL_M,
-        0.0, -LOLA_CELL_M, LOLA_POLE_PX * LOLA_CELL_M,
+        LOLA_CELL_M, 0.0, -(LOLA_POLE_PX + 0.5) * LOLA_CELL_M,
+        0.0, -LOLA_CELL_M, (LOLA_POLE_PX + 0.5) * LOLA_CELL_M,
     )
 
     left, bottom, right, top = dst_bounds(transform, width, height)
@@ -282,9 +297,9 @@ def read_lola_window(lat: float, lon: float, km: float):
         dst_crs, src_crs, left, bottom, right, top, densify_pts=21
     )
     col0 = max(int(math.floor((s_left - src_transform.c) / LOLA_CELL_M)) - 2, 0)
-    row0 = max(int(math.floor((s_top - src_transform.f) / LOLA_CELL_M)) - 2, 0)
+    row0 = max(int(math.floor((src_transform.f - s_top) / LOLA_CELL_M)) - 2, 0)
     col1 = min(int(math.ceil((s_right - src_transform.c) / LOLA_CELL_M)) + 2, LOLA_SIZE)
-    row1 = min(int(math.ceil((s_bottom - src_transform.f) / LOLA_CELL_M)) + 2, LOLA_SIZE)
+    row1 = min(int(math.ceil((src_transform.f - s_bottom) / LOLA_CELL_M)) + 2, LOLA_SIZE)
     if col1 <= col0 or row1 <= row0:
         raise RuntimeError(f"window for {lat:.4f},{lon:.4f} falls outside the LOLA grid")
 
@@ -293,15 +308,15 @@ def read_lola_window(lat: float, lon: float, km: float):
         LOLA_CELL_M, 0.0, src_transform.c + col0 * LOLA_CELL_M,
         0.0, -LOLA_CELL_M, src_transform.f - row0 * LOLA_CELL_M,
     )
-    src_m = np.where(np.isfinite(sub), sub * LOLA_KM_TO_M, 0.0).astype("float32")
+    src_m = np.where(np.isfinite(sub), sub * LOLA_KM_TO_M, np.nan).astype("float32")
     src_valid = np.isfinite(sub).astype("float32")
 
-    dst = np.zeros((height, width), dtype="float32")
+    dst = np.full((height, width), np.nan, dtype="float32")
     reproject(
         source=src_m, destination=dst,
         src_transform=sub_transform, src_crs=src_crs,
         dst_transform=transform, dst_crs=dst_crs,
-        resampling=Resampling.bilinear,
+        src_nodata=np.nan, dst_nodata=np.nan, resampling=Resampling.bilinear,
     )
     dst_valid = np.zeros((height, width), dtype="float32")
     reproject(
@@ -317,10 +332,17 @@ def read_lola_window(lat: float, lon: float, km: float):
 # --------------------------------------------------------------------------- #
 # Earth DEM (SRTM / ASTER)
 # --------------------------------------------------------------------------- #
-def _tile_token(lat: int, lon: int) -> str:
+def _tile_tokens(lat: int, lon: int, style: str = "srtm") -> list[str]:
+    """Filename substrings that identify the 1x1 degree tile for a dataset."""
     ns = "N" if lat >= 0 else "S"
     ew = "E" if lon >= 0 else "W"
-    return f"{ns}{abs(lat):02d}{ew}{abs(lon):03d}"
+    if style == "copernicus":
+        return [f"{ns}{abs(lat):02d}_00_{ew}{abs(lon):03d}_00"]
+    return [f"{ns}{abs(lat):02d}{ew}{abs(lon):03d}"]
+
+
+def _has_files(directory: Path) -> bool:
+    return directory.exists() and any(directory.rglob("*"))
 
 
 def _find_tiles(directory: Path, tokens: list[str]) -> list[Path]:
@@ -345,11 +367,13 @@ def read_earth_window(lat: float, lon: float, km: float):
     from rasterio.warp import reproject, transform_bounds
 
     if abs(lat) <= 60.0:
-        directory, label, native_m = SRTM_DIR, "NASA SRTM 1 arc-second", 30.0
+        directory, label, native_m, style = SRTM_DIR, "NASA SRTM 1 arc-second", 30.0, "srtm"
+    elif _has_files(ASTER_DIR):
+        directory, label, native_m, style = ASTER_DIR, "NASA ASTER GDEM v3", 30.0, "srtm"
+    elif _has_files(COPERNICUS_DIR):
+        directory, label, native_m, style = COPERNICUS_DIR, "Copernicus GLO-30 (ESA)", 30.0, "copernicus"
     else:
-        directory, label, native_m = ASTER_DIR, "NASA ASTER GDEM v3", 30.0
-        if not directory.exists():
-            return None, None, None, None
+        return None, None, None, None
 
     transform, width, height, dst_crs, n = analysis_grid(km, lat, lon, 6378137.0)
     left, bottom, right, top = dst_bounds(transform, width, height)
@@ -358,7 +382,7 @@ def read_earth_window(lat: float, lon: float, km: float):
     tokens = []
     for tlat in range(int(math.floor(s)), int(math.ceil(n_b))):
         for tlon in range(int(math.floor(w)), int(math.ceil(e))):
-            tokens.append(_tile_token(tlat, tlon))
+            tokens.extend(_tile_tokens(tlat, tlon, style))
     tiles = _find_tiles(directory, tokens)
     if not tiles:
         return None, None, None, None
@@ -366,13 +390,15 @@ def read_earth_window(lat: float, lon: float, km: float):
     dst = np.full((height, width), np.nan, dtype="float32")
     for tile in tiles:
         with rasterio.open(tile) as src:
+            source_data = src.read(1, masked=True).astype("float32")
+            source_data = np.ma.filled(source_data, np.nan)
             sample = np.full((height, width), np.nan, dtype="float32")
             reproject(
-                source=rasterio.band(src, 1), destination=sample,
+                source=source_data, destination=sample,
                 src_transform=src.transform, src_crs=src.crs,
                 dst_transform=transform, dst_crs=dst_crs,
                 resampling=Resampling.bilinear,
-                src_nodata=src.nodata, dst_nodata=np.nan,
+                src_nodata=np.nan, dst_nodata=np.nan,
             )
         filled = np.isfinite(sample)
         dst[filled] = sample[filled]
@@ -421,10 +447,10 @@ def build_row(identity, source, res_m, sizes, loader):
     z, valid, center = loader(km_max)
     if z is None:
         return {**identity, "source": None, "res_m": None, "elev_m": None,
-                "flat_share": None, "windows": null_windows(sizes), "flags": []}
+                "flat_share": None, "windows": null_windows(sizes)}
     slope, rough = slope_and_roughness(z)
     row = {**identity, "source": source, "res_m": res_m, "elev_m": None,
-           "flat_share": None, "windows": {}, "flags": []}
+           "flat_share": None, "windows": {}}
     main_stats = None
     for km in sizes:
         s = crop_slice(center, km, km_max)
@@ -440,8 +466,6 @@ def build_row(identity, source, res_m, sizes, loader):
         main_stats = summarize(z[center], valid[center], slope[center], rough[center])
     row["elev_m"] = finite_or_null(main_stats["mean_elev_m"])
     row["flat_share"] = finite_or_null(main_stats["flat_share"])
-    if row["flat_share"] is not None and row["flat_share"] > WATER_FLAT_SHARE:
-        row["flags"].append("includes water")
     return row
 
 
@@ -519,7 +543,7 @@ def run_checks(rows):
                     problems.append(f"{row['id']} {km} km {key}={value:.2f} outside range")
                 elif key == "roughness_m" and not (0.0 <= value <= SANITY_ROUGHNESS_MAX_M):
                     problems.append(f"{row['id']} {km} km {key}={value:.2f} outside range")
-        if "includes water" in row["flags"]:
+        if row["flat_share"] is not None and row["flat_share"] > WATER_FLAT_SHARE:
             problems.append(f"{row['id']}: flat_share={row['flat_share']:.3f} > {WATER_FLAT_SHARE} (probably includes water)")
     return problems
 
