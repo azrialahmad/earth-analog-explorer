@@ -367,11 +367,11 @@ def read_earth_window(lat: float, lon: float, km: float):
     from rasterio.warp import reproject, transform_bounds
 
     if abs(lat) <= 60.0:
-        directory, label, native_m, style = SRTM_DIR, "NASA SRTM 1 arc-second", 30.0, "srtm"
+        directory, label, style = SRTM_DIR, "NASA SRTM 1 arc-second", "srtm"
     elif _has_files(ASTER_DIR):
-        directory, label, native_m, style = ASTER_DIR, "NASA ASTER GDEM v3", 30.0, "srtm"
+        directory, label, style = ASTER_DIR, "NASA ASTER GDEM v3", "srtm"
     elif _has_files(COPERNICUS_DIR):
-        directory, label, native_m, style = COPERNICUS_DIR, "Copernicus GLO-30 (ESA)", 30.0, "copernicus"
+        directory, label, style = COPERNICUS_DIR, "Copernicus GLO-30 (ESA)", "copernicus"
     else:
         return None, None, None, None
 
@@ -386,6 +386,22 @@ def read_earth_window(lat: float, lon: float, km: float):
     tiles = _find_tiles(directory, tokens)
     if not tiles:
         return None, None, None, None
+
+    # Report each source's actual native angular spacing as local metric spacing.
+    # This matters because one arc-second longitude is latitude-dependent, and
+    # high-latitude Copernicus tiles use varying longitude increments.
+    with rasterio.open(tiles[0]) as native:
+        lon_step_deg = abs(native.transform.a)
+        lat_step_deg = abs(native.transform.e)
+    earth_radius_m = 6_378_137.0
+    metres_per_degree_lat = math.pi * earth_radius_m / 180.0
+    native_ns_m = lat_step_deg * metres_per_degree_lat
+    native_ew_m = lon_step_deg * metres_per_degree_lat * abs(math.cos(math.radians(lat)))
+    native_spacing = (
+        f"{lon_step_deg * 3600:g}\u2033 lon x {lat_step_deg * 3600:g}\u2033 lat "
+        f"(~{native_ew_m:.1f} m E-W x {native_ns_m:.1f} m N-S at {lat:g}\u00b0), "
+        f"resampled {WORK_RES_M:g} m"
+    )
 
     dst = np.full((height, width), np.nan, dtype="float32")
     for tile in tiles:
@@ -408,7 +424,7 @@ def read_earth_window(lat: float, lon: float, km: float):
     return (
         np.where(valid, dst, np.nan), valid,
         slice(BUFFER_CELLS, height - BUFFER_CELLS),
-        f"{label} (native {native_m:g} m, resampled {WORK_RES_M:g} m)",
+        f"{label} (native {native_spacing})",
     )
 
 
