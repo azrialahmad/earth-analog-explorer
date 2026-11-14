@@ -1,0 +1,6 @@
+.hills { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.hill { margin: 0; display: grid; gap: 4px; }
+.hill img, .hill-empty { inline-size: 100%; aspect-ratio: 1; border-radius: 10px; object-fit: cover; background: rgb(255 255 255 / 0.04); }
+.hill-empty { display: grid; place-items: center; padding: 8px; text-align: center; font-size: 11px; color: var(--muted); outline: 1px dashed var(--faint); outline-offset: -1px; }
+.hill figcaption { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.hill figcaption b { color: var(--fg); font-weight: 500; }
