@@ -1,0 +1,16 @@
+.ask { gap: 12px; }
+.ask-scope { font-size: 12px; color: var(--muted); text-wrap: pretty; }
+.ask-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ask-line { font-size: 13px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; padding: 8px 11px; border-radius: 12px; }
+.ask-line.user { justify-self: end; max-inline-size: 85%; background: var(--terrain-soft); }
+.ask-line.answer { background: rgb(255 255 255 / 0.05); }
+.ask-line.note { font-family: var(--f-mono); font-size: 11px; color: var(--muted); padding-block: 2px; }
+.ask-line.error { color: var(--sun); border: 1px dashed color-mix(in srgb, var(--sun) 55%, transparent); }
+.ask-examples { display: grid; gap: 6px; }
+.ask-examples .btn { justify-content: flex-start; text-align: start; font-size: 12.5px; padding: 8px 12px; border-radius: 12px; }
+.ask-form { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6px 8px; }
+.ask-form .label { grid-column: 1 / -1; }
+.ask-form textarea {
+  resize: vertical; min-block-size: 44px; font: inherit; font-size: 13px; color: var(--fg);
+  background: rgb(0 0 0 / 0.25); border: 1px solid var(--edge-strong); border-radius: 12px; padding: 8px 10px;
+}
