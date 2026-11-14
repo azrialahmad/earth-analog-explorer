@@ -68,6 +68,10 @@ export default function TopBar({ targets, targetId, onPickTarget, fixture, panel
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.5" /><path d="M1 8s2.6-5 7-5 7 5 7 5-2.6 5-7 5-7-5-7-5z" /></svg>
           <span className="tool-label">Evidence</span>
         </button>
+        <button type="button" className="btn glass" aria-expanded={panel === 'ask'} aria-controls="ask-panel" onClick={() => onTogglePanel('ask')}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z" /></svg>
+          <span className="tool-label">Ask AI</span>
+        </button>
         <button type="button" className="btn glass" onClick={onPlayDemo}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z" /></svg>
           <span className="tool-label">Play demo</span>
