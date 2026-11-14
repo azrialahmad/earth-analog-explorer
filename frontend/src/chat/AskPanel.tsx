@@ -3,7 +3,15 @@ import type { RankedSite, Weights } from '../types'
 import { PARAM_KEYS } from '../types'
 import { fmt } from '../ui'
 import { buildSystemPrompt, parseRerunArgs, rerunResult, RERUN_TOOL, type AskRun } from './prompt'
+import { renderAnswer } from './answer'
 import './AskPanel.css'
+
+/** Site and source ids the model may cite, mapped to the names shown on screen. */
+const displayNames = (run: AskRun): Record<string, string> => ({
+  ...Object.fromEntries(run.ranked.map(r => [r.site.id, r.site.name])),
+  [run.evidence.cited.source_id]: run.evidence.cited.source,
+  [run.evidence.ours.source_id]: run.evidence.ours.source,
+})
 
 export type { AskRun } from './prompt'
 
@@ -75,14 +83,15 @@ export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps)
     setBusy(true)
     add({ kind: 'user', text: q })
     let msgs: ApiMessage[] = [...history, { role: 'user', content: q }]
-    let current = runRef.current
+    // The system prompt stays on the run as it was when asked, so the model can compare it with rerun results.
+    const system = buildSystemPrompt(runRef.current)
     try {
       for (let round = 0; ; round++) {
-        const msg = await post([{ role: 'system', content: buildSystemPrompt(current) }, ...msgs])
+        const msg = await post([{ role: 'system', content: system }, ...msgs])
         msgs = [...msgs, { role: 'assistant', content: msg.content ?? null, tool_calls: msg.tool_calls }]
         const calls = msg.tool_calls ?? []
         if (calls.length === 0) {
-          add(msg.content ? { kind: 'answer', text: msg.content } : { kind: 'error', text: 'Ask AI sent an empty reply.' })
+          add(msg.content ? { kind: 'answer', text: renderAnswer(msg.content, displayNames(runRef.current)) } : { kind: 'error', text: 'Ask AI sent an empty reply.' })
           break
         }
         if (round >= MAX_TOOL_ROUNDS) {
@@ -96,8 +105,7 @@ export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps)
             continue
           }
           const ranked = onRerun(w)
-          current = { ...current, weights: w, ranked }
-          add({ kind: 'note', text: `Reranked with weights ${PARAM_KEYS.map(k => `${current.config.params[k].label} ${fmt(w[k], 1)}`).join(', ')}.` })
+          add({ kind: 'note', text: `Reranked with weights ${PARAM_KEYS.map(k => `${runRef.current.config.params[k].label} ${fmt(w[k], 1)}`).join(', ')}.` })
           msgs = [...msgs, { role: 'tool', tool_call_id: c.id, content: JSON.stringify(rerunResult(w, ranked)) }]
         }
       }

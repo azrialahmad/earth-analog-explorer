@@ -13,7 +13,7 @@ export interface AskRun {
 }
 
 export const PROMPT_RULES = [
-  'Answer only from the data below. Name the site id or source id in square brackets, like [etna].',
+  'Answer only from the data below. Refer to a site or source only by its id in square brackets, like [etna]; the app shows the name, so do not write the name too.',
   'Say "missing" for null. Never estimate a value. State the tier when you quote a value.',
   'You cannot change scores. To change weights, call rerun_analysis; the app reranks and returns the new ranking.',
   'Never say or imply that the depth evidence proves or confirms the ranking. It measures how well a depth model reads this kind of ground, nothing more.',
