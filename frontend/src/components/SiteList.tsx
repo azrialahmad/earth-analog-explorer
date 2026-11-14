@@ -35,7 +35,7 @@ export default function SiteList({ ranked, target, selectedId, onSelect, mainWin
         <p className="sites-meta">
           <span><span className="num">{mainWindowKm} km</span> window</span>
           <span>{weightsText}</span>
-          <span>{moon ? 'Low sun shown separately' : 'Lighting not applicable (Mars)'}</span>
+          <span>{moon ? 'Low sun shown separately' : 'Lighting not compared (Mars)'}</span>
         </p>
       </header>
       {targetEmpty && (

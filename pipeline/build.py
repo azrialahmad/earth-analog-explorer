@@ -13,6 +13,7 @@ from scipy.ndimage import map_coordinates
 import yaml
 
 from landcover import bare_ground_value
+from lighting import MARS_TARGET_NOTE
 from terrain import (
     WORK_RES_M,
     load_window_sizes,
@@ -245,6 +246,12 @@ def main() -> None:
 
     for item in mars_targets:
         row = mars_by_id.get(item["id"])
+        # Reference only: the lighting comparison and warning stay Moon-only (issue #43).
+        mars_light_row = lighting_rows.get(item["id"])
+        mars_light = (
+            value(mars_light_row.get("value"), mars_light_row.get("tier", "missing"), mars_light_row.get("source"))
+            if mars_light_row else None
+        )
         if row is None:
             windows = {
                 str(int(km)): {"slope_mean_deg": None, "slope_p90_deg": None, "roughness_m": None}
@@ -254,16 +261,16 @@ def main() -> None:
                 "id": item["id"], "name": item["name"], "lat": item["lat"], "lon": item["lon"],
                 "note": item["why"], "body": "mars",
                 "params": ordered_params({}, None, None), "windows": windows,
-                "low_sun_share": None, "hillshade": "", "relief": None,
+                "low_sun_share": mars_light, "hillshade": "", "relief": None,
             })
             continue
         targets.append({
             "id": item["id"], "name": item["name"], "lat": row["lat"], "lon": row["lon"],
-            "note": "Terrain only. Lighting axis does not apply to Mars targets.",
+            "note": MARS_TARGET_NOTE,
             "body": "mars",
             "params": ordered_params(row["windows"].get(main_window, {}), row.get("source"), source_res_m(row)),
             "windows": ordered_windows(row, sizes),
-            "low_sun_share": None,
+            "low_sun_share": mars_light,
             "hillshade": "img/target_jezero.png" if (IMG_DIR / "target_jezero.png").exists() else "",
             "relief": "data/relief/jezero.json" if (RELIEF_DIR / "jezero.json").exists() else None,
         })

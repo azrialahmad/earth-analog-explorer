@@ -20,13 +20,15 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | NumPy | NumPy Developers | Terrain arrays, validity masks, and finite-value operations | [PyPI](https://pypi.org/project/numpy/) | BSD-3-Clause; bundled components have additional notices | no |
 | pandas | pandas Development Team | Generate hourly UTC timestamps for the solar-position calculation | [PyPI](https://pypi.org/project/pandas/) | BSD-3-Clause | no |
 | pvlib | pvlib-python community | Compute hourly solar positions for Earth sites | [pvlib-python repository](https://github.com/pvlib/pvlib-python) | BSD-3-Clause | no |
+| NAIF generic kernels: `de440s.bsp` (DE440 planetary ephemeris), `moon_pa_de440_200625.bpc` and `moon_de440_250416.tf` (DE440 lunar orientation and the `MOON_ME` frame), `pck00011.tpc` (IAU 2015 body orientation and radii), `naif0012.tls` (leap seconds) | NASA JPL Navigation and Ancillary Information Facility (NAIF); DE440 by Park et al. 2021; IAU orientation from Archinal et al. 2018 | Sun position seen from the Moon and Mars targets, for the targets' low-sun share | [NAIF generic kernels](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/) | not stated (NASA public data) | yes |
+| SpiceyPy | Andrew Annex and contributors; wraps NAIF CSPICE | Read the NAIF kernels from Python | [SpiceyPy repository](https://github.com/AndrewAnnex/SpiceyPy) | MIT | no |
 | PyYAML | YAML and Python communities | Read the authoritative terrain windows and app weights from YAML | [PyYAML repository](https://github.com/yaml/pyyaml) | MIT | no |
 | Requests | Python Software Foundation / Requests maintainers | Check which WorldCover tiles exist before reading them | [Requests repository](https://github.com/psf/requests) | Apache-2.0 | no |
 | Rasterio | Rasterio maintainers | Read source DEMs and reproject/resample terrain windows | [Rasterio documentation](https://rasterio.readthedocs.io/) | BSD-3-Clause | no |
 | SciPy | SciPy Developers | Sample processed elevation arrays onto the relief-grid output | [SciPy repository](https://github.com/scipy/scipy) | BSD-3-Clause | no |
 | React | React team | App component rendering and state | [React repository](https://github.com/react/react) | MIT | no |
 | React DOM | React team | Mount the app in the browser DOM | [React repository](https://github.com/react/react) | MIT | no |
-| Three.js | Three.js contributors | Render the split 3D terrain scenes | [Three.js repository](https://github.com/mrdoob/three.js) | MIT | no |
+| Three.js | Three.js contributors | Render the two linked 3D terrain views (target and selected site) | [Three.js repository](https://github.com/mrdoob/three.js) | MIT | no |
 | `@types/node` | DefinitelyTyped contributors | Type declarations for the Vite configuration | [DefinitelyTyped `node` declarations](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node) | MIT | no |
 | `@types/react` | DefinitelyTyped contributors | Type declarations for React components | [DefinitelyTyped `react` declarations](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react) | MIT | no |
 | `@types/react-dom` | DefinitelyTyped contributors | Type declarations for React DOM mounting | [DefinitelyTyped `react-dom` declarations](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom) | MIT | no |
@@ -35,6 +37,22 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | TypeScript | Microsoft | Type-check and compile the frontend | [TypeScript repository](https://github.com/microsoft/TypeScript) | Apache-2.0 | no |
 | Vite | Vite team | Frontend development server and production build | [Vite repository](https://github.com/vitejs/vite) | MIT | no |
 | Vitest | Vitest contributors | Run frontend unit tests | [Vitest repository](https://github.com/vitest-dev/vitest) | MIT | no |
+
+## Low-sun share for targets (issue #43)
+
+- **Definition** (the same for Earth sites and targets): hourly samples with geometric sun elevation above 0° and at most 10°, divided by the samples above 0°. No terrain shading, weather or dust.
+- **Earth sites:** pvlib, hourly UTC samples through 2026.
+- **Moon and Mars targets:** `pipeline/lighting.py` loads the NAIF kernels above from the git-ignored `data/raw/spice/` with SpiceyPy.
+  - The site is the point on the body's reference surface at the target coordinates, with its outward normal. The Moon is a 1,737.4 km sphere; Mars is the `pck00011` ellipsoid.
+  - The Sun's apparent position (light time and stellar aberration) is taken from the body centre in J2000, then rotated into the body-fixed frame for that hour: `MOON_ME`, the frame LOLA uses, or `IAU_MARS`.
+  - Elevation is 90° minus the angle between the normal and the vector from the site to the Sun.
+  - Moon: hourly UTC samples through 2026. Mars: hourly samples over one Mars year (686.98 days) from 2026-01-01 UTC.
+- **Results:**
+  - Shackleton rim and Malapert are both 1.0. Their maximum sun elevations are 1.56° and 5.53°, both under 10° (the geometric bound is about 90° − |latitude| + 1.54°).
+  - Jezero is 0.123, with the sun up to 89.5°. It is reference only: the lighting comparison and the mismatch warning apply to Moon targets only.
+  - `results/lighting.json` records each target's maximum elevation and daylight hours.
+- **Cross-check:** the same SPICE method run for Etna, Svalbard and Mauna Kea in `IAU_EARTH` agrees with pvlib to within 0.0004.
+- These lunar values replace the earlier "by definition" 1.0, which was written without checking each target's position.
 
 ## P1 input metadata and provenance
 

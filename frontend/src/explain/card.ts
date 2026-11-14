@@ -54,8 +54,13 @@ export interface CardExplanation {
   stabilityRuns: number
   topN: number
   noiseRel: number
-  /** Moon only; null for Mars, where lighting comparison does not apply. */
+  /**
+   * Low-sun shares of the site and the target. `compared` is true only for Moon targets, where the
+   * lighting comparison and warning apply; for Mars the values are reference only. Null for a Mars
+   * target without a value.
+   */
   lowSun: {
+    compared: boolean
     site: number | null; target: number | null
     siteTier: Tier; siteSource: string | null; targetTier: Tier; targetSource: string | null
   } | null
@@ -142,7 +147,8 @@ export function explainCard(
     stabilityRuns: config.stability.runs,
     topN: config.stability.top_n,
     noiseRel: config.stability.noise_rel,
-    lowSun: moon ? {
+    lowSun: moon || target.low_sun_share ? {
+      compared: moon,
       site: entry.lowSunShare,
       target: target.low_sun_share?.value ?? null,
       siteTier: entry.site.conditions.low_sun_share.tier,

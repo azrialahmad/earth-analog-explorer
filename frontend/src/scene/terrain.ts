@@ -1,6 +1,7 @@
-// Height fields for the split scene. Pure functions, no three.js, so they are unit-tested.
-// Display only: nothing here feeds a score. Generated terrain is an illustration and the
-// scene labels it as such; real relief comes from a ReliefGrid built by the pipeline.
+// Height fields for the terrain views. Pure functions, no three.js, so they are unit-tested.
+// Display only: nothing here feeds a score. The views draw real relief from a ReliefGrid built
+// by the pipeline; when a place has none they show "No elevation data" and draw no surface.
+// generatedHeights is no longer drawn by the app (since #39); only its tests use it.
 import type { ReliefGrid } from '../types'
 import { rng } from '../engine/stability'
 

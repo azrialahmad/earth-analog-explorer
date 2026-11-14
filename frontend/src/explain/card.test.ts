@@ -47,13 +47,19 @@ describe('explainCard', () => {
     expect(e.missing).toHaveLength(3)
   })
 
-  it('keeps lighting for the Moon and marks it not applicable (null) for Mars', () => {
-    expect(explainCard(byId('a'), ranked, target, config, null, w).lowSun).toMatchObject({ site: 0.1, target: 1 })
+  it('compares lighting for the Moon; for Mars it is null, or reference only when the target has a value', () => {
+    expect(explainCard(byId('a'), ranked, target, config, null, w).lowSun).toMatchObject({ compared: true, site: 0.1, target: 1 })
     const mars = makeTarget([10, 20, 1], 'mars')
     const r = rankSites([a, b], mars, config, w)
     const e = explainCard(r[0], r, mars, config, null, w)
     expect(e.lowSun).toBeNull()
     expect(e.warning.fired).toBe(false)
+
+    const marsLit = { ...mars, low_sun_share: { value: 0.12, tier: 'computed' as const, source: 'test' } }
+    const r2 = rankSites([a, b], marsLit, config, w)
+    const e2 = explainCard(r2[0], r2, marsLit, config, null, w)
+    expect(e2.lowSun).toMatchObject({ compared: false, target: 0.12, targetTier: 'computed' })
+    expect(e2.warning.fired).toBe(false)
   })
 
   it('notes adjusted weights', () => {
