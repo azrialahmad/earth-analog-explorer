@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>Three-pane workbench · Design preview</title>
+  <link rel="stylesheet" href="/frontend/src/index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;450;500;550;600;650;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./three-pane-workbench.css" />
+</head>
+<body>
+  <div class="preview-app" data-pane="sites">
+    <header class="app-header">
+      <div class="identity">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 4a12 12 0 0 0 0 24c-5-5-5-19 0-24Z" fill="currentColor"/><path d="M3 20 29 12" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div><h1>Earth Analog Explorer</h1><span class="identity-sub">Terrain comparison workspace</span></div>
+      </div>
+      <div class="target-control"><label for="target">Compare with</label><select id="target" aria-label="Target on the Moon or Mars"></select></div>
+      <span class="concept-badge"><span aria-hidden="true">◇</span> Design preview</span>
+    </header>
+
+    <div class="context-bar">
+      <p id="analysis-context" role="status">Loading the current app data…</p>
+      <span class="context-limit">Configured candidates, not all of Earth</span>
+    </div>
+
+    <nav class="mobile-panes" aria-label="Workspace views">
+      <button type="button" data-show="sites" aria-controls="sites-pane" aria-pressed="true">01 <span>Sites</span></button>
+      <button type="button" data-show="view" aria-controls="view-pane" aria-pressed="false">02 <span>View</span></button>
+      <button type="button" data-show="why" aria-controls="why-pane" aria-pressed="false">03 <span>Why this match?</span></button>
+    </nav>
+
+    <main class="workspace">
+      <aside class="sites-pane" id="sites-pane" aria-labelledby="sites-heading">
+        <header class="pane-heading"><div><span class="eyebrow">01 / Discover</span><h2 id="sites-heading">Earth candidates <span id="candidate-count" class="count"></span></h2><p>Ranked by Terrain Match</p></div><span class="sort-mark" aria-hidden="true">↓</span></header>
+        <ol class="candidate-list" id="candidate-list" aria-label="Earth candidates ranked by Terrain Match"></ol>
+        <footer class="list-foot"><span class="small-dot"></span> Select a site to inspect and explain</footer>
+      </aside>
+
+      <section class="view-pane" id="view-pane" aria-labelledby="view-heading">
+        <header class="view-heading"><div><span class="eyebrow">02 / Inspect</span><h2 id="view-heading">Terrain comparison</h2><p>Two places. The same viewing angle.</p></div><span class="view-mode">Elevation relief</span></header>
+        <div class="viewer-pair">
+          <figure class="terrain-view target-view">
+            <figcaption><span class="surface-label" id="target-body">Target</span><h3 id="target-name"></h3><span id="target-source" class="data-status"></span></figcaption>
+            <div class="canvas-box"><canvas id="target-canvas" aria-label="Target elevation relief"></canvas></div>
+            <div class="viewer-legend"><span>Elevation relief</span><span>Target terrain</span></div>
+          </figure>
+          <figure class="terrain-view earth-view">
+            <figcaption><span class="surface-label earth-label">Earth candidate</span><h3 id="site-name"></h3><span id="site-source" class="data-status"></span></figcaption>
+            <div class="canvas-box"><canvas id="site-canvas" aria-label="Selected Earth-site elevation relief"></canvas></div>
+            <div class="viewer-legend"><span>Elevation relief</span><span>Selected site</span></div>
+          </figure>
+          <span class="comparison-link" aria-hidden="true">↔</span>
+        </div>
+        <div class="viewer-controls"><p>Drag either surface to rotate both · Scroll to zoom</p><button type="button" id="reset-view">↺ Reset view</button></div>
+        <div class="display-note"><span aria-hidden="true">ⓘ</span><p>Relief comes from elevation data. Shared display lighting is illustrative—not a simulation of site conditions.</p></div>
+        <section class="analysis-summary" aria-label="Display and analysis context"><div><span>Scoring window</span><b id="scoring-window"></b></div><div><span>Display grid</span><b id="display-grid"></b></div><div><span>Comparison weights</span><b>Current app defaults</b></div></section>
+        <div class="center-bottom"><span>Inspect the terrain here.</span><p>Read why it ranks this way in the right-hand panel <span aria-hidden="true">→</span></p></div>
+      </section>
+
+      <aside class="why-pane" id="why-pane" aria-labelledby="why-heading">
+        <header class="pane-heading"><div><span class="eyebrow">03 / Understand</span><h2 id="why-heading">Why this match?</h2><p>Explanation, not another score</p></div><span class="explain-icon" aria-hidden="true">✧</span></header>
+        <div class="why-content" id="why-content" aria-live="polite"></div>
+      </aside>
+    </main>
+    <footer class="preview-footer"><span>LAYOUT CONCEPT · NOT THE LIVE APP</span><span>Real app data & ranking engine · No scores edited</span></footer>
+  </div>
+  <script type="module" src="./three-pane-workbench.js"></script>
+</body>
+</html>
