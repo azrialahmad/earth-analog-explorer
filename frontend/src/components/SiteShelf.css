@@ -1,9 +1,5 @@
-.shelf-wrap {
-  position: absolute;
-  z-index: 5;
-  inset-inline: 0;
-  inset-block-end: calc(14px + env(safe-area-inset-bottom, 0px));
-}
+/* sits last in the bottom dock (index.css) */
+.shelf-wrap { position: relative; margin-block-start: -6px; }
 /* fade the cut edge so it reads as "more this way" */
 .shelf-wrap.more-end .shelf { mask-image: linear-gradient(to right, #000 calc(100% - 72px), transparent); }
 .shelf-wrap.more-start .shelf { mask-image: linear-gradient(to right, transparent, #000 72px); }
@@ -102,11 +98,7 @@
 }
 
 .shelf-note {
-  position: absolute;
-  z-index: 5;
-  inset-block-end: calc(206px + env(safe-area-inset-bottom, 0px));
-  inset-inline-start: 50%;
-  translate: -50% 0;
+  align-self: center;
   inline-size: max-content;
   max-inline-size: calc(100% - 32px);
   padding: 9px 16px;

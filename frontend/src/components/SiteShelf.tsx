@@ -11,7 +11,11 @@ export interface SiteShelfProps {
   targetId: string
   targetName: string
   selectedId: string | null
+  /** Whether the "why this rank" explanation for the selected card is open. */
+  explainOpen: boolean
   onSelect: (id: string) => void
+  /** Picking a card opens its explanation (onSelect); clicking the selected card again toggles it. */
+  onExplain: () => void
 }
 
 /** Two rings: outer = Terrain Match (teal), inner = low-sun share (amber, Moon only). Empty dashed ring = missing. */
@@ -28,7 +32,7 @@ function Rings({ tm, sun, moon }: { tm: number | null; sun: number | null; moon:
   )
 }
 
-export default function SiteShelf({ ranked, stability, body, targetId, targetName, selectedId, onSelect }: SiteShelfProps) {
+export default function SiteShelf({ ranked, stability, body, targetId, targetName, selectedId, explainOpen, onSelect, onExplain }: SiteShelfProps) {
   const moon = body === 'moon'
   const shelfRef = useRef<HTMLOListElement>(null)
   // which ends have more cards past the edge, so the arrows show only when there is somewhere to go
@@ -87,9 +91,17 @@ export default function SiteShelf({ ranked, stability, body, targetId, targetNam
         // count only the site's own gaps; gaps on the target side are reported once above
         const siteMissing = r.perParam.filter(p => p.site === null).length
         const valuesKnown = r.perParam.length - siteMissing
+        const isSelected = r.site.id === selectedId
         return (
           <li key={r.site.id}>
-            <button type="button" className="site-card glass" aria-pressed={r.site.id === selectedId} onClick={() => onSelect(r.site.id)}>
+            <button
+              type="button"
+              className="site-card glass"
+              aria-pressed={isSelected}
+              aria-expanded={isSelected ? explainOpen : undefined}
+              aria-controls={isSelected && explainOpen ? 'rank-explainer' : undefined}
+              onClick={() => (isSelected ? onExplain() : onSelect(r.site.id))}
+            >
               <span className="rk num">{String(r.rank).padStart(2, '0')}</span>
               <span className="stab num">{r.terrainMatch === null ? 'not scored' : stab === undefined ? 'stability missing' : `top-3 ${pct(stab)}`}</span>
               <span className="body">

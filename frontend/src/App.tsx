@@ -12,6 +12,8 @@ import EvidencePanel from './components/EvidencePanel'
 import DemoTour from './components/DemoTour'
 import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
+import RankExplainer from './components/RankExplainer'
+import { explainCard } from './explain/card'
 
 type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
 
@@ -30,6 +32,8 @@ export default function App() {
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
   const [demo, setDemo] = useState<DemoStep[] | null>(null)
+  // "Why this rank?" for the selected card: picking a card opens it, clicking the open card again closes it
+  const [explain, setExplain] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -62,6 +66,11 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       setPanel('none')
+      setExplain(open => {
+        // hand focus back to the card the explanation belongs to
+        if (open) setTimeout(() => document.querySelector<HTMLElement>('.site-card[aria-pressed="true"]')?.focus(), 0)
+        return false
+      })
     }
     addEventListener('keydown', onKey)
     return () => removeEventListener('keydown', onKey)
@@ -70,12 +79,16 @@ export default function App() {
   if (error) return <div className="app-status" role="alert">Could not load the data files ({error}). Reload the page; if it persists, the build is missing public/data.</div>
   if (!data || !target || !weights) return <div className="app-status" aria-live="polite">Loading terrain data…</div>
 
-  const toggle = (p: Panel) => setPanel(cur => (cur === p ? 'none' : p))
-  const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false) }
+  const toggle = (p: Panel) => { setExplain(false); setPanel(cur => (cur === p ? 'none' : p)) }
+  const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false); setExplain(false) }
+  const closeExplain = () => {
+    setExplain(false)
+    document.querySelector<HTMLElement>('.site-card[aria-pressed="true"]')?.focus()
+  }
   const playDemo = () => {
     const steps = buildDemoSteps(data)
     if (!steps.length) return
-    setPanel('none'); setDemo(steps)
+    setPanel('none'); setExplain(false); setDemo(steps)
   }
 
   return (
@@ -90,16 +103,43 @@ export default function App() {
         panel={panel}
         onTogglePanel={toggle}
       />
-      <MismatchCallout entry={selected} body={target.body} relit={relit} onToggleRelit={() => setRelit(r => !r)} />
-      <SiteShelf
-        ranked={ranked}
-        stability={stability}
-        body={target.body}
-        targetId={target.id}
-        targetName={target.name}
-        selectedId={selected?.site.id ?? null}
-        onSelect={id => { setSiteId(id); setRelit(false) }}
-      />
+      {/* bottom dock: stacks upward, so the demo caption, callout or explanation never overlaps the cards */}
+      <div className="dock">
+        {demo && (
+          <DemoTour
+            steps={demo}
+            actions={{
+              pickTarget: id => { setTargetId(id); setSiteId(null) },
+              selectSite: setSiteId,
+              setRelit,
+              setWeights,
+              resetWeights: () => setWeights(defaultWeights(data.config)),
+            }}
+            onEnd={() => setDemo(null)}
+          />
+        )}
+        {/* the explanation repeats the warning text, so the callout steps aside while it is open */}
+        {!(explain && selected) && (
+          <MismatchCallout entry={selected} body={target.body} relit={relit} onToggleRelit={() => setRelit(r => !r)} />
+        )}
+        {explain && selected && (
+          <RankExplainer
+            ex={explainCard(selected, ranked, target, data.config, stability[selected.site.id] ?? null, weights)}
+            onClose={closeExplain}
+          />
+        )}
+        <SiteShelf
+          ranked={ranked}
+          stability={stability}
+          body={target.body}
+          targetId={target.id}
+          targetName={target.name}
+          selectedId={selected?.site.id ?? null}
+          explainOpen={explain}
+          onSelect={id => { setSiteId(id); setRelit(false); setPanel('none'); setExplain(true) }}
+          onExplain={() => { setPanel('none'); setExplain(o => !o) }}
+        />
+      </div>
       <WeightsPanel
         open={panel === 'weights'}
         config={data.config}
@@ -124,19 +164,6 @@ export default function App() {
         onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
         onClose={() => setPanel('none')}
       />
-      {demo && (
-        <DemoTour
-          steps={demo}
-          actions={{
-            pickTarget: id => { setTargetId(id); setSiteId(null) },
-            selectSite: setSiteId,
-            setRelit,
-            setWeights,
-            resetWeights: () => setWeights(defaultWeights(data.config)),
-          }}
-          onEnd={() => setDemo(null)}
-        />
-      )}
     </div>
   )
 }
