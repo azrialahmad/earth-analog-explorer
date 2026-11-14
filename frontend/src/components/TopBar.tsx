@@ -19,6 +19,7 @@ const GROUPS: { body: Target['body']; label: string }[] = [
 ]
 
 export default function TopBar({ targets, targetId, onPickTarget, fixture, panel, onTogglePanel, onOpenPicker }: TopBarProps) {
+  const body = targets.find(t => t.id === targetId)?.body
   return (
     <header className="topbar">
       <div className="brand glass">
@@ -27,7 +28,10 @@ export default function TopBar({ targets, targetId, onPickTarget, fixture, panel
           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeOpacity=".5" strokeWidth="1.3" />
           <path d="M12 2a10 10 0 0 1 0 20c-3-2.6-4.2-6.2-4.2-10S9 4.6 12 2z" fill="var(--sun)" />
         </svg>
-        <h1>Earth Analog Explorer</h1>
+        <span className="brand-text">
+          <h1>Earth Analog Explorer</h1>
+          <span className="mission">Rover navigation testing · {body === 'mars' ? 'Mars' : 'lunar south pole'}</span>
+        </span>
         </button>
         {fixture && <span className="fixture-tag" title="Hand-written development fixture. Not data.">Fixture data</span>}
       </div>

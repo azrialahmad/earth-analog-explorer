@@ -114,3 +114,23 @@ describe('weakestParam', () => {
     expect(weakestParam(scoreSite(makeSite('a', [null, null, null]), target, config, w).perParam)).toBeNull()
   })
 })
+
+describe('Mars targets', () => {
+  const p: [number, number, number] = [10, 20, 1]
+  const moon = makeTarget(p, 'moon')
+  const mars = makeTarget(p, 'mars')
+  // matches the terrain closely and has a low share of low sun: fires against the Moon
+  const site = makeSite('a', [10.5, 20.5, 1.05], sunMax / 2)
+
+  it('the fixture Mars target has no lighting value', () => expect(mars.low_sun_share).toBeNull())
+  it('a site that fires the warning for the Moon does not fire it for Mars', () => {
+    expect(scoreSite(site, moon, config, w).warning.fired).toBe(true)
+    expect(scoreSite(site, mars, config, w).warning).toEqual({ fired: false, text: null })
+  })
+  it('computes Terrain Match the same way as for the Moon', () => {
+    const a = scoreSite(site, moon, config, w), b = scoreSite(site, mars, config, w)
+    expect(b.terrainMatch).toBe(a.terrainMatch)
+    expect(b.perParam).toEqual(a.perParam)
+    expect(b.windowSensitivity).toEqual(a.windowSensitivity)
+  })
+})

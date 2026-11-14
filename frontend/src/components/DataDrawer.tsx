@@ -98,7 +98,7 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
                   <dd className="num">{pct(target.low_sun_share?.value ?? null)}</dd>
                 </div>
               </dl>
-            ) : <p className="muted small">Not applicable: Mars has an ordinary day and night.</p>}
+            ) : <p className="muted small">Lighting: not applicable to Mars targets</p>}
           </section>
 
           <section aria-label="Window sensitivity">
