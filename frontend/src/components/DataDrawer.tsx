@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import type { Config, Evidence, RankedSite, Target } from '../types'
-import { fmt, pct, TierBadge, Bar } from '../ui'
+import { WINDOW_KEYS } from '../types'
+import { weakestParam } from '../engine'
+import { asset, fmt, pct, TierBadge, Bar } from '../ui'
 import DepthEvidence from './DepthEvidence'
 import './DataDrawer.css'
 
@@ -14,58 +17,151 @@ export interface DataDrawerProps {
   onClose: () => void
 }
 
-/**
- * Exact numbers for the selected site. F0 builds the frame and the parameter table;
- * brief F3 (#7) adds the weakest-parameter line, windows and hillshades.
- */
+const coord = (lat: number, lon: number) =>
+  `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(3)}°${lon >= 0 ? 'E' : 'W'}`
+
+const Missing = ({ text = 'missing' }: { text?: string }) => <span className="missing-text">{text}</span>
+
+/** A hillshade image with its data source, or a plain note when the image does not exist yet. */
+function Hillshade({ path, title, source }: { path: string; title: string; source: string | null }) {
+  const [failed, setFailed] = useState<string | null>(null)
+  const ok = path !== '' && failed !== path
+  return (
+    <figure className="hill">
+      {ok
+        ? <img src={asset(path)} alt={`Hillshade of ${title}`} loading="lazy" onError={() => setFailed(path)} />
+        : <div className="hill-empty">No hillshade image yet</div>}
+      <figcaption><b>{title}</b> · {source ?? <Missing text="source missing" />}</figcaption>
+    </figure>
+  )
+}
+
+/** Exact numbers for the selected site, in the order of brief F3. */
 export default function DataDrawer({ open, entry, target, config, stability, evidence, onClose }: DataDrawerProps) {
   const moon = target.body === 'moon'
+  const site = entry?.site
+  const weak = entry ? weakestParam(entry.perParam) : null
+  const unitOf = (u: string) => (u === '°' ? '°' : ` ${u}`)
+
   return (
     <aside id="data-drawer" className="drawer panel glass" aria-label="Site data" hidden={!open}>
       <header>
         <div>
           <span className="label">{entry ? `Rank ${entry.rank} · ${target.name}` : target.name}</span>
-          <h2>{entry?.site.name ?? 'No site selected'}</h2>
+          <h2>{site?.name ?? 'No site selected'}</h2>
+          {site && <p className="coords num">{coord(site.lat, site.lon)}</p>}
         </div>
         <button type="button" className="close" aria-label="Close site data" onClick={onClose}>×</button>
       </header>
 
-      {entry && (
+      {entry && site && (
         <>
+          <p className="why">{site.why}</p>
+
+          {entry.warning.fired && <p className="warning" role="note">{entry.warning.text}</p>}
+
           <dl className="facts">
             <div><dt className="label">Terrain Match</dt><dd className="num">{fmt(entry.terrainMatch)}</dd></div>
             <div><dt className="label">Completeness</dt><dd className="num">{pct(entry.completeness)}</dd></div>
             <div><dt className="label">Top-3 stability</dt><dd className="num">{pct(stability)}</dd></div>
           </dl>
 
+          <p className="weakest">
+            {weak
+              ? <>Weakest: <b>{config.params[weak.key].label}</b> <span className="num">({fmt(weak.similarity)})</span></>
+              : <>Weakest: <Missing text="no parameter has a value" /></>}
+          </p>
+
           <table className="table">
             <thead><tr><th>Parameter</th><th>Site</th><th>Target</th><th>Similarity</th></tr></thead>
             <tbody>
               {entry.perParam.map(p => {
                 const meta = config.params[p.key]
-                const v = entry.site.params[p.key]
-                const unit = meta.unit === '°' ? '°' : ` ${meta.unit}`
+                const v = site.params[p.key]
+                const unit = unitOf(meta.unit)
                 return (
                   <tr key={p.key}>
-                    <td>{meta.label}<div className="src"><TierBadge tier={v.tier} /> {v.source ?? <span className="missing-text">no source</span>}</div></td>
-                    <td className="num">{p.site === null ? <span className="missing-text">missing</span> : `${p.site}${unit}`}</td>
-                    <td className="num">{p.target === null ? <span className="missing-text">missing</span> : `${p.target}${unit}`}</td>
+                    <td>
+                      {meta.label}
+                      <div className="src"><TierBadge tier={v.tier} /> weight <span className="num">{fmt(p.weight, 1)}</span></div>
+                      <div className="src">{v.source ?? <Missing text="no source" />}</div>
+                    </td>
+                    <td className="num">{p.site === null ? <Missing /> : `${p.site}${unit}`}</td>
+                    <td className="num">{p.target === null ? <Missing /> : `${p.target}${unit}`}</td>
                     <td className="num">{fmt(p.similarity)}<Bar value={p.similarity} label={`${meta.label} similarity`} /></td>
                   </tr>
                 )
               })}
-              <tr>
-                <td>Low-sun share<div className="src">{moon ? <><TierBadge tier={entry.site.conditions.low_sun_share.tier} /> target: by definition</> : 'Mars has an ordinary day and night'}</div></td>
-                <td className="num">{moon ? pct(entry.site.conditions.low_sun_share.value) : 'not applicable'}</td>
-                <td className="num">{moon ? pct(target.low_sun_share?.value ?? null) : 'not applicable'}</td>
-                <td className="num">—</td>
-              </tr>
             </tbody>
           </table>
+
+          <p className="line">
+            <span className="label">Missing parameters</span>{' '}
+            {entry.missing.length ? entry.missing.map(k => config.params[k].label).join(', ') : 'none'}
+          </p>
+
+          <section aria-label="Lighting">
+            <h3 className="label">Lighting</h3>
+            {moon ? (
+              <dl className="pair">
+                <div>
+                  <dt>This site <TierBadge tier={site.conditions.low_sun_share.tier} /></dt>
+                  <dd className="num">{pct(site.conditions.low_sun_share.value)} <small>of daylight with the sun under 10°</small></dd>
+                </div>
+                <div>
+                  <dt>{target.name} <TierBadge tier={target.low_sun_share?.tier ?? 'missing'} /></dt>
+                  <dd className="num">{pct(target.low_sun_share?.value ?? null)}</dd>
+                </div>
+              </dl>
+            ) : <p className="muted small">Not applicable: Mars has an ordinary day and night.</p>}
+          </section>
+
+          <section aria-label="Window sensitivity">
+            <h3 className="label">Terrain Match by window size</h3>
+            <dl className="windows">
+              {WINDOW_KEYS.map(k => (
+                <div key={k} className={Number(k) === config.main_window_km ? 'main' : undefined}>
+                  <dt className="label">{k} km{Number(k) === config.main_window_km ? ' · main' : ''}</dt>
+                  <dd className="num">{fmt(entry.windowSensitivity[k])}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <section aria-label="Depth evidence for this site">
+            <h3 className="label">Depth evidence here</h3>
+            {site.depth_evidence.length === 0
+              ? <p className="muted small">No ground-level depth data for this site.</p>
+              : (
+                <table className="table">
+                  <thead><tr><th>Dataset</th><th>Model</th><th>δ1</th></tr></thead>
+                  <tbody>
+                    {site.depth_evidence.map((d, i) => (
+                      <tr key={i}>
+                        <td>{d.dataset}<div className="src"><TierBadge tier={d.tier} /> {d.source}</div></td>
+                        <td>{d.model}</td>
+                        <td className="num">{fmt(d.delta1)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+          </section>
         </>
       )}
 
       <p className="caveat">{evidence.sky_caveat}</p>
+
+      {entry && site && (
+        <section aria-label="Hillshades">
+          <h3 className="label">Hillshade</h3>
+          <div className="hills">
+            <Hillshade path={site.hillshade} title={site.name} source={site.params.slope_mean_deg.source} />
+            <Hillshade path={target.hillshade} title={target.name} source={target.params.slope_mean_deg.source} />
+          </div>
+        </section>
+      )}
+
       <DepthEvidence evidence={evidence} />
     </aside>
   )
