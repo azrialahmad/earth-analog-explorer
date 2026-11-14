@@ -1,0 +1,72 @@
+{
+  "shackleton_rim": {
+    "value": 1.0,
+    "tier": "by definition",
+    "source": "lunar obliquity about 1.5 degrees"
+  },
+  "malapert": {
+    "value": 1.0,
+    "tier": "by definition",
+    "source": "lunar obliquity about 1.5 degrees"
+  },
+  "etna": {
+    "value": 0.15075034106412005,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "bromo": {
+    "value": 0.12876712328767123,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "rinjani": {
+    "value": 0.1398870056497175,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "askja": {
+    "value": 0.34334085778781037,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "haughton": {
+    "value": 0.35738292628276946,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "dry_valleys": {
+    "value": 0.3284416491963662,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "yungay": {
+    "value": 0.12864963503649635,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "mauna_kea": {
+    "value": 0.11113657195233731,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "craters_moon": {
+    "value": 0.17301116936403008,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "black_point": {
+    "value": 0.15042035900931605,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "lanzarote": {
+    "value": 0.11946801192387067,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  },
+  "svalbard": {
+    "value": 0.3093106535362578,
+    "tier": "computed",
+    "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+  }
+}
