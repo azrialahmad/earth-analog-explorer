@@ -98,7 +98,7 @@ export default function SiteShelf({ ranked, stability, body, targetId, targetNam
                   <span className={`tm dot${r.terrainMatch === null ? ' is-missing' : ''}`}>{fmt(r.terrainMatch)}</span>
                   <span className="sub-label">Terrain Match</span>
                   <span className={`ss num${moon ? '' : ' na'}`}>
-                    {moon ? `${pct(r.lowSunShare)} low sun` : 'Lighting: not applicable to Mars targets'}
+                    {moon ? `${pct(r.lowSunShare)} low sun` : 'No lighting check on Mars'}
                   </span>
                 </span>
               </span>

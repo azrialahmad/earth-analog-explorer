@@ -133,7 +133,8 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
         </>
       )}
 
-      <p className="caveat">{evidence.sky_caveat}</p>
+      {/* the caveat contrasts Earth's sky with the airless Moon; it does not describe Mars */}
+      {moon && <p className="caveat">{evidence.sky_caveat}</p>}
 
       {entry && site && (
         <section aria-label="Hillshades">
