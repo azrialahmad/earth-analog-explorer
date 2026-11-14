@@ -1,0 +1,145 @@
+[
+  {
+    "id": "fixture-moon-a",
+    "name": "Shackleton rim",
+    "lat": 0,
+    "lon": 0,
+    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "body": "moon",
+    "params": {
+      "slope_mean_deg": {
+        "value": 14,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 26,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": 1.6,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 15.4,
+        "slope_p90_deg": 28.6,
+        "roughness_m": 1.76
+      },
+      "6": {
+        "slope_mean_deg": 14,
+        "slope_p90_deg": 26,
+        "roughness_m": 1.6
+      },
+      "12": {
+        "slope_mean_deg": 12.6,
+        "slope_p90_deg": 23.4,
+        "roughness_m": 1.44
+      }
+    },
+    "low_sun_share": {
+      "value": 1,
+      "tier": "by definition",
+      "source": "Lunar pole: the sun is always under 10° (by definition)"
+    },
+    "hillshade": "",
+    "relief": null
+  },
+  {
+    "id": "fixture-moon-b",
+    "name": "Malapert massif",
+    "lat": 0,
+    "lon": 0,
+    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "body": "moon",
+    "params": {
+      "slope_mean_deg": {
+        "value": 10,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 19,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": 1.1,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 11,
+        "slope_p90_deg": 20.9,
+        "roughness_m": 1.21
+      },
+      "6": {
+        "slope_mean_deg": 10,
+        "slope_p90_deg": 19,
+        "roughness_m": 1.1
+      },
+      "12": {
+        "slope_mean_deg": 9,
+        "slope_p90_deg": 17.1,
+        "roughness_m": 0.99
+      }
+    },
+    "low_sun_share": {
+      "value": 1,
+      "tier": "by definition",
+      "source": "Lunar pole: the sun is always under 10° (by definition)"
+    },
+    "hillshade": "",
+    "relief": null
+  },
+  {
+    "id": "fixture-mars",
+    "name": "Jezero crater",
+    "lat": 0,
+    "lon": 0,
+    "note": "FIXTURE target. Coordinates and values are placeholders.",
+    "body": "mars",
+    "params": {
+      "slope_mean_deg": {
+        "value": 4.4,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 9.6,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": 0.52,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 4.84,
+        "slope_p90_deg": 10.56,
+        "roughness_m": 0.57
+      },
+      "6": {
+        "slope_mean_deg": 4.4,
+        "slope_p90_deg": 9.6,
+        "roughness_m": 0.52
+      },
+      "12": {
+        "slope_mean_deg": 3.96,
+        "slope_p90_deg": 8.64,
+        "roughness_m": 0.47
+      }
+    },
+    "low_sun_share": null,
+    "hillshade": "",
+    "relief": null
+  }
+]

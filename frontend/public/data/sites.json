@@ -1,0 +1,185 @@
+[
+  {
+    "id": "fixture-etna",
+    "name": "Etna",
+    "lat": 0,
+    "lon": 0,
+    "why": "FIXTURE site for development.",
+    "elev_m": null,
+    "params": {
+      "slope_mean_deg": {
+        "value": 13,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 24,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": 1.5,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 14.3,
+        "slope_p90_deg": 26.4,
+        "roughness_m": 1.65
+      },
+      "6": {
+        "slope_mean_deg": 13,
+        "slope_p90_deg": 24,
+        "roughness_m": 1.5
+      },
+      "12": {
+        "slope_mean_deg": 11.7,
+        "slope_p90_deg": 21.6,
+        "roughness_m": 1.35
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.14,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "bare_ground_share": {
+        "value": null,
+        "tier": "missing",
+        "source": null
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": true,
+    "flags": [
+      "coordinates approximate"
+    ],
+    "hillshade": "",
+    "relief": null
+  },
+  {
+    "id": "fixture-lanzarote",
+    "name": "Lanzarote",
+    "lat": 0,
+    "lon": 0,
+    "why": "FIXTURE site for development.",
+    "elev_m": null,
+    "params": {
+      "slope_mean_deg": {
+        "value": 8,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 16,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": 0.8,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 8.8,
+        "slope_p90_deg": 17.6,
+        "roughness_m": 0.88
+      },
+      "6": {
+        "slope_mean_deg": 8,
+        "slope_p90_deg": 16,
+        "roughness_m": 0.8
+      },
+      "12": {
+        "slope_mean_deg": 7.2,
+        "slope_p90_deg": 14.4,
+        "roughness_m": 0.72
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.12,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "bare_ground_share": {
+        "value": null,
+        "tier": "missing",
+        "source": null
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "coordinates approximate"
+    ],
+    "hillshade": "",
+    "relief": null
+  },
+  {
+    "id": "fixture-svalbard",
+    "name": "Svalbard",
+    "lat": 0,
+    "lon": 0,
+    "why": "FIXTURE site for development.",
+    "elev_m": null,
+    "params": {
+      "slope_mean_deg": {
+        "value": 12,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "slope_p90_deg": {
+        "value": 23,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "roughness_m": {
+        "value": null,
+        "tier": "missing",
+        "source": null
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 13.2,
+        "slope_p90_deg": 25.3,
+        "roughness_m": null
+      },
+      "6": {
+        "slope_mean_deg": 12,
+        "slope_p90_deg": 23,
+        "roughness_m": null
+      },
+      "12": {
+        "slope_mean_deg": 10.8,
+        "slope_p90_deg": 20.7,
+        "roughness_m": null
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.31,
+        "tier": "estimated",
+        "source": "FIXTURE for development, not data"
+      },
+      "bare_ground_share": {
+        "value": null,
+        "tier": "missing",
+        "source": null
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "coordinates approximate"
+    ],
+    "hillshade": "",
+    "relief": null
+  }
+]

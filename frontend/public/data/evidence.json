@@ -1,0 +1,21 @@
+{
+  "cited": {
+    "source_id": "fixture",
+    "source": "FIXTURE for development, not data",
+    "model": "fixture",
+    "metric": "delta1",
+    "rows": []
+  },
+  "ours": {
+    "source_id": "fixture",
+    "source": "FIXTURE for development, not data",
+    "model": "fixture",
+    "metric_note": "fixture",
+    "rows": [],
+    "images": []
+  },
+  "not_shown": [
+    "FIXTURE: replaced by brief P3"
+  ],
+  "sky_caveat": "Earth's sky scatters light into shadows. The Moon has no air, so its shadows are black."
+}

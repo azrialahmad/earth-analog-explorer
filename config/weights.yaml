@@ -1,0 +1,15 @@
+main_window_km: 6
+window_sizes_km: [3, 6, 12]
+params:
+  slope_mean_deg: {label: "Mean slope", unit: "°", weight: 1.0, range: 20.0}
+  slope_p90_deg:  {label: "90th percentile slope", unit: "°", weight: 1.0, range: 30.0}
+  roughness_m:    {label: "Roughness (150 m)", unit: "m", weight: 1.0, range: 3.0}
+warning:
+  terrain_match_min: 0.80
+  low_sun_share_max: 0.25
+stability:
+  runs: 1000
+  top_n: 3
+  seed: 20261114
+  dirichlet_concentration: 30
+  noise_rel: 0.10

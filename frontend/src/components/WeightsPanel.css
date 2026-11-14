@@ -1,0 +1,20 @@
+.weights {
+  position: absolute;
+  z-index: 6;
+  inset-block-start: calc(72px + env(safe-area-inset-top, 0px));
+  inset-inline-end: var(--gutter-r);
+  inline-size: min(320px, calc(100% - 32px));
+  display: grid;
+  gap: 10px;
+}
+.weights[hidden] { display: none; }
+.weights header { display: flex; align-items: center; gap: 10px; }
+.weights h2 { font-size: 15px; font-weight: 600; }
+.weights .provisional { color: var(--sun); margin-inline-end: auto; }
+.weights .close { font-size: 20px; line-height: 1; color: var(--muted); padding: 2px 6px; border-radius: var(--radius-sm); }
+.weights .close:hover { color: var(--fg); }
+.weight { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; }
+.weight label { font-size: 13px; }
+.weight output { font-size: 13px; color: var(--terrain); }
+.weight input { grid-column: 1 / -1; }
+.weights .reset { justify-self: start; font-size: 12.5px; }
