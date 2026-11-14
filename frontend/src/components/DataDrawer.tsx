@@ -96,7 +96,23 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
                   <dd className="num">{pct(target.low_sun_share?.value ?? null)}</dd>
                 </div>
               </dl>
-            ) : <p className="muted small">Lighting: not applicable to Mars targets</p>}
+            ) : (
+              <>
+                <p className="muted small">Lighting is not compared for Mars targets.</p>
+                {target.low_sun_share && (
+                  <dl className="pair">
+                    <div>
+                      <dt>This site <TierBadge tier={site.conditions.low_sun_share.tier} /></dt>
+                      <dd className="num">{pct(site.conditions.low_sun_share.value)} <small>of daylight with the sun under 10°</small></dd>
+                    </div>
+                    <div>
+                      <dt>{target.name} <TierBadge tier={target.low_sun_share.tier} /></dt>
+                      <dd className="num">{pct(target.low_sun_share.value)} <small>reference only</small></dd>
+                    </div>
+                  </dl>
+                )}
+              </>
+            )}
           </section>
 
           <section aria-label="Window sensitivity">
