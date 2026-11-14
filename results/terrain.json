@@ -1,0 +1,380 @@
+[
+  {
+    "id": "shackleton_rim",
+    "name": "Shackleton rim",
+    "lat": -90.0,
+    "lon": 0.0,
+    "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 411.5368347167969,
+    "flat_share": 0.00033582089552238804,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 23.327712316532008,
+        "slope_p90_deg": 33.39668760632948,
+        "roughness_m": 1.4056274243255586
+      },
+      "6": {
+        "slope_mean_deg": 22.824709935203323,
+        "slope_p90_deg": 33.15753205082187,
+        "roughness_m": 1.3918473491012535
+      },
+      "12": {
+        "slope_mean_deg": 21.124580825697528,
+        "slope_p90_deg": 32.92076365303437,
+        "roughness_m": 1.2850566250261366
+      }
+    }
+  },
+  {
+    "id": "malapert",
+    "name": "Malapert massif",
+    "lat": -85.98858640539046,
+    "lon": 2.0674228980090588,
+    "source": "LOLA ldem_85s_20m (native 20 m, resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 4776.18310546875,
+    "flat_share": 0.000845771144278607,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 10.243613005139082,
+        "slope_p90_deg": 18.141124757256726,
+        "roughness_m": 1.006666761918193
+      },
+      "6": {
+        "slope_mean_deg": 12.228003482950372,
+        "slope_p90_deg": 18.840180250398273,
+        "roughness_m": 0.971555913112473
+      },
+      "12": {
+        "slope_mean_deg": 15.618501948283855,
+        "slope_p90_deg": 23.520544162308628,
+        "roughness_m": 1.0284164031380567
+      }
+    }
+  },
+  {
+    "id": "etna",
+    "name": "Etna, Italy",
+    "lat": 37.722,
+    "lon": 15.005,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.5 m E-W x 30.9 m N-S at 37.722\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1946.7718505859375,
+    "flat_share": 0.00017412935323383086,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 15.099370928144074,
+        "slope_p90_deg": 28.679001767778345,
+        "roughness_m": 1.5399276048051824
+      },
+      "6": {
+        "slope_mean_deg": 15.288865087612118,
+        "slope_p90_deg": 27.387551895194168,
+        "roughness_m": 1.625011586349847
+      },
+      "12": {
+        "slope_mean_deg": 14.770058095591274,
+        "slope_p90_deg": 26.705604096231014,
+        "roughness_m": 1.6533838381266963
+      }
+    }
+  },
+  {
+    "id": "bromo",
+    "name": "Bromo / Tengger, Indonesia",
+    "lat": -7.925,
+    "lon": 112.955,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~30.6 m E-W x 30.9 m N-S at -7.925\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 2156.98828125,
+    "flat_share": 0.004651741293532338,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 16.954298417523987,
+        "slope_p90_deg": 32.84767768703723,
+        "roughness_m": 3.7228616344171703
+      },
+      "6": {
+        "slope_mean_deg": 19.821002212973735,
+        "slope_p90_deg": 38.27225372689946,
+        "roughness_m": 4.083924566576188
+      },
+      "12": {
+        "slope_mean_deg": 20.617481822388672,
+        "slope_p90_deg": 36.60798893309249,
+        "roughness_m": 4.447064454463838
+      }
+    }
+  },
+  {
+    "id": "rinjani",
+    "name": "Rinjani, Indonesia",
+    "lat": -8.36,
+    "lon": 116.5,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~30.6 m E-W x 30.9 m N-S at -8.36\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1335.4344482421875,
+    "flat_share": 0.004067164179104478,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 13.291172352371563,
+        "slope_p90_deg": 28.895785608587282,
+        "roughness_m": 1.9377825332701144
+      },
+      "6": {
+        "slope_mean_deg": 15.165819346561857,
+        "slope_p90_deg": 31.849934745931396,
+        "roughness_m": 2.2487986252950245
+      },
+      "12": {
+        "slope_mean_deg": 18.41181677189313,
+        "slope_p90_deg": 36.97360834787528,
+        "roughness_m": 2.847060656835416
+      }
+    }
+  },
+  {
+    "id": "askja",
+    "name": "Askja, Iceland",
+    "lat": 65.1,
+    "lon": -16.72,
+    "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~26.0 m E-W x 30.9 m N-S at 65.1\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1039.27685546875,
+    "flat_share": 0.03027363184079602,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 7.73695446317312,
+        "slope_p90_deg": 19.28279331243542,
+        "roughness_m": 1.2266263748805812
+      },
+      "6": {
+        "slope_mean_deg": 8.520256016452535,
+        "slope_p90_deg": 20.88487208482135,
+        "roughness_m": 1.3232992036257216
+      },
+      "12": {
+        "slope_mean_deg": 7.024208730068822,
+        "slope_p90_deg": 18.862978910021443,
+        "roughness_m": 0.9007781793629117
+      }
+    }
+  },
+  {
+    "id": "haughton",
+    "name": "Haughton crater, Devon Island",
+    "lat": 75.38,
+    "lon": -89.67,
+    "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~23.4 m E-W x 30.9 m N-S at 75.38\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 155.47117614746094,
+    "flat_share": 0.07553482587064676,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 4.450558647105394,
+        "slope_p90_deg": 10.146499318180908,
+        "roughness_m": 0.7714307474038753
+      },
+      "6": {
+        "slope_mean_deg": 5.191605160949177,
+        "slope_p90_deg": 11.868463577431399,
+        "roughness_m": 0.8552563606644038
+      },
+      "12": {
+        "slope_mean_deg": 6.418050774426139,
+        "slope_p90_deg": 15.08536536809445,
+        "roughness_m": 1.0695052201137414
+      }
+    }
+  },
+  {
+    "id": "dry_valleys",
+    "name": "McMurdo Dry Valleys, Antarctica",
+    "lat": -77.85,
+    "lon": 160.6,
+    "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~19.5 m E-W x 30.9 m N-S at -77.85\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1722.8568115234375,
+    "flat_share": 0.006169154228855721,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 17.160660629700697,
+        "slope_p90_deg": 35.67186390761201,
+        "roughness_m": 1.2925501566723372
+      },
+      "6": {
+        "slope_mean_deg": 16.468368734656583,
+        "slope_p90_deg": 35.57838476190197,
+        "roughness_m": 1.2590233278491076
+      },
+      "12": {
+        "slope_mean_deg": 16.65664257348882,
+        "slope_p90_deg": 34.47419846077101,
+        "roughness_m": 1.3062297721500682
+      }
+    }
+  },
+  {
+    "id": "yungay",
+    "name": "Atacama Yungay, Chile",
+    "lat": -24.1,
+    "lon": -70.02,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.2 m E-W x 30.9 m N-S at -24.1\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1087.303955078125,
+    "flat_share": 0.009601990049751244,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 5.1067218624535835,
+        "slope_p90_deg": 10.627460215787195,
+        "roughness_m": 1.478683667282364
+      },
+      "6": {
+        "slope_mean_deg": 6.72625480166429,
+        "slope_p90_deg": 14.598890092340428,
+        "roughness_m": 1.5854345632888633
+      },
+      "12": {
+        "slope_mean_deg": 6.9791955018933995,
+        "slope_p90_deg": 14.366505964101199,
+        "roughness_m": 1.616402577979859
+      }
+    }
+  },
+  {
+    "id": "mauna_kea",
+    "name": "Mauna Kea, Hawaii",
+    "lat": 19.76,
+    "lon": -155.46,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.76\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 2702.88720703125,
+    "flat_share": 0.00014925373134328358,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 15.063691851814626,
+        "slope_p90_deg": 22.843875260085785,
+        "roughness_m": 1.5473576962793167
+      },
+      "6": {
+        "slope_mean_deg": 13.904832392131572,
+        "slope_p90_deg": 21.92319307214248,
+        "roughness_m": 1.457381050015043
+      },
+      "12": {
+        "slope_mean_deg": 11.733084477423924,
+        "slope_p90_deg": 20.79938849907032,
+        "roughness_m": 1.3122958917915861
+      }
+    }
+  },
+  {
+    "id": "craters_moon",
+    "name": "Craters of the Moon, Idaho",
+    "lat": 43.43,
+    "lon": -113.53,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~22.5 m E-W x 30.9 m N-S at 43.43\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1759.0897216796875,
+    "flat_share": 0.3170273631840796,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 2.3661443583205735,
+        "slope_p90_deg": 5.263010361011167,
+        "roughness_m": 0.42624630265743413
+      },
+      "6": {
+        "slope_mean_deg": 2.9740186974009517,
+        "slope_p90_deg": 8.137841959228693,
+        "roughness_m": 0.48573341493548194
+      },
+      "12": {
+        "slope_mean_deg": 3.262730540029633,
+        "slope_p90_deg": 9.364147119430351,
+        "roughness_m": 0.4913087905640844
+      }
+    }
+  },
+  {
+    "id": "black_point",
+    "name": "Black Point lava flow, Arizona",
+    "lat": 35.68,
+    "lon": -111.47,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~25.1 m E-W x 30.9 m N-S at 35.68\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 1581.2479248046875,
+    "flat_share": 0.19572139303482586,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 1.7273801475078332,
+        "slope_p90_deg": 3.8902216367665714,
+        "roughness_m": 0.26716611850614175
+      },
+      "6": {
+        "slope_mean_deg": 1.7377615058579936,
+        "slope_p90_deg": 3.9960647466907284,
+        "roughness_m": 0.26495109395910443
+      },
+      "12": {
+        "slope_mean_deg": 1.8625550156982842,
+        "slope_p90_deg": 4.296450920906051,
+        "roughness_m": 0.26340048354540746
+      }
+    }
+  },
+  {
+    "id": "lanzarote",
+    "name": "Lanzarote, Spain",
+    "lat": 29.0,
+    "lon": -13.74,
+    "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.0 m E-W x 30.9 m N-S at 29\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 275.25653076171875,
+    "flat_share": 0.015111940298507463,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 7.037157653091178,
+        "slope_p90_deg": 18.075436310346447,
+        "roughness_m": 1.488108000118127
+      },
+      "6": {
+        "slope_mean_deg": 6.018786093820132,
+        "slope_p90_deg": 14.99461454845832,
+        "roughness_m": 1.3204174495189598
+      },
+      "12": {
+        "slope_mean_deg": 6.378048522733594,
+        "slope_p90_deg": 16.093629867854627,
+        "roughness_m": 1.393170266975647
+      }
+    }
+  },
+  {
+    "id": "svalbard",
+    "name": "Svalbard, Norway",
+    "lat": 79.44,
+    "lon": 13.33,
+    "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~17.0 m E-W x 30.9 m N-S at 79.44\u00b0), resampled 30 m)",
+    "res_m": 30.0,
+    "elev_m": 321.4076232910156,
+    "flat_share": 0.17941542288557213,
+    "windows": {
+      "3": {
+        "slope_mean_deg": 18.30053568030815,
+        "slope_p90_deg": 37.696057549044035,
+        "roughness_m": 2.069913727218484
+      },
+      "6": {
+        "slope_mean_deg": 17.13520128036992,
+        "slope_p90_deg": 36.854561399111,
+        "roughness_m": 1.7555805756109069
+      },
+      "12": {
+        "slope_mean_deg": 16.247583302789227,
+        "slope_p90_deg": 36.99076733166428,
+        "roughness_m": 1.533704102599334
+      }
+    }
+  }
+]
