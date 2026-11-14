@@ -1,8 +1,36 @@
-.shelf {
+.shelf-wrap {
   position: absolute;
   z-index: 5;
   inset-inline: 0;
   inset-block-end: calc(14px + env(safe-area-inset-bottom, 0px));
+}
+/* fade the cut edge so it reads as "more this way" */
+.shelf-wrap.more-end .shelf { mask-image: linear-gradient(to right, #000 calc(100% - 72px), transparent); }
+.shelf-wrap.more-start .shelf { mask-image: linear-gradient(to right, transparent, #000 72px); }
+.shelf-wrap.more-start.more-end .shelf { mask-image: linear-gradient(to right, transparent, #000 72px, #000 calc(100% - 72px), transparent); }
+.shelf-nav {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--fg);
+  cursor: pointer;
+}
+.shelf-nav[hidden] { display: none; }
+.shelf-nav:hover { border-color: var(--edge-strong); }
+.shelf-nav.prev { inset-inline-start: 8px; }
+.shelf-nav.next { inset-inline-end: 8px; }
+/* touch screens swipe; the arrows are for mice */
+@media (hover: none) { .shelf-nav { display: none; } }
+
+.shelf {
   display: flex;
   gap: 10px;
   margin: 0;
