@@ -1,0 +1,1081 @@
+{
+  "_note": "Experiment output for issue #46. A Moon-vs-Earth tile classifier and its SHAP explanations. Not used by Terrain Match, the ranking or the app.",
+  "settings": {
+    "model": "sklearn HistGradientBoostingClassifier, defaults, class_weight=balanced",
+    "seed": 46,
+    "evaluation": "leave one group out (Earth site or 45-degree Moon sector)",
+    "threshold_p_moon": 0.5,
+    "target_exclusion_radius_m": 9000.0,
+    "random_tiles": {
+      "moon": 2000,
+      "earth": 1632
+    }
+  },
+  "feature_sets": {
+    "app3": {
+      "features": [
+        "slope_mean_deg",
+        "slope_p90_deg",
+        "roughness_m"
+      ],
+      "held_out": {
+        "auc": 0.9417457107843137,
+        "accuracy": 0.8807819383259912,
+        "moon_recall": 0.914,
+        "earth_recall": 0.8400735294117647,
+        "per_group": {
+          "earth_askja": {
+            "n": 134,
+            "body": "earth",
+            "accuracy": 0.8731343283582089,
+            "mean_p_moon": 0.16733330648471925
+          },
+          "earth_black_point": {
+            "n": 143,
+            "body": "earth",
+            "accuracy": 0.7692307692307693,
+            "mean_p_moon": 0.21316254160512613
+          },
+          "earth_bromo": {
+            "n": 110,
+            "body": "earth",
+            "accuracy": 0.9636363636363636,
+            "mean_p_moon": 0.03594608141163023
+          },
+          "earth_craters_moon": {
+            "n": 82,
+            "body": "earth",
+            "accuracy": 0.975609756097561,
+            "mean_p_moon": 0.038918329300975364
+          },
+          "earth_dry_valleys": {
+            "n": 165,
+            "body": "earth",
+            "accuracy": 0.8303030303030303,
+            "mean_p_moon": 0.1755158356642162
+          },
+          "earth_etna": {
+            "n": 157,
+            "body": "earth",
+            "accuracy": 0.9681528662420382,
+            "mean_p_moon": 0.03674718414926686
+          },
+          "earth_haughton": {
+            "n": 133,
+            "body": "earth",
+            "accuracy": 0.5488721804511278,
+            "mean_p_moon": 0.42453965942644734
+          },
+          "earth_lanzarote": {
+            "n": 124,
+            "body": "earth",
+            "accuracy": 0.9919354838709677,
+            "mean_p_moon": 0.0067964287626671544
+          },
+          "earth_mauna_kea": {
+            "n": 169,
+            "body": "earth",
+            "accuracy": 0.378698224852071,
+            "mean_p_moon": 0.595099719733039
+          },
+          "earth_rinjani": {
+            "n": 142,
+            "body": "earth",
+            "accuracy": 0.9929577464788732,
+            "mean_p_moon": 0.011630530400426326
+          },
+          "earth_svalbard": {
+            "n": 103,
+            "body": "earth",
+            "accuracy": 0.9805825242718447,
+            "mean_p_moon": 0.03693810233545151
+          },
+          "earth_yungay": {
+            "n": 170,
+            "body": "earth",
+            "accuracy": 0.9823529411764705,
+            "mean_p_moon": 0.03957083085097834
+          },
+          "moon_sector_0": {
+            "n": 264,
+            "body": "moon",
+            "accuracy": 0.9696969696969697,
+            "mean_p_moon": 0.9364203822438711
+          },
+          "moon_sector_1": {
+            "n": 249,
+            "body": "moon",
+            "accuracy": 0.9759036144578314,
+            "mean_p_moon": 0.9458455571749315
+          },
+          "moon_sector_2": {
+            "n": 241,
+            "body": "moon",
+            "accuracy": 0.8464730290456431,
+            "mean_p_moon": 0.7991437615311041
+          },
+          "moon_sector_3": {
+            "n": 263,
+            "body": "moon",
+            "accuracy": 0.8897338403041825,
+            "mean_p_moon": 0.8282129580601494
+          },
+          "moon_sector_4": {
+            "n": 239,
+            "body": "moon",
+            "accuracy": 0.8242677824267782,
+            "mean_p_moon": 0.7823846232144367
+          },
+          "moon_sector_5": {
+            "n": 238,
+            "body": "moon",
+            "accuracy": 0.9117647058823529,
+            "mean_p_moon": 0.8978122044559583
+          },
+          "moon_sector_6": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9288537549407114,
+            "mean_p_moon": 0.8950862964355922
+          },
+          "moon_sector_7": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9565217391304348,
+            "mean_p_moon": 0.931114314351939
+          }
+        }
+      },
+      "pole_distance_check": {
+        "spearman_rho_vs_p_moon": -0.014559672020955055,
+        "p": 0.5152041713099018,
+        "median_distance_deg": 3.8975988741079277,
+        "moon_accuracy_near_pole": 0.924,
+        "moon_accuracy_far_from_pole": 0.904
+      },
+      "shap_mean_abs_log_odds": {
+        "roughness_m": 3.3892420923829536,
+        "slope_mean_deg": 2.2226645342770945,
+        "slope_p90_deg": 1.1231556621411132
+      },
+      "sites": {
+        "askja": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.12138936652983023,
+          "share_classified_moon": 0.125,
+          "mean_shap_log_odds": {
+            "roughness_m": -1.7149401296884361,
+            "slope_mean_deg": -1.615525453926672,
+            "slope_p90_deg": -1.378321899476945
+          }
+        },
+        "black_point": {
+          "n_tiles": 10,
+          "mean_p_moon": 0.1274165406395515,
+          "share_classified_moon": 0.1,
+          "mean_shap_log_odds": {
+            "slope_mean_deg": -3.1497170563894694,
+            "roughness_m": -1.6306675380632984,
+            "slope_p90_deg": -1.1943416065825225
+          }
+        },
+        "bromo": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.0003528383363899141,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -6.227968532814333,
+            "slope_p90_deg": -3.692274960982035,
+            "slope_mean_deg": 2.0242409670794355
+          }
+        },
+        "craters_moon": {
+          "n_tiles": 4,
+          "mean_p_moon": 0.02684234769177,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "slope_mean_deg": -1.835190895546712,
+            "roughness_m": -1.433609288649921,
+            "slope_p90_deg": -1.0159851198819245
+          }
+        },
+        "dry_valleys": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.21263439085900057,
+          "share_classified_moon": 0.25,
+          "mean_shap_log_odds": {
+            "slope_p90_deg": -3.782046618056091,
+            "roughness_m": -2.5188344191792504,
+            "slope_mean_deg": 2.854057421678162
+          }
+        },
+        "etna": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.017118581345412758,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -6.895341709713935,
+            "slope_p90_deg": -0.9286663686246341,
+            "slope_mean_deg": 1.603580796486755
+          }
+        },
+        "haughton": {
+          "n_tiles": 15,
+          "mean_p_moon": 0.3730482474376848,
+          "share_classified_moon": 0.4,
+          "mean_shap_log_odds": {
+            "roughness_m": -1.9382222522914598,
+            "slope_mean_deg": -0.9407508523653927,
+            "slope_p90_deg": 0.020016009770560988
+          }
+        },
+        "lanzarote": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.007061155413085826,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -4.617970935602861,
+            "slope_mean_deg": -1.2182820247833974,
+            "slope_p90_deg": -0.6786176975358073
+          }
+        },
+        "mauna_kea": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.2894717859251924,
+          "share_classified_moon": 0.3125,
+          "mean_shap_log_odds": {
+            "roughness_m": -4.290633142239353,
+            "slope_p90_deg": 0.1315246005030628,
+            "slope_mean_deg": 1.467126915506137
+          }
+        },
+        "rinjani": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.0005288903245370899,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -6.748709920995605,
+            "slope_p90_deg": -2.5878820093399533,
+            "slope_mean_deg": 1.6610970314690348
+          }
+        },
+        "svalbard": {
+          "n_tiles": 9,
+          "mean_p_moon": 0.0005515893067540031,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -6.177121662301598,
+            "slope_p90_deg": -3.848685409938423,
+            "slope_mean_deg": 2.508309631621019
+          }
+        },
+        "yungay": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.002685709475876019,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_m": -6.798125037872354,
+            "slope_mean_deg": -0.7134268629895534,
+            "slope_p90_deg": -0.13276397884322835
+          }
+        },
+        "shackleton_rim": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.6808096567897644,
+          "share_classified_moon": 0.6875,
+          "mean_shap_log_odds": {
+            "slope_p90_deg": -1.8466996657820236,
+            "roughness_m": -0.5538603416706448,
+            "slope_mean_deg": 4.912210618370034
+          },
+          "random_moon_tiles_excluded": 3
+        },
+        "malapert": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.9328408475215322,
+          "share_classified_moon": 0.9375,
+          "mean_shap_log_odds": {
+            "slope_p90_deg": 0.0659443664939904,
+            "roughness_m": 1.21086474813636,
+            "slope_mean_deg": 4.2948908476783405
+          },
+          "random_moon_tiles_excluded": 4
+        }
+      }
+    },
+    "all": {
+      "features": [
+        "slope_mean_deg",
+        "slope_p90_deg",
+        "roughness_m",
+        "roughness_330m_m",
+        "detrended_relief_m",
+        "relief_m",
+        "hypsometric_integral",
+        "curvature_abs_mean",
+        "depression_share",
+        "depression_max_depth_m"
+      ],
+      "held_out": {
+        "auc": 0.9957812500000001,
+        "accuracy": 0.9708149779735683,
+        "moon_recall": 0.986,
+        "earth_recall": 0.9522058823529411,
+        "per_group": {
+          "earth_askja": {
+            "n": 134,
+            "body": "earth",
+            "accuracy": 0.9626865671641791,
+            "mean_p_moon": 0.0364426471966642
+          },
+          "earth_black_point": {
+            "n": 143,
+            "body": "earth",
+            "accuracy": 0.993006993006993,
+            "mean_p_moon": 0.006231607680058456
+          },
+          "earth_bromo": {
+            "n": 110,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.005081004767894257
+          },
+          "earth_craters_moon": {
+            "n": 82,
+            "body": "earth",
+            "accuracy": 0.9878048780487805,
+            "mean_p_moon": 0.0065992750956322885
+          },
+          "earth_dry_valleys": {
+            "n": 165,
+            "body": "earth",
+            "accuracy": 0.8909090909090909,
+            "mean_p_moon": 0.11365307362030648
+          },
+          "earth_etna": {
+            "n": 157,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.0022232817191669765
+          },
+          "earth_haughton": {
+            "n": 133,
+            "body": "earth",
+            "accuracy": 0.9924812030075187,
+            "mean_p_moon": 0.012443230776303688
+          },
+          "earth_lanzarote": {
+            "n": 124,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.0013047335388021834
+          },
+          "earth_mauna_kea": {
+            "n": 169,
+            "body": "earth",
+            "accuracy": 0.6982248520710059,
+            "mean_p_moon": 0.31573477804987493
+          },
+          "earth_rinjani": {
+            "n": 142,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.00044457090521420625
+          },
+          "earth_svalbard": {
+            "n": 103,
+            "body": "earth",
+            "accuracy": 0.9902912621359223,
+            "mean_p_moon": 0.013561404692660395
+          },
+          "earth_yungay": {
+            "n": 170,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.0013337921557369885
+          },
+          "moon_sector_0": {
+            "n": 264,
+            "body": "moon",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.9947047399119263
+          },
+          "moon_sector_1": {
+            "n": 249,
+            "body": "moon",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.9944424671343873
+          },
+          "moon_sector_2": {
+            "n": 241,
+            "body": "moon",
+            "accuracy": 0.995850622406639,
+            "mean_p_moon": 0.9950789403130186
+          },
+          "moon_sector_3": {
+            "n": 263,
+            "body": "moon",
+            "accuracy": 0.9771863117870723,
+            "mean_p_moon": 0.976341209804821
+          },
+          "moon_sector_4": {
+            "n": 239,
+            "body": "moon",
+            "accuracy": 0.9330543933054394,
+            "mean_p_moon": 0.9322832075692782
+          },
+          "moon_sector_5": {
+            "n": 238,
+            "body": "moon",
+            "accuracy": 0.9915966386554622,
+            "mean_p_moon": 0.9934205108013932
+          },
+          "moon_sector_6": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9960474308300395,
+            "mean_p_moon": 0.9968583049321329
+          },
+          "moon_sector_7": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9920948616600791,
+            "mean_p_moon": 0.9897903775867584
+          }
+        }
+      },
+      "pole_distance_check": {
+        "spearman_rho_vs_p_moon": 0.032242931133279376,
+        "p": 0.14946578198923902,
+        "median_distance_deg": 3.8975988741079277,
+        "moon_accuracy_near_pole": 0.994,
+        "moon_accuracy_far_from_pole": 0.978
+      },
+      "shap_mean_abs_log_odds": {
+        "depression_max_depth_m": 2.555767360456253,
+        "relief_m": 2.407187588571479,
+        "curvature_abs_mean": 1.9722154566750758,
+        "roughness_330m_m": 1.935445594152267,
+        "roughness_m": 1.513892147348503,
+        "slope_mean_deg": 0.793847153839555,
+        "depression_share": 0.6378938795546772,
+        "detrended_relief_m": 0.5407658275122111,
+        "hypsometric_integral": 0.3738057335243884,
+        "slope_p90_deg": 0.21754275840016385
+      },
+      "sites": {
+        "askja": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.04049258842027711,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -2.8137381235269525,
+            "roughness_330m_m": -2.630005554027243,
+            "relief_m": -1.6929901244949062,
+            "depression_max_depth_m": -0.9467957269147764,
+            "slope_mean_deg": -0.8504312983107734,
+            "depression_share": -0.5775871709094671,
+            "hypsometric_integral": -0.3903045614178134,
+            "slope_p90_deg": -0.21401657759709256,
+            "detrended_relief_m": 0.03951594412101297,
+            "roughness_m": 0.06769804052506706
+          }
+        },
+        "black_point": {
+          "n_tiles": 10,
+          "mean_p_moon": 2.8888013445087663e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "relief_m": -3.208370631843894,
+            "roughness_m": -3.0117523572355913,
+            "depression_max_depth_m": -2.790099130900698,
+            "slope_mean_deg": -1.3931598053756897,
+            "detrended_relief_m": -0.8581356293203182,
+            "depression_share": -0.7704555342259098,
+            "slope_p90_deg": -0.21923213300444644,
+            "hypsometric_integral": 0.0544833076768512,
+            "roughness_330m_m": 0.07122966372873586,
+            "curvature_abs_mean": 0.4185441921311286
+          }
+        },
+        "bromo": {
+          "n_tiles": 16,
+          "mean_p_moon": 5.973970694106853e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -6.876764277415561,
+            "curvature_abs_mean": -5.480514691202575,
+            "slope_p90_deg": -0.9816724692796404,
+            "hypsometric_integral": -0.18417045925249187,
+            "depression_share": -0.030400183254025805,
+            "detrended_relief_m": 0.1930166725098137,
+            "roughness_m": 0.2106373282145738,
+            "depression_max_depth_m": 0.30587058456635263,
+            "slope_mean_deg": 0.8156358818890572,
+            "relief_m": 0.8409330202894724
+          }
+        },
+        "craters_moon": {
+          "n_tiles": 4,
+          "mean_p_moon": 0.00586464313480275,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -3.2691378545903387,
+            "relief_m": -2.611230204670316,
+            "hypsometric_integral": -1.3676169520573238,
+            "roughness_330m_m": -1.1371348372879035,
+            "depression_share": -1.0755105306252266,
+            "slope_mean_deg": -0.7399917886722228,
+            "slope_p90_deg": -0.010934471009808041,
+            "detrended_relief_m": -0.0022798227793624747,
+            "depression_max_depth_m": 0.4357542817736899,
+            "roughness_m": 0.5650257112346952
+          }
+        },
+        "dry_valleys": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.11425506161849594,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -4.219457340659978,
+            "curvature_abs_mean": -3.876254419672553,
+            "hypsometric_integral": -0.5191602098149218,
+            "roughness_m": -0.4421114982835984,
+            "slope_p90_deg": -0.37762498178346543,
+            "depression_share": -0.16553634253242322,
+            "depression_max_depth_m": -0.06436180364679389,
+            "slope_mean_deg": 0.32222881187492425,
+            "detrended_relief_m": 0.4898941636576907,
+            "relief_m": 1.7118713975630315
+          }
+        },
+        "etna": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.05892988217634243,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -5.945305925737811,
+            "curvature_abs_mean": -3.867235977432159,
+            "depression_max_depth_m": -0.8300015466489683,
+            "depression_share": -0.5950648430938489,
+            "hypsometric_integral": -0.32927704756955745,
+            "slope_p90_deg": -0.3077853108173184,
+            "detrended_relief_m": 0.22860989507112217,
+            "slope_mean_deg": 0.3201117960337652,
+            "roughness_m": 0.4451160779274272,
+            "relief_m": 1.9238936722144713
+          }
+        },
+        "haughton": {
+          "n_tiles": 15,
+          "mean_p_moon": 4.0710778494876814e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "relief_m": -2.991671533225215,
+            "depression_max_depth_m": -2.8429830318465474,
+            "roughness_330m_m": -2.1968242306008303,
+            "curvature_abs_mean": -1.571165888234031,
+            "depression_share": -0.9528104146400362,
+            "slope_mean_deg": -0.8642626705233923,
+            "hypsometric_integral": -0.318436568056355,
+            "detrended_relief_m": -0.14018582229953294,
+            "slope_p90_deg": -0.02287024993392185,
+            "roughness_m": 0.45960000365218606
+          }
+        },
+        "lanzarote": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.002246469509804907,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -6.098542522179101,
+            "relief_m": -2.1212852023023285,
+            "hypsometric_integral": -0.8489879895103303,
+            "slope_mean_deg": -0.8323578388283281,
+            "roughness_330m_m": -0.8104634909108359,
+            "detrended_relief_m": -0.15305741505494366,
+            "slope_p90_deg": -0.1389142889467845,
+            "depression_share": 0.24801105128448334,
+            "roughness_m": 0.4545324227982891,
+            "depression_max_depth_m": 0.9204633884295529
+          }
+        },
+        "mauna_kea": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.09115167693577203,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -4.414757851362902,
+            "curvature_abs_mean": -3.086658497736244,
+            "depression_max_depth_m": -0.7014915093503595,
+            "depression_share": -0.49521425221523785,
+            "hypsometric_integral": -0.3045408372880693,
+            "slope_mean_deg": -0.010577980991764935,
+            "detrended_relief_m": 0.0354546820048967,
+            "slope_p90_deg": 0.1291716002212977,
+            "roughness_m": 0.39510446047165476,
+            "relief_m": 1.2204585931896745
+          }
+        },
+        "rinjani": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.0005335423499049558,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -7.04221961123174,
+            "curvature_abs_mean": -4.646898414522493,
+            "slope_p90_deg": -0.516969541267688,
+            "depression_max_depth_m": -0.35027094388922875,
+            "depression_share": -0.3130697852442329,
+            "hypsometric_integral": -0.28971687659637124,
+            "detrended_relief_m": 0.1647376272843129,
+            "roughness_m": 0.4919863474664306,
+            "slope_mean_deg": 0.539177894602782,
+            "relief_m": 1.3436225994884725
+          }
+        },
+        "svalbard": {
+          "n_tiles": 9,
+          "mean_p_moon": 7.415804335473975e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -8.56417307666751,
+            "curvature_abs_mean": -3.9963984138378907,
+            "depression_max_depth_m": -0.8309086470462217,
+            "slope_p90_deg": -0.5892750698430449,
+            "depression_share": -0.2918765583259132,
+            "hypsometric_integral": -0.10887321197862405,
+            "detrended_relief_m": 0.27435656034803835,
+            "roughness_m": 0.4011165356684326,
+            "slope_mean_deg": 1.0624690660883136,
+            "relief_m": 1.5694807014216592
+          }
+        },
+        "yungay": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.00016432468751858414,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -5.425446725322457,
+            "roughness_330m_m": -2.030434605513451,
+            "relief_m": -1.8056006285222108,
+            "slope_mean_deg": -0.7891449852607191,
+            "hypsometric_integral": -0.7882389328689966,
+            "depression_max_depth_m": -0.30366599327193744,
+            "depression_share": -0.010764952412809975,
+            "detrended_relief_m": 0.044300542017747364,
+            "slope_p90_deg": 0.08932663353712905,
+            "roughness_m": 0.43098199698662143
+          }
+        },
+        "shackleton_rim": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.9489528203309037,
+          "share_classified_moon": 0.9375,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -2.2482753515328233,
+            "slope_p90_deg": -0.44721661346244385,
+            "depression_max_depth_m": -0.3742589024365763,
+            "depression_share": -0.1450520809209128,
+            "hypsometric_integral": 0.15752301993918638,
+            "detrended_relief_m": 0.5016421606611349,
+            "roughness_330m_m": 0.9630970429119291,
+            "roughness_m": 1.4079242536643024,
+            "slope_mean_deg": 2.740272457882972,
+            "relief_m": 4.3600503697300095
+          },
+          "random_moon_tiles_excluded": 3
+        },
+        "malapert": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.9991210547405416,
+          "share_classified_moon": 1.0,
+          "mean_shap_log_odds": {
+            "curvature_abs_mean": -2.101462197525994,
+            "depression_share": -0.21412429693308543,
+            "slope_p90_deg": 0.057525597477892085,
+            "detrended_relief_m": 0.42703710884412244,
+            "hypsometric_integral": 0.5805821868920703,
+            "depression_max_depth_m": 0.9120756870149413,
+            "slope_mean_deg": 1.4084911258475934,
+            "roughness_330m_m": 1.47233427585653,
+            "roughness_m": 1.5690737604524547,
+            "relief_m": 3.806004579258138
+          },
+          "random_moon_tiles_excluded": 4
+        }
+      }
+    },
+    "no_fine": {
+      "features": [
+        "slope_mean_deg",
+        "slope_p90_deg",
+        "roughness_330m_m",
+        "detrended_relief_m",
+        "relief_m",
+        "hypsometric_integral",
+        "depression_share",
+        "depression_max_depth_m"
+      ],
+      "held_out": {
+        "auc": 0.9866626838235294,
+        "accuracy": 0.9677863436123348,
+        "moon_recall": 0.9895,
+        "earth_recall": 0.9411764705882353,
+        "per_group": {
+          "earth_askja": {
+            "n": 134,
+            "body": "earth",
+            "accuracy": 0.9701492537313433,
+            "mean_p_moon": 0.032666274001144226
+          },
+          "earth_black_point": {
+            "n": 143,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.002740136117053777
+          },
+          "earth_bromo": {
+            "n": 110,
+            "body": "earth",
+            "accuracy": 0.9727272727272728,
+            "mean_p_moon": 0.020055844812898394
+          },
+          "earth_craters_moon": {
+            "n": 82,
+            "body": "earth",
+            "accuracy": 0.9878048780487805,
+            "mean_p_moon": 0.008491748065750824
+          },
+          "earth_dry_valleys": {
+            "n": 165,
+            "body": "earth",
+            "accuracy": 0.8545454545454545,
+            "mean_p_moon": 0.13634722248954886
+          },
+          "earth_etna": {
+            "n": 157,
+            "body": "earth",
+            "accuracy": 1.0,
+            "mean_p_moon": 0.0022090010580943626
+          },
+          "earth_haughton": {
+            "n": 133,
+            "body": "earth",
+            "accuracy": 0.9849624060150376,
+            "mean_p_moon": 0.014103502982333843
+          },
+          "earth_lanzarote": {
+            "n": 124,
+            "body": "earth",
+            "accuracy": 0.9838709677419355,
+            "mean_p_moon": 0.01596182941186563
+          },
+          "earth_mauna_kea": {
+            "n": 169,
+            "body": "earth",
+            "accuracy": 0.6863905325443787,
+            "mean_p_moon": 0.3339888641295916
+          },
+          "earth_rinjani": {
+            "n": 142,
+            "body": "earth",
+            "accuracy": 0.9929577464788732,
+            "mean_p_moon": 0.007061214006362981
+          },
+          "earth_svalbard": {
+            "n": 103,
+            "body": "earth",
+            "accuracy": 0.970873786407767,
+            "mean_p_moon": 0.029027556581568074
+          },
+          "earth_yungay": {
+            "n": 170,
+            "body": "earth",
+            "accuracy": 0.9823529411764705,
+            "mean_p_moon": 0.019213718522897664
+          },
+          "moon_sector_0": {
+            "n": 264,
+            "body": "moon",
+            "accuracy": 0.9962121212121212,
+            "mean_p_moon": 0.9938524243421342
+          },
+          "moon_sector_1": {
+            "n": 249,
+            "body": "moon",
+            "accuracy": 0.9959839357429718,
+            "mean_p_moon": 0.9919101720012945
+          },
+          "moon_sector_2": {
+            "n": 241,
+            "body": "moon",
+            "accuracy": 0.991701244813278,
+            "mean_p_moon": 0.9876690327681488
+          },
+          "moon_sector_3": {
+            "n": 263,
+            "body": "moon",
+            "accuracy": 0.9771863117870723,
+            "mean_p_moon": 0.9671002749329443
+          },
+          "moon_sector_4": {
+            "n": 239,
+            "body": "moon",
+            "accuracy": 0.9748953974895398,
+            "mean_p_moon": 0.9620947300613001
+          },
+          "moon_sector_5": {
+            "n": 238,
+            "body": "moon",
+            "accuracy": 0.9915966386554622,
+            "mean_p_moon": 0.9878434963559906
+          },
+          "moon_sector_6": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9960474308300395,
+            "mean_p_moon": 0.9912316816698339
+          },
+          "moon_sector_7": {
+            "n": 253,
+            "body": "moon",
+            "accuracy": 0.9920948616600791,
+            "mean_p_moon": 0.9889532171774688
+          }
+        }
+      },
+      "pole_distance_check": {
+        "spearman_rho_vs_p_moon": -0.06617917209442739,
+        "p": 0.0030662340005279533,
+        "median_distance_deg": 3.8975988741079277,
+        "moon_accuracy_near_pole": 0.997,
+        "moon_accuracy_far_from_pole": 0.982
+      },
+      "shap_mean_abs_log_odds": {
+        "roughness_330m_m": 3.4105011233672125,
+        "relief_m": 2.2908627366362455,
+        "depression_max_depth_m": 1.9740359420766231,
+        "depression_share": 0.9371174100685075,
+        "slope_mean_deg": 0.852879517687585,
+        "slope_p90_deg": 0.8013037743694441,
+        "detrended_relief_m": 0.630003320970615,
+        "hypsometric_integral": 0.42628597595815154
+      },
+      "sites": {
+        "askja": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.003704578469517105,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -4.184227708288112,
+            "relief_m": -1.550024206279006,
+            "slope_p90_deg": -0.8597521570766216,
+            "slope_mean_deg": -0.7710264532009801,
+            "depression_share": -0.7150332073507557,
+            "depression_max_depth_m": -0.6878908694187595,
+            "hypsometric_integral": -0.5148255955678694,
+            "detrended_relief_m": -0.011076828829649114
+          }
+        },
+        "black_point": {
+          "n_tiles": 10,
+          "mean_p_moon": 9.807093626463372e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "relief_m": -3.971636302944956,
+            "depression_max_depth_m": -2.329379221264646,
+            "roughness_330m_m": -1.0757896509693072,
+            "slope_mean_deg": -1.0465337257967722,
+            "depression_share": -0.969036871718133,
+            "detrended_relief_m": -0.6936067437202615,
+            "slope_p90_deg": -0.08897158696551596,
+            "hypsometric_integral": 0.06943036478946027
+          }
+        },
+        "bromo": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.00013414708953504457,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -8.786365589498686,
+            "slope_p90_deg": -2.9640049284291448,
+            "hypsometric_integral": -0.26570382654761365,
+            "depression_share": -0.2554538640575831,
+            "depression_max_depth_m": 0.23081345364286954,
+            "detrended_relief_m": 0.24757532571695243,
+            "slope_mean_deg": 0.8545265995636163,
+            "relief_m": 0.9146471401703468
+          }
+        },
+        "craters_moon": {
+          "n_tiles": 4,
+          "mean_p_moon": 0.002045002570140053,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "relief_m": -2.3283181448593746,
+            "roughness_330m_m": -1.8469602203351236,
+            "hypsometric_integral": -1.7110425360168833,
+            "depression_share": -1.3692272292216292,
+            "slope_mean_deg": -0.7291546565721041,
+            "slope_p90_deg": -0.6902732115670428,
+            "detrended_relief_m": -0.08195134667070733,
+            "depression_max_depth_m": 0.6302668942037555
+          }
+        },
+        "dry_valleys": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.08157587464863408,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -6.596257109941599,
+            "slope_p90_deg": -1.7577932206919562,
+            "hypsometric_integral": -0.734897681451928,
+            "depression_share": -0.3469288572503878,
+            "depression_max_depth_m": -0.15943349653614533,
+            "slope_mean_deg": 0.13991081468380392,
+            "detrended_relief_m": 0.5344576653169334,
+            "relief_m": 1.5856379854993534
+          }
+        },
+        "etna": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.059740411522521734,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -6.838680343085635,
+            "slope_p90_deg": -1.0507680573625637,
+            "depression_share": -0.8134550424304654,
+            "depression_max_depth_m": -0.6836121922337037,
+            "hypsometric_integral": -0.27897552121733554,
+            "detrended_relief_m": 0.18987916243318675,
+            "slope_mean_deg": 0.40849224826740993,
+            "relief_m": 1.986512471120229
+          }
+        },
+        "haughton": {
+          "n_tiles": 15,
+          "mean_p_moon": 5.315063622187894e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "relief_m": -2.9447443768432278,
+            "roughness_330m_m": -2.6353612508739985,
+            "depression_max_depth_m": -2.140144552751705,
+            "depression_share": -1.2033164807876588,
+            "slope_mean_deg": -0.7843188389594496,
+            "hypsometric_integral": -0.3727543316094536,
+            "slope_p90_deg": -0.21473748928200276,
+            "detrended_relief_m": -0.19728801965435921
+          }
+        },
+        "lanzarote": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.08530579081540851,
+          "share_classified_moon": 0.0625,
+          "mean_shap_log_odds": {
+            "relief_m": -2.171552534327193,
+            "roughness_330m_m": -1.8113498796910512,
+            "hypsometric_integral": -1.063221827800469,
+            "slope_p90_deg": -1.0063746674986764,
+            "slope_mean_deg": -0.8798508229313867,
+            "detrended_relief_m": -0.402534330404173,
+            "depression_share": 0.460416956902679,
+            "depression_max_depth_m": 0.9544692640851521
+          }
+        },
+        "mauna_kea": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.15260563511514022,
+          "share_classified_moon": 0.1875,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -5.689945167112078,
+            "depression_max_depth_m": -0.8531648756283595,
+            "depression_share": -0.6934219670357127,
+            "slope_p90_deg": -0.4846791145844246,
+            "hypsometric_integral": -0.3694258873252567,
+            "detrended_relief_m": -0.0041207475670772455,
+            "slope_mean_deg": 0.3735638457625502,
+            "relief_m": 1.2880630821318162
+          }
+        },
+        "rinjani": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.0007085431238817924,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -8.406324630158679,
+            "slope_p90_deg": -2.1569583776806014,
+            "depression_share": -0.43519846793556344,
+            "hypsometric_integral": -0.38773684387363483,
+            "depression_max_depth_m": -0.35123346253159615,
+            "detrended_relief_m": 0.14509673555392424,
+            "slope_mean_deg": 0.5533783434162688,
+            "relief_m": 1.4360767850994085
+          }
+        },
+        "svalbard": {
+          "n_tiles": 9,
+          "mean_p_moon": 7.361240684025421e-05,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -9.62221109990901,
+            "slope_p90_deg": -2.199774057973375,
+            "depression_max_depth_m": -0.6778648214309557,
+            "depression_share": -0.4406769972269844,
+            "hypsometric_integral": -0.19370063499514495,
+            "detrended_relief_m": 0.3074527262517575,
+            "slope_mean_deg": 1.0470357816835751,
+            "relief_m": 1.4920789250557422
+          }
+        },
+        "yungay": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.026075745776257667,
+          "share_classified_moon": 0.0,
+          "mean_shap_log_odds": {
+            "roughness_330m_m": -3.979812247959677,
+            "relief_m": -1.4778436137654587,
+            "hypsometric_integral": -0.9014068187624189,
+            "slope_mean_deg": -0.5180447297490577,
+            "depression_share": -0.2117636394673036,
+            "slope_p90_deg": -0.13613725782311623,
+            "depression_max_depth_m": -0.10576684240316092,
+            "detrended_relief_m": -0.04017595345409699
+          }
+        },
+        "shackleton_rim": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.9516410538842637,
+          "share_classified_moon": 0.9375,
+          "mean_shap_log_odds": {
+            "slope_p90_deg": -1.5122527932462277,
+            "depression_share": -0.48679156279971203,
+            "depression_max_depth_m": -0.4221467850818434,
+            "hypsometric_integral": 0.16251659824815345,
+            "detrended_relief_m": 0.6054790327454862,
+            "roughness_330m_m": 2.012123220550449,
+            "slope_mean_deg": 2.804455797496255,
+            "relief_m": 3.757536487363741
+          },
+          "random_moon_tiles_excluded": 3
+        },
+        "malapert": {
+          "n_tiles": 16,
+          "mean_p_moon": 0.9959618374339876,
+          "share_classified_moon": 1.0,
+          "mean_shap_log_odds": {
+            "slope_p90_deg": -0.6356714150829839,
+            "depression_share": -0.47661569409253257,
+            "detrended_relief_m": 0.4297380843460169,
+            "hypsometric_integral": 0.4627107833306908,
+            "depression_max_depth_m": 0.63886997632364,
+            "slope_mean_deg": 1.4772911050231015,
+            "roughness_330m_m": 2.313247439367607,
+            "relief_m": 3.0727657658532586
+          },
+          "random_moon_tiles_excluded": 4
+        }
+      }
+    }
+  }
+}
