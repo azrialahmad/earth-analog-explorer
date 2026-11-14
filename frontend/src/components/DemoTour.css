@@ -1,0 +1,33 @@
+.demo {
+  position: absolute;
+  z-index: 8;
+  /* above the mismatch callout and the shelf, clear of the target and site names at the top */
+  inset-block-end: calc(290px + env(safe-area-inset-bottom, 0px));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(560px, calc(100% - 32px));
+  padding: 12px 16px 10px;
+  border-radius: var(--radius);
+  display: grid;
+  gap: 6px;
+  border-color: color-mix(in srgb, var(--terrain) 40%, transparent);
+  pointer-events: none;
+}
+.demo-head { display: flex; justify-content: space-between; gap: 12px; }
+.demo-head .label { color: var(--terrain); }
+.demo-hint { font-size: 11px; color: var(--faint); }
+.demo-caption { font-size: 14px; line-height: 1.45; text-wrap: pretty; animation: demo-in 0.4s ease-out; }
+.demo-progress { block-size: 2px; border-radius: 1px; background: rgb(255 255 255 / 0.08); overflow: hidden; }
+.demo-progress span { display: block; block-size: 100%; inline-size: 100%; background: var(--terrain); transform-origin: left; animation: demo-bar linear forwards; }
+
+@keyframes demo-in { from { opacity: 0; translate: 0 4px; } }
+@keyframes demo-bar { from { scale: 0 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-caption { animation: none; }
+  .demo-progress { display: none; }
+}
+
+@media (max-width: 700px) {
+  .demo { inset-block-end: calc(380px + env(safe-area-inset-bottom, 0px)); }
+}

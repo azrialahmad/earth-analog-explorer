@@ -11,6 +11,7 @@ export interface TargetPickerProps {
   onPick: (id: string) => void
   /** Present when a target is already chosen, so the picker can be dismissed. */
   onClose?: () => void
+  onPlayDemo?: () => void
 }
 
 const GROUPS: { body: Target['body']; heading: string }[] = [
@@ -46,7 +47,7 @@ function TargetCard({ target: t, config, onPick }: { target: Target; config: Con
 }
 
 /** The opening screen: choose a Moon or Mars target, then explore its Earth analogs. */
-export default function TargetPicker({ targets, config, onPick, onClose }: TargetPickerProps) {
+export default function TargetPicker({ targets, config, onPick, onClose, onPlayDemo }: TargetPickerProps) {
   return (
     <div className="picker" role="dialog" aria-modal="true" aria-labelledby="picker-title">
       <div className="picker-inner">
@@ -57,6 +58,7 @@ export default function TargetPicker({ targets, config, onPick, onClose }: Targe
             <p className="picker-lede">
               Pick a place on the Moon or Mars. We rank Earth sites by how closely their ground matches it, and show where the light does not.
             </p>
+            {onPlayDemo && <button type="button" className="btn glass picker-demo" onClick={onPlayDemo}>▶ Play the 75-second demo</button>}
           </div>
           {onClose && <button type="button" className="close" aria-label="Close target picker" onClick={onClose}>×</button>}
         </header>

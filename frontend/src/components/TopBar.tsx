@@ -11,6 +11,7 @@ export interface TopBarProps {
   panel: Panel
   onTogglePanel: (p: Exclude<Panel, 'none'>) => void
   onOpenPicker: () => void
+  onPlayDemo: () => void
 }
 
 const GROUPS: { body: Target['body']; label: string }[] = [
@@ -18,7 +19,7 @@ const GROUPS: { body: Target['body']; label: string }[] = [
   { body: 'mars', label: 'Mars' },
 ]
 
-export default function TopBar({ targets, targetId, onPickTarget, fixture, panel, onTogglePanel, onOpenPicker }: TopBarProps) {
+export default function TopBar({ targets, targetId, onPickTarget, fixture, panel, onTogglePanel, onOpenPicker, onPlayDemo }: TopBarProps) {
   const body = targets.find(t => t.id === targetId)?.body
   return (
     <header className="topbar">
@@ -66,6 +67,10 @@ export default function TopBar({ targets, targetId, onPickTarget, fixture, panel
         <button type="button" className="btn glass" aria-expanded={panel === 'evidence'} aria-controls="evidence-panel" onClick={() => onTogglePanel('evidence')}>
           <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.5" /><path d="M1 8s2.6-5 7-5 7 5 7 5-2.6 5-7 5-7-5-7-5z" /></svg>
           <span className="tool-label">Evidence</span>
+        </button>
+        <button type="button" className="btn glass" onClick={onPlayDemo}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z" /></svg>
+          <span className="tool-label">Play demo</span>
         </button>
       </div>
     </header>

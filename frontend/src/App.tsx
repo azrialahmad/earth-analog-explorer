@@ -10,6 +10,8 @@ import WeightsPanel from './components/WeightsPanel'
 import DataDrawer from './components/DataDrawer'
 import EvidencePanel from './components/EvidencePanel'
 import TargetPicker from './screens/TargetPicker'
+import DemoTour from './components/DemoTour'
+import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
 
 type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
@@ -30,6 +32,7 @@ export default function App() {
   const [relit, setRelit] = useState(false)
   const [picking, setPicking] = useState(true)
   const [picked, setPicked] = useState(false)
+  const [demo, setDemo] = useState<DemoStep[] | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -73,6 +76,11 @@ export default function App() {
 
   const toggle = (p: Panel) => setPanel(cur => (cur === p ? 'none' : p))
   const pickTarget = (id: string) => { setTargetId(id); setSiteId(null); setRelit(false) }
+  const playDemo = () => {
+    const steps = buildDemoSteps(data)
+    if (!steps.length) return
+    setPanel('none'); setPicking(false); setPicked(true); setDemo(steps)
+  }
 
   return (
     <div className="app">
@@ -82,6 +90,7 @@ export default function App() {
         targetId={target.id}
         onPickTarget={pickTarget}
         onOpenPicker={() => { setPanel('none'); setPicking(true) }}
+        onPlayDemo={playDemo}
         fixture={data.config._fixture === true}
         panel={panel}
         onTogglePanel={toggle}
@@ -120,12 +129,26 @@ export default function App() {
         onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
         onClose={() => setPanel('none')}
       />
+      {demo && (
+        <DemoTour
+          steps={demo}
+          actions={{
+            pickTarget: id => { setTargetId(id); setSiteId(null) },
+            selectSite: setSiteId,
+            setRelit,
+            setWeights,
+            resetWeights: () => setWeights(defaultWeights(data.config)),
+          }}
+          onEnd={() => setDemo(null)}
+        />
+      )}
       {picking && (
         <TargetPicker
           targets={data.targets}
           config={data.config}
           onPick={id => { pickTarget(id); setPicked(true); setPicking(false) }}
           onClose={picked ? () => setPicking(false) : undefined}
+          onPlayDemo={playDemo}
         />
       )}
     </div>
