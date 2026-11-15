@@ -20,7 +20,11 @@ SCORER_PATH = ROOT / "pipeline" / "scan.py"
 GENERATOR_PATH = Path(__file__).resolve()
 DEFAULT_OUTPUT = ROOT / "frontend" / "public" / "data" / "test-fixtures" / "terrain-scoring.json"
 SCHEMA_VERSION = 1
-NONFINITE_VALUES = {"NaN": math.nan, "Infinity": math.inf, "-Infinity": -math.inf}
+NONFINITE_VALUES = {
+    "not-a-number": math.nan,
+    "positive-infinite": math.inf,
+    "negative-infinite": -math.inf,
+}
 
 
 def sha256(path: Path) -> str:
@@ -214,7 +218,7 @@ def make_cases(config: dict[str, Any]) -> list[dict[str, Any]]:
     )
 
     nonfinite_sites = []
-    for label in ("NaN", "Infinity", "-Infinity"):
+    for label in ("not-a-number", "positive-infinite", "negative-infinite"):
         values = dict(target)
         values[first] = marker(label)
         nonfinite_sites.append(_site(f"nonfinite-{label.lower()}", values))
@@ -273,8 +277,9 @@ def fixture_document(config_path: Path = CONFIG_PATH, scorer_path: Path = SCORER
             "uses its configured main window. No new terrain windows are computed by this fixture generator."
         ),
         "nonfinite_note": (
-            "A values object of the form {non_finite: NaN|Infinity|-Infinity} is a JSON-safe test marker; "
-            "a consumer must decode it to the corresponding non-finite number before calling similarity."
+        "A values object with a non_finite label is a JSON-safe test marker; labels are "
+        "not-a-number, positive-infinite, or negative-infinite. A consumer decodes the label to its "
+        "corresponding non-finite number before calling similarity."
         ),
         "cases": cases,
     }

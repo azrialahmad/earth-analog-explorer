@@ -635,12 +635,12 @@
       "description": "JSON-safe markers decode to non-finite numbers for scorer tests; those parameter comparisons are missing.",
       "expected": {
         "ranked_site_ids": [
-          "nonfinite--infinity",
-          "nonfinite-infinity",
-          "nonfinite-nan"
+          "nonfinite-negative-infinite",
+          "nonfinite-not-a-number",
+          "nonfinite-positive-infinite"
         ],
         "sites": {
-          "nonfinite--infinity": {
+          "nonfinite-negative-infinite": {
             "completeness": 0.6666666666666666,
             "included_weight": 2.0,
             "missing": [
@@ -655,7 +655,7 @@
             "total_weight": 3.0,
             "weighted_sum": 2.0
           },
-          "nonfinite-infinity": {
+          "nonfinite-not-a-number": {
             "completeness": 0.6666666666666666,
             "included_weight": 2.0,
             "missing": [
@@ -670,7 +670,7 @@
             "total_weight": 3.0,
             "weighted_sum": 2.0
           },
-          "nonfinite-nan": {
+          "nonfinite-positive-infinite": {
             "completeness": 0.6666666666666666,
             "included_weight": 2.0,
             "missing": [
@@ -691,31 +691,31 @@
       "kind": "synthetic",
       "sites": [
         {
-          "id": "nonfinite-nan",
+          "id": "nonfinite-not-a-number",
           "values": {
             "roughness_m": 0.0,
             "slope_mean_deg": {
-              "non_finite": "NaN"
+              "non_finite": "not-a-number"
             },
             "slope_p90_deg": 0.0
           }
         },
         {
-          "id": "nonfinite-infinity",
+          "id": "nonfinite-positive-infinite",
           "values": {
             "roughness_m": 0.0,
             "slope_mean_deg": {
-              "non_finite": "Infinity"
+              "non_finite": "positive-infinite"
             },
             "slope_p90_deg": 0.0
           }
         },
         {
-          "id": "nonfinite--infinity",
+          "id": "nonfinite-negative-infinite",
           "values": {
             "roughness_m": 0.0,
             "slope_mean_deg": {
-              "non_finite": "-Infinity"
+              "non_finite": "negative-infinite"
             },
             "slope_p90_deg": 0.0
           }
@@ -1016,7 +1016,7 @@
       "window_km": 12.0
     }
   ],
-  "nonfinite_note": "A values object of the form {non_finite: NaN|Infinity|-Infinity} is a JSON-safe test marker; a consumer must decode it to the corresponding non-finite number before calling similarity.",
+  "nonfinite_note": "A values object with a non_finite label is a JSON-safe test marker; labels are not-a-number, positive-infinite, or negative-infinite. A consumer decodes the label to its corresponding non-finite number before calling similarity.",
   "ordering_note": "Fixture ranking uses the frontend contract: score descending, null last, site id ascending for ties. pipeline/scan.py selection instead breaks equal window scores by latitude then longitude.",
   "producer": {
     "config": "config/weights.yaml",
@@ -1047,7 +1047,7 @@
       12.0
     ],
     "generator": "pipeline/scoring_fixtures.py",
-    "generator_sha256": "6fef0061b72d32852e64b26b8fa8a89037bb26c1d37fe6fb0e76661895224e1d",
+    "generator_sha256": "e7076d9c62a6b2bd3c7804db0898b7e3b7f459bf5f6faa4fb97faa7f259c9778",
     "parameter_order": [
       "slope_mean_deg",
       "slope_p90_deg",
