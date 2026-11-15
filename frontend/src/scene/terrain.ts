@@ -1,6 +1,7 @@
 // Height fields for the terrain views. Pure functions, no three.js, so they are unit-tested.
 // Display only: nothing here feeds a score. The views draw real relief from a ReliefGrid built
-// by the pipeline; when a place has none they show "No elevation data" and draw no surface.
+// by the pipeline; when a place has none, or only an incomplete or malformed one, they label it and
+// draw no surface. Missing elevation is never filled in (issue #61).
 // generatedHeights is no longer drawn by the app (since #39); only its tests use it.
 import type { ReliefGrid } from '../types'
 import { rng } from '../engine/stability'
@@ -76,20 +77,33 @@ export function generatedHeights(seed: number, kind: TerrainKind): Float32Array 
   return h
 }
 
+/** Why a ReliefGrid cannot be drawn. `missing` counts null or non-finite cells out of `total`. */
+export type ReliefProblem =
+  | { kind: 'malformed' }
+  | { kind: 'incomplete'; missing: number; total: number }
+
+export type ReliefResult = { ok: true; heights: Float32Array } | { ok: false; problem: ReliefProblem }
+
 /**
  * Heights from a pipeline ReliefGrid, at true scale (same factor horizontally and vertically),
- * centred on the mean elevation, resampled to GRID × GRID. Nodata cells take the mean.
- * Null when the grid has no usable values.
+ * centred on the mean elevation, resampled to GRID × GRID.
+ * A grid with any nodata cell is rejected rather than filled, so the view never shows invented
+ * ground as measured; so is a grid with a bad size, cell spacing or length.
  */
-export function reliefHeights(grid: ReliefGrid): Float32Array | null {
+export function reliefHeights(grid: ReliefGrid): ReliefResult {
   const { size, cell_m, elev_m } = grid
-  if (!(size >= 2) || !(cell_m > 0) || elev_m.length !== size * size) return null
-  let sum = 0, count = 0
-  for (const e of elev_m) if (e !== null && Number.isFinite(e)) { sum += e; count++ }
-  if (count === 0) return null
-  const mean = sum / count
+  if (!Number.isInteger(size) || !(size >= 2) || !(Number.isFinite(cell_m) && cell_m > 0) || !Array.isArray(elev_m) || elev_m.length !== size * size) {
+    return { ok: false, problem: { kind: 'malformed' } }
+  }
+  let sum = 0, missing = 0
+  for (const e of elev_m) {
+    if (typeof e === 'number' && Number.isFinite(e)) sum += e
+    else missing++
+  }
+  if (missing > 0) return { ok: false, problem: { kind: 'incomplete', missing, total: elev_m.length } }
+  const mean = sum / elev_m.length
   const scale = SPAN / ((size - 1) * cell_m)
-  const at = (i: number, j: number) => { const e = elev_m[j * size + i]; return e !== null && Number.isFinite(e) ? e : mean }
+  const at = (i: number, j: number) => elev_m[j * size + i] as number
 
   const h = new Float32Array(GRID * GRID)
   for (let j = 0; j < GRID; j++) {
@@ -102,5 +116,25 @@ export function reliefHeights(grid: ReliefGrid): Float32Array | null {
       h[j * GRID + i] = (e - mean) * scale
     }
   }
-  return h
+  return { ok: true, heights: h }
+}
+
+/** What one side shows. Only `relief` draws a surface; every other state is labelled and draws nothing. */
+export type ReliefSource =
+  | { kind: 'loading' }
+  | { kind: 'relief'; size: number; cell_m: number }
+  | { kind: 'none' }            // the place has no relief grid
+  | { kind: 'failed' }          // the grid file could not be loaded
+  | { kind: 'unusable'; problem: ReliefProblem }
+
+/** The status line under a view that draws no surface, or null when it draws one (or is still loading). */
+export function reliefStatusText(source: ReliefSource, name: string): string | null {
+  switch (source.kind) {
+    case 'none': return `No elevation data for ${name}, so no surface is drawn here.`
+    case 'failed': return `The elevation grid for ${name} could not be loaded, so no surface is drawn here.`
+    case 'unusable': return source.problem.kind === 'incomplete'
+      ? `The elevation grid for ${name} has ${source.problem.missing} of ${source.problem.total} cells missing. Gaps are not filled in, so no surface is drawn here.`
+      : `The elevation grid for ${name} is malformed, so no surface is drawn here.`
+    default: return null
+  }
 }
