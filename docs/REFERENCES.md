@@ -25,6 +25,7 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 | PyYAML | YAML and Python communities | Read the authoritative terrain windows and app weights from YAML | [PyYAML repository](https://github.com/yaml/pyyaml) | MIT | no |
 | Requests | Python Software Foundation / Requests maintainers | Check which WorldCover tiles exist before reading them | [Requests repository](https://github.com/psf/requests) | Apache-2.0 | no |
 | Rasterio | Rasterio maintainers | Read source DEMs and reproject/resample terrain windows | [Rasterio documentation](https://rasterio.readthedocs.io/) | BSD-3-Clause | no |
+| GDAL warp documentation | GDAL / OSGeo contributors | Describe automatic `XSCALE`/`YSCALE` kernel-scale behavior for the #57 reader diagnostic; not a terrain dataset | [GDALWarpOptions](https://gdal.org/en/stable/doxygen/structGDALWarpOptions.html) | not stated | no |
 | SciPy | SciPy Developers | Sample processed elevation arrays onto the relief-grid output | [SciPy repository](https://github.com/scipy/scipy) | BSD-3-Clause | no |
 | React | React team | App component rendering and state | [React repository](https://github.com/react/react) | MIT | no |
 | React DOM | React team | Mount the app in the browser DOM | [React repository](https://github.com/react/react) | MIT | no |

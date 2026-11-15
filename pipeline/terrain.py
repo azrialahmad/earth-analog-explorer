@@ -470,7 +470,9 @@ def build_row(identity, source, res_m, sizes, loader):
     main_stats = None
     for km in sizes:
         s = crop_slice(center, km, km_max)
-        stats = summarize(z[s], valid[s], slope[s], rough[s])
+        # A slice alone crops rows only. Both axes must describe the requested
+        # square, excluding the largest window's horizontal buffer as well.
+        stats = summarize(z[s, s], valid[s, s], slope[s, s], rough[s, s])
         row["windows"][str(int(km))] = {
             "slope_mean_deg": finite_or_null(stats["slope_mean_deg"]),
             "slope_p90_deg": finite_or_null(stats["slope_p90_deg"]),
@@ -479,7 +481,8 @@ def build_row(identity, source, res_m, sizes, loader):
         if int(km) == 6:
             main_stats = stats
     if main_stats is None:
-        main_stats = summarize(z[center], valid[center], slope[center], rough[center])
+        main_stats = summarize(z[center, center], valid[center, center],
+                               slope[center, center], rough[center, center])
     row["elev_m"] = finite_or_null(main_stats["mean_elev_m"])
     row["flat_share"] = finite_or_null(main_stats["flat_share"])
     return row
@@ -639,7 +642,10 @@ def selftest() -> int:
         assert abs(back_lat - lat) < 1e-6, (lat, lon, back_lat)
         assert abs(back_lon - lon) < 1e-6, (lat, lon, back_lon)
 
-    print("selftest: PASS (flat, inclined plane, roughness, nodata mask, projection round-trip)")
+    from test_terrain_windows import run_selftests
+
+    run_selftests()
+    print("selftest: PASS (flat, inclined plane, roughness, nodata mask, projection round-trip, square windows)")
     return 0
 
 
