@@ -1,8 +1,25 @@
 # Workbench layout mockup
 
 This page records a visual concept for the Earth Analog Explorer workbench. It
-documents a review artifact; it does not change the production app or mean that
-the proposed layout has been accepted for implementation.
+documents the original review artifact; the screenshots below are not captures
+of the later production implementation.
+
+## Production implementation
+
+Following @azrialahmad's permission in
+[#117](https://github.com/azrialahmad/earth-analog-explorer/issues/117),
+PR #45 now also implements the studio workbench in the ordinary `frontend/src/`
+components and styles. It does not ship the preview plugins. Weights and the
+assistant are embedded in the center pane; terrain controls move to the header;
+Data and Evidence remain accessible. The real assistant transport is retained.
+Chat/drafts survive target changes, with canonical per-turn history checked by
+the API and cancellation of stale requests/tools.
+
+The archived 1280×720 concept capture below has mesh/title overlap, and the
+390×844 concept capture hides the app title and clips target controls. These are
+known defects of those pinned screenshots, not intended production behavior.
+The production implementation reserves measured label bands above each mesh
+and wraps header groups while retaining the app title and reachable controls.
 
 ## Screenshots
 
@@ -50,9 +67,10 @@ remain above it. The full center pane is not expected to fit on one mobile scree
 
 These are preview interactions, not shipped production changes. The assistant
 transport remains offline. The production API still rejects mixed-target
-history; the requested follow-up is recorded in
+history at that snapshot; the proposed follow-up (not yet agreed at that time) is recorded in
 [#50](https://github.com/azrialahmad/earth-analog-explorer/issues/50#issuecomment-6895287232).
-The screenshots themselves do not demonstrate successful AI answers or request
+The later client/API implementation is covered by #117. These archived
+screenshots themselves do not demonstrate successful AI answers or request
 synchronization.
 
 ## Concept and limitations
@@ -97,7 +115,7 @@ from source snapshot [`9ccfcf7`](https://github.com/azrialahmad/earth-analog-exp
 and app baseline `a1c6548` (before #43/#44). Its old Moon-lighting values are not
 the data shown in the refreshed captures above.
 
-Both branches are revision-specific review artifacts, not supported demos. Only
-this documentation and selected screenshots belong in the `main` deliverable.
-Neither mockup approval nor this documentation authorizes production UI or API
-changes; those require a separate scoped issue and frontend-owner review.
+Both branches are revision-specific review artifacts, not supported demos. The
+executable previews remain outside the merge diff. Production changes use the
+normal app source under the separate scope and owner permission recorded in
+#117; the earlier documentation-only approval is not approval of that new diff.

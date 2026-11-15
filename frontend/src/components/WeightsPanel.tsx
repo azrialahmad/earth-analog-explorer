@@ -4,6 +4,7 @@ import { PARAM_KEYS } from '../types'
 import './WeightsPanel.css'
 
 export interface WeightsPanelProps {
+  embedded?: boolean
   open: boolean
   config: Config
   weights: Weights
@@ -14,13 +15,13 @@ export interface WeightsPanelProps {
 
 const MAX_WEIGHT = 3
 
-export default function WeightsPanel({ open, config, weights, onWeights, onReset, onClose }: WeightsPanelProps) {
+export default function WeightsPanel({ embedded = false, open, config, weights, onWeights, onReset, onClose }: WeightsPanelProps) {
   return (
-    <section id="weights-panel" className="weights panel glass" aria-label="Weights" hidden={!open}>
+    <section id="weights-panel" className={`weights panel glass${embedded ? ' embedded' : ''}`} aria-label="Weights" hidden={!open}>
       <header>
         <h2>Weights</h2>
         {config.provisional && <span className="label provisional">Provisional defaults</span>}
-        <button type="button" className="close" aria-label="Close weights" onClick={onClose}>×</button>
+        {!embedded && <button type="button" className="close" aria-label="Close weights" onClick={onClose}>×</button>}
       </header>
       {PARAM_KEYS.map(k => {
         const id = `w-${k}`

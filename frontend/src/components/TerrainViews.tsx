@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { createPortal } from 'react-dom'
 import type { ReliefGrid, Site, Target } from '../types'
 import { asset } from '../ui'
 import { reliefHeights, reliefStatusText, type ReliefSource as Source, type TerrainKind } from '../scene/terrain'
@@ -13,6 +14,8 @@ export interface TerrainViewsProps {
   onToggleRelit: () => void
   /** The analysis window from config, named so the display mesh is not mistaken for the scoring grid. */
   mainWindowKm: number
+  /** Header mount; renderer state stays here when controls move into TopBar. */
+  controlsHost?: HTMLElement | null
 }
 
 const TONES: Record<TerrainKind, number> = { moon: 0x8d8f93, mars: 0xb5653d, earth: 0x8a7f72 }
@@ -72,11 +75,13 @@ function ViewLabel({ role, name, source }: { role: string; name: string; source:
  * Two complete terrain views, target and selected Earth site, drawn with one shared camera:
  * dragging or zooming either view moves both. Side by side when the pane is wide, stacked when it is tall.
  */
-export default function TerrainViews({ target, site, relit, onToggleRelit, mainWindowKm }: TerrainViewsProps) {
+export default function TerrainViews({ target, site, relit, onToggleRelit, mainWindowKm, controlsHost }: TerrainViewsProps) {
   const [ctrl, setCtrl] = useState<SplitRenderer | null>(null)
   const [noGL, setNoGL] = useState(false)
   const [rotating, setRotating] = useState(false) // off by default
-  const [layout, setLayout] = useState<ViewLayout>('row')
+  const [autoLayout, setAutoLayout] = useState<ViewLayout>('row')
+  const [arrangement, setArrangement] = useState<'auto' | ViewLayout>('auto')
+  const layout = arrangement === 'auto' ? autoLayout : arrangement
   const [sources, setSources] = useState<Record<Side, Source>>({ left: { kind: 'loading' }, right: { kind: 'loading' } })
   const rootRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -98,18 +103,28 @@ export default function TerrainViews({ target, site, relit, onToggleRelit, mainW
     return () => { cancelled = true; created?.dispose() }
   }, [])
 
-  // Wide pane: views side by side. Tall or narrow pane: stacked, target on top.
+  // Use width, not the height changed by this choice, to avoid resize oscillation.
   useEffect(() => {
     const el = rootRef.current
     if (!el) return
     const ro = new ResizeObserver(([e]) => {
-      const { width, height } = e.contentRect
-      if (width > 0 && height > 0) setLayout(width / height >= 1.2 ? 'row' : 'column')
+      const { width } = e.contentRect
+      if (width > 0) setAutoLayout(width >= 520 ? 'row' : 'column')
     })
     ro.observe(el)
     return () => ro.disconnect()
   }, [])
   useEffect(() => { ctrl?.setLayout(layout) }, [ctrl, layout])
+  useEffect(() => {
+    const labels = rootRef.current?.querySelectorAll<HTMLElement>('.view-label')
+    if (!ctrl || !labels) return
+    // Reserve each actual, wrapping title/source band above its mesh viewport.
+    const measure = () => labels.forEach((label, i) => ctrl.setLabelHeight(i === 0 ? 'left' : 'right', label.offsetHeight + 20))
+    const observer = new ResizeObserver(measure)
+    labels.forEach(label => observer.observe(label))
+    measure()
+    return () => observer.disconnect()
+  }, [ctrl])
   useEffect(() => { ctrl?.setAutoRotate(rotating) }, [ctrl, rotating])
 
   const moon = target.body === 'moon'
@@ -149,17 +164,18 @@ export default function TerrainViews({ target, site, relit, onToggleRelit, mainW
   }
 
   const siteName = site?.name ?? 'No site selected'
+  const controls = (
+    <div className="views-tools" role="group" aria-label="Terrain controls">
+      <button type="button" className="btn glass" onClick={() => { ctrl?.resetView(); setRotating(false) }} disabled={!ctrl}>Reset view</button>
+      <button type="button" className="btn glass" aria-pressed={rotating} onClick={() => setRotating(r => !r)} disabled={!ctrl}>
+        {rotating ? 'Stop rotating' : 'Rotate'}
+      </button>
+      {moon && <button type="button" className="btn glass" aria-pressed={relit} onClick={onToggleRelit}>Polar sun</button>}
+    </div>
+  )
   return (
-    <div className="views-pane">
-      <div className="views-tools">
-        <button type="button" className="btn glass" onClick={() => { ctrl?.resetView(); setRotating(false) }} disabled={!ctrl}>Reset view</button>
-        <button type="button" className="btn glass" aria-pressed={rotating} onClick={() => setRotating(r => !r)} disabled={!ctrl}>
-          {rotating ? 'Stop rotating' : 'Rotate'}
-        </button>
-        {moon && (
-          <button type="button" className="btn glass" aria-pressed={relit} onClick={onToggleRelit}>Polar sun</button>
-        )}
-      </div>
+    <div className={`views-pane${controlsHost ? '' : ' local-controls'}`}>
+      {controlsHost ? createPortal(controls, controlsHost) : controls}
 
       <div className={`views ${layout}`} ref={rootRef}>
         <canvas
@@ -187,12 +203,24 @@ export default function TerrainViews({ target, site, relit, onToggleRelit, mainW
         </div>
       </div>
 
-      <p className="views-foot">
-        {relit && moon
-          ? 'Polar sun on both views: a sun about 2° up under a black sky, as at the lunar pole, plus a dim ambient fill so shaded ground stays visible. Real polar shadows would be darker. Display lighting only, not an illumination simulation.'
-          : 'Same display lighting on both views, with a soft ambient fill, for comparing shape. It is illustrative, not a simulation of either place.'}{' '}
-        The meshes are for viewing; Terrain Match uses the {mainWindowKm} km window values.
-      </p>
+      <div className="view-toolbar">
+        <details className="view-info">
+          <summary>View info</summary>
+          <p className="views-foot">
+            {relit && moon
+              ? 'Polar sun on both views: a sun about 2° up under a black sky, as at the lunar pole, plus a dim ambient fill so shaded ground stays visible. Real polar shadows would be darker. Display lighting only, not an illumination simulation.'
+              : 'Same display lighting on both views, with a soft ambient fill, for comparing shape. It is illustrative, not a simulation of either place.'}{' '}
+            The meshes are for viewing; Terrain Match uses the {mainWindowKm} km window values.
+          </p>
+        </details>
+        <div role="group" aria-label="Terrain view arrangement" className="view-arrangement">
+          {(['auto', 'row', 'column'] as const).map(choice => (
+            <button key={choice} type="button" aria-pressed={arrangement === choice} onClick={() => setArrangement(choice)}>
+              {choice === 'auto' ? 'Auto' : choice === 'row' ? 'Side by side' : 'Stacked'}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

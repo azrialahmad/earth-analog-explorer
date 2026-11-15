@@ -73,6 +73,8 @@ export async function POST(request: Request): Promise<Response> {
   return res
 }
 
+// Historical turns may use other targets. Every reference is still reconstructed
+// and compared with canonical server data by resolve() before a provider is called.
 function validRequest(value: unknown): value is AskRequest {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false
   const b = value as AskRequest
@@ -83,7 +85,7 @@ function validRequest(value: unknown): value is AskRequest {
     Array.isArray(b.history) && b.history.length <= MAX_HISTORY && b.history.every(t =>
       t && typeof t === 'object' && Object.keys(t).length === 3 &&
       (t.role === 'user' || t.role === 'assistant') && typeof t.text === 'string' &&
-      validReference(t.context) && t.context.targetId === b.context.targetId,
+      validReference(t.context),
     )
 }
 
