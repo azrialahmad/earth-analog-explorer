@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type { ReliefGrid, Site, Target } from '../types'
 import { asset } from '../ui'
-import { reliefHeights, type TerrainKind } from '../scene/terrain'
+import { reliefHeights, reliefStatusText, type ReliefSource as Source, type TerrainKind } from '../scene/terrain'
 import type { LightPreset, Side, SplitRenderer, ViewLayout } from '../scene/renderer'
 import './TerrainViews.css'
 
@@ -17,23 +17,26 @@ export interface TerrainViewsProps {
 
 const TONES: Record<TerrainKind, number> = { moon: 0x8d8f93, mars: 0xb5653d, earth: 0x8a7f72 }
 
-type Source = { kind: 'loading' } | { kind: 'relief'; size: number; cell_m: number } | { kind: 'none' }
-
 const reliefCache = new Map<string, Promise<ReliefGrid | null>>()
 function loadRelief(path: string): Promise<ReliefGrid | null> {
   let p = reliefCache.get(path)
   if (!p) {
     p = fetch(asset(path)).then(r => (r.ok ? (r.json() as Promise<ReliefGrid>) : null)).catch(() => null)
+    // a failed load is not cached, so a later selection can try again
+    p.then(g => { if (g === null) reliefCache.delete(path) })
     reliefCache.set(path, p)
   }
   return p
 }
 
-/** Heights from the place's own relief grid, or nothing. No invented surface stands in for missing data. */
+/** Heights from the place's own complete relief grid, or nothing. No surface stands in for missing data. */
 async function reliefFor(relief: string | null): Promise<{ heights: Float32Array | null; source: Source }> {
-  const grid = relief ? await loadRelief(relief) : null
-  const h = grid ? reliefHeights(grid) : null
-  return grid && h ? { heights: h, source: { kind: 'relief', size: grid.size, cell_m: grid.cell_m } } : { heights: null, source: { kind: 'none' } }
+  if (!relief) return { heights: null, source: { kind: 'none' } }
+  const grid = await loadRelief(relief)
+  if (!grid) return { heights: null, source: { kind: 'failed' } }
+  const r = reliefHeights(grid)
+  if (!r.ok) return { heights: null, source: { kind: 'unusable', problem: r.problem } }
+  return { heights: r.heights, source: { kind: 'relief', size: grid.size, cell_m: grid.cell_m } }
 }
 
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -43,6 +46,10 @@ function SourceTag({ source }: { source: Source }) {
   if (source.kind === 'relief') {
     return <span className="src-tag data">Elevation relief · display mesh {source.size}×{source.size}, {Math.round(source.cell_m)} m cells</span>
   }
+  if (source.kind === 'unusable') {
+    return <span className="src-tag none">{source.problem.kind === 'incomplete' ? 'Incomplete elevation data' : 'Malformed elevation data'}</span>
+  }
+  if (source.kind === 'failed') return <span className="src-tag none">Elevation data not loaded</span>
   return <span className="src-tag none">No elevation data</span>
 }
 
@@ -54,8 +61,8 @@ function ViewLabel({ role, name, source }: { role: string; name: string; source:
         <h2>{name}</h2>
         <SourceTag source={source} />
       </div>
-      {source.kind === 'none' && (
-        <p className="view-empty" role="status">No elevation data for {name}, so no surface is drawn here.</p>
+      {reliefStatusText(source, name) !== null && (
+        <p className="view-empty" role="status">{reliefStatusText(source, name)}</p>
       )}
     </div>
   )
