@@ -6,7 +6,24 @@
 // same-origin only. CORS does not stop scripts, so the provider key should also have a spending limit.
 // The key is never returned or logged. Limits below keep the endpoint from being an open proxy for the key;
 // the host should still rate-limit it.
-import { RERUN_TOOL } from '../src/chat/prompt'
+
+// No imports: Vercel runs this file as a plain Node ES module, where an extensionless import of app code
+// fails to load (the whole function then answers 500). This is the one tool the model may be offered; it
+// must equal RERUN_TOOL in src/chat/prompt.ts, and ask.test.ts checks that it does.
+const WEIGHT_KEYS = ['slope_mean_deg', 'slope_p90_deg', 'roughness_m'] as const
+export const SERVER_RERUN_TOOL = {
+  type: 'function',
+  function: {
+    name: 'rerun_analysis',
+    description: 'Rerank the Earth sites for the current target with new parameter weights. Returns the new ranking from the engine.',
+    parameters: {
+      type: 'object',
+      properties: Object.fromEntries(WEIGHT_KEYS.map(k => [k, { type: 'number', minimum: 0, maximum: 3, description: `Weight for ${k}, 0 to 3` }])),
+      required: [...WEIGHT_KEYS],
+      additionalProperties: false,
+    },
+  },
+} as const
 
 const MAX_MESSAGES = 40
 const MAX_BODY_CHARS = 150_000
@@ -75,7 +92,7 @@ async function handle(request: Request): Promise<Response> {
   try { body = JSON.parse(text) } catch { return json(400, { error: 'Bad request' }) }
   if (!body || typeof body !== 'object' || !validMessages(body.messages)) return json(400, { error: 'Bad request' })
   // Only our own tool is ever offered to the model, whatever the client sends.
-  const tools = Array.isArray(body.tools) && body.tools.length > 0 ? [RERUN_TOOL] : undefined
+  const tools = Array.isArray(body.tools) && body.tools.length > 0 ? [SERVER_RERUN_TOOL] : undefined
 
   let res: Response
   try {
