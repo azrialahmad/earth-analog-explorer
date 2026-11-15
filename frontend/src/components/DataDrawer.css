@@ -58,3 +58,5 @@
 
 .drawer .why-history { display: grid; gap: 4px; padding: 8px 10px; border-radius: 12px; border: 1px dashed var(--edge-strong); opacity: 1; }
 .drawer .why-history .note { font-size: 12px; color: var(--muted); }
+.drawer .flags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.drawer .flags li { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sun); border: 1px solid color-mix(in srgb, var(--sun) 55%, transparent); border-radius: var(--radius-sm); padding: 1px 7px; }

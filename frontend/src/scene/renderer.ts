@@ -7,7 +7,8 @@ import { GRID, SPAN } from './terrain'
 export type Side = 'left' | 'right'
 /**
  * inspect: the same neutral display light on both views, for comparing shapes (illustrative, not a simulation).
- * polar: sun ~2° up, no sky light, black sky. mars: dusty day. earth: Earth day with blue sky fill.
+ * polar: sun ~2° up, black sky, dim hemisphere fill (so it is not a physical lunar shadow). mars: dusty day.
+ * earth: Earth day with blue sky fill.
  */
 export type LightPreset = 'inspect' | 'polar' | 'mars' | 'earth'
 export type ViewLayout = 'row' | 'column'
