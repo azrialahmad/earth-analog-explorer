@@ -1,6 +1,6 @@
 # Missing data and comparison: current-release policy (issue #54)
 
-**Scope:** how the shipped terrain-only app handles missing values and comparison today, and what users are told. Both owners agreed on this narrow scope on #54. A's approval of this exact text is still pending. It changes no score, formula, threshold, data, contract or UI. Future ideas at the end are deferred and undecided.
+**Scope:** how the shipped terrain-only app handles missing values and comparison today, and what users are told. Both owners agreed on this narrow scope on #54. A approved this text on #107 (review of c158c5c). It changes no score, formula, threshold, data, contract or UI. Future ideas at the end are deferred and undecided.
 
 **Release context (#52, #53):** bug fixes and submission only. Terrain Match keeps its name, formula and ranking role. Low-sun share and bare-ground share stay separate context and never change the rank. No combined score, date mode or new factor ships in this release.
 
