@@ -6,15 +6,17 @@ the proposed layout has been accepted for implementation.
 
 ## Screenshots
 
-These captures show the interactive concept on the archived preview branch. The
-app-source baseline is [`a1c6548`](https://github.com/azrialahmad/earth-analog-explorer/commit/a1c65489d525281f53cb98e0ce19787356703e4d)
-(#39/#40), before the SPICE-derived target-lighting update in #43/#44. In
-particular, the Moon lighting value/source visible in the first capture is from
-that older baseline, not current `main` data.
+These Firefox 160 captures use the refreshed, main-based review preview:
+app-source/data baseline [`e305c6a`](https://github.com/azrialahmad/earth-analog-explorer/commit/e305c6acb259c3ee437d95d4f7073775c6ca59aa),
+with preview code at [`1357069`](https://github.com/azrialahmad/earth-analog-explorer/commit/13570691ea54ca40a2b8211b3cab4099f95c972b).
+That baseline contains 30 Earth sites and the target-lighting data shipped at
+that revision. These replace the earlier captures of the 12-site, pre-#43/#44
+preview; the older artifact is preserved separately below. This is a pinned
+snapshot, not a promise that its values track later `main` changes.
 
 ### Desktop · 1512 × 780 · Moon / Shackleton rim
 
-![Desktop studio concept with the ranked Earth list at left, Moon and Earth terrain views with weights and analysis assistant in the center, and selected-site details at right. App-source baseline a1c6548; Moon lighting data predates #43/#44.](screenshots/studio-desktop-1512x780.png)
+![Desktop studio concept with ranked Earth candidates at left, Moon and Earth terrain views, weights and compact assistant context in the center, and selected-site details at right. App/data baseline e305c6a, 30 sites; preview 1357069.](screenshots/studio-desktop-1512x780.png)
 
 The ranked list, paired terrain views, persistent weights, assistant, and selected
 site details are visible together. The ranking is scoped to the configured sites
@@ -22,11 +24,36 @@ in that app revision, not a search of all Earth.
 
 ### Compact desktop · 1280 × 720 · Mars / Jezero crater floor
 
-![Compact desktop studio concept for Jezero crater floor, with ranked Earth candidates at left, stacked terrain views, weights and assistant in the center, and site details at right. App-source baseline a1c6548.](screenshots/studio-desktop-1280x720.png)
+![Compact desktop studio concept for Jezero crater floor, with ranked Earth candidates at left, stacked terrain views, weights and assistant in the center, and site details at right. App/data baseline e305c6a, 30 sites; preview 1357069.](screenshots/studio-desktop-1280x720.png)
 
 ### Mobile · 390 × 844 · narrow workbench
 
-![Narrow mobile studio concept showing the view panel, terrain arrangement controls, weights and analysis assistant. App-source baseline a1c6548.](screenshots/studio-mobile-390x844.png)
+![Mobile View pane scrolled to show weights and the analysis assistant, including its compact next-message context and composer. App/data baseline e305c6a, 30 sites; preview 1357069.](screenshots/studio-mobile-390x844.png)
+
+The View pane is deliberately scrolled down in this capture; the terrain views
+remain above it. The full center pane is not expected to fit on one mobile screen.
+
+## Changes demonstrated in the refreshed preview
+
+- The real app components and data now come from the main-source baseline above,
+  rather than the older 12-site snapshot. No scientific data or scores were edited
+  for this concept.
+- **Next message uses** is small, unboxed, and beside **Analysis assistant**.
+  The target, body, whole-ranking scope, and full-precision weight values wrap
+  without covering the chat or composer.
+- Changing target keeps the visible chat, historical turns, and unsent draft.
+  Earlier messages retain their own target/weight snapshots; the next Send uses
+  the current completed analysis. A context-boundary note is added at that Send,
+  not on every target click or slider movement. Reloading is not persistence.
+- Context changes still cancel pending requests and invalidate stale replies or
+  rerun tools, including after returning A → B → A.
+
+These are preview interactions, not shipped production changes. The assistant
+transport remains offline. The production API still rejects mixed-target
+history; the requested follow-up is recorded in
+[#50](https://github.com/azrialahmad/earth-analog-explorer/issues/50#issuecomment-6895287232).
+The screenshots themselves do not demonstrate successful AI answers or request
+synchronization.
 
 ## Concept and limitations
 
@@ -34,7 +61,7 @@ in that app revision, not a search of all Earth.
   stay on the right. The center groups terrain views, weights, and the analysis
   assistant.
 - On narrow screens, the app's existing Sites / View / Details navigation is
-  used; the capture shows the View pane.
+  used; the capture shows the View pane scrolled to the assistant.
 - The concept hides the existing Data and Evidence toolbar entry points without
   completing their migration. That is an acknowledged gap, not a production
   recommendation.
@@ -49,18 +76,28 @@ in that app revision, not a search of all Earth.
 
 ## Interactive review artifact
 
-The executable preview and its tests are preserved on the
-[`studio-layout-mockup-archive` branch](https://github.com/azrialahmad/earth-analog-explorer/tree/studio-layout-mockup-archive),
-from snapshot commit [`9ccfcf7`](https://github.com/azrialahmad/earth-analog-explorer/commit/9ccfcf70564610b92ee897ec6c8999dcbfed8bc7).
-That branch is a frozen review artifact, not a supported or continuously updated
-demo. To inspect it with the repository's existing frontend dependencies:
+The refreshed executable preview and its tests are preserved on the review-only
+[`47-main-studio-preview` branch](https://github.com/azrialahmad/earth-analog-explorer/tree/47-main-studio-preview),
+pinned above at `1357069`. Its
+[README](https://github.com/azrialahmad/earth-analog-explorer/blob/13570691ea54ca40a2b8211b3cab4099f95c972b/docs/mockups/studio-layout/README.md)
+records run instructions, limitations, and checks. From a clean checkout with
+the repository's frontend dependencies already installed:
 
 ```sh
-git switch studio-layout-mockup-archive
-cd frontend
-node ../docs/mockups/studio-layout/serve.mjs
+git fetch origin 47-main-studio-preview
+git switch --detach 13570691ea54ca40a2b8211b3cab4099f95c972b
+node docs/mockups/studio-layout/serve.mjs
 ```
 
-Then open `http://localhost:4177/earth-analog-explorer/`. The mockup branch does
-not authorize production UI changes. Any production implementation needs a
-separate issue and review by the frontend owner.
+Then open `http://localhost:4178/earth-analog-explorer/`.
+
+The original 12-site artifact remains unchanged on
+[`studio-layout-mockup-archive`](https://github.com/azrialahmad/earth-analog-explorer/tree/studio-layout-mockup-archive),
+from source snapshot [`9ccfcf7`](https://github.com/azrialahmad/earth-analog-explorer/commit/9ccfcf70564610b92ee897ec6c8999dcbfed8bc7)
+and app baseline `a1c6548` (before #43/#44). Its old Moon-lighting values are not
+the data shown in the refreshed captures above.
+
+Both branches are revision-specific review artifacts, not supported demos. Only
+this documentation and selected screenshots belong in the `main` deliverable.
+Neither mockup approval nor this documentation authorizes production UI or API
+changes; those require a separate scoped issue and frontend-owner review.
