@@ -16,31 +16,31 @@ The app ranks Earth sites by how closely their terrain matches a target. The tar
 - **Bare-ground share:** the share of land in the 6 km window classed as bare or sparse vegetation (under 10% plant cover) by ESA WorldCover. It is shown in the Data panel as a site condition and does not enter the score. The McMurdo Dry Valleys is "missing", because WorldCover does not cover that part of Antarctica.
 - **New candidates:** `pipeline/scan.py` cuts every Earth DEM tile under `data/raw/` into 6 km windows and computes the same three terrain numbers for each. It drops windows with DEM gaps, windows that look like water, and windows close to a known site. For each target it keeps the best Terrain Match windows that are spread apart and mostly bare ground (ESA WorldCover). The app ranks them in one list with the known sites, using the same engine; each site's details say whether it came from the initial list or from the scan. These are terrain and land-cover matches only: nobody has checked them on imagery or in the field. It scans the tiles around the known sites plus 11 extra regions listed in `config/scan_regions.json` (downloaded with `uv run pipeline/fetch_tiles.py`), not all of Earth. All scan settings are in the `scan:` section of `config/weights.yaml`.
 - **Top-N stability:** how often a site stays in the top N (currently 3, set in `config/weights.yaml`) when the weights and values are perturbed. It measures how sensitive the rank is; it is not a probability.
-- **Ask AI:** a chat panel that answers questions about the current analysis. Each question is sent with the active target, weights and whole ranking, and each answer shows the **Context used**. The AI cannot change a score. It can ask the ranking engine to rerun with other weights, and the engine computes those results. If you change the target or weights, a pending question is cancelled, and earlier answers keep the context they were given.
+- **Ask AI:** the **Analysis assistant** panel in the centre answers questions about the current analysis. Each question is sent with the active target, weights and whole ranking, and each answer shows the **Context used**. The AI cannot change a score. It can ask the ranking engine to rerun with other weights, and the engine computes those results. If you change the target or weights, a pending question is cancelled, and earlier answers keep the context they were given.
 
 **Layout:**
 - Left: the ranked list.
-- Centre: two linked 3D views of the real elevation relief, target and selected site.
+- Centre: two linked 3D views of the real elevation relief (target and selected site), then the **Weights** sliders and the **Analysis assistant** (Ask AI). The weights and the assistant are always open.
 - Right: the selected site's details.
-- Narrow screens switch between these with Sites / View / Details tabs.
-- The Weights, Data, Evidence and Ask AI panels and the guided demo open from the toolbar.
+- Header: the target picker, the view controls (**Reset view**, **Rotate**, and **Polar sun** for Moon targets), and the **Data**, **Evidence** and **Demo** buttons.
+- Narrow screens switch between the panes with Sites / View / Details tabs.
 
 ## Walk through the live app
 
 1. Open the live app. It starts on **Shackleton rim** with the site list ranked for it. The first row is selected, and the centre shows the target's and the site's elevation relief side by side.
 2. Pick another row. The row, the two 3D views and the details on the right all switch to that site. The details explain the rank: the per-parameter table, the formula, the neighbours above and below, and where the entry came from (the initial list or the scan).
 3. Look for a **Light mismatch** chip on a row. Open that site: the Lighting section compares its low-sun share with the target's. Press **Polar sun** to light both views with a low sun under a black sky. This is display lighting only.
-4. Open **Weights** and move a slider. The list re-ranks at once, and the selected site stays selected.
+4. Move a **Weights** slider under the 3D views. The list re-ranks at once, and the selected site stays selected.
 5. Switch to **Jezero crater floor** (Mars). Terrain ranks the same way, and lighting is shown for reference only, with no warning.
-6. Open **Data** for exact values, sources, hillshades and land cover, and **Evidence** for the depth-model results. The play button runs the same tour automatically, using the live numbers.
-7. Open **Ask AI** and try an example question, such as what changes if roughness counts three times as much. Expand **Context used** under the answer to see the target and weights it was given.
+6. Open **Data** for exact values, sources, hillshades and land cover, and **Evidence** for the depth-model results. **Demo** runs the same tour automatically, using the live numbers.
+7. In the **Analysis assistant** under the weights, try an example question, such as what changes if roughness counts three times as much. Expand **Context used** under the answer to see the target and weights it was given.
 
-On a phone the list, the 3D views and the details are behind the **Sites / View / Details** tabs.
+On a phone the list, the 3D views and the details are behind the **Sites / View / Details** tabs. The weights and the assistant are in the **View** tab, under the 3D views.
 
 ## What this release does not do
 
 - **Terrain only.** The ranking uses the three terrain parameters. Low sun and bare ground are shown next to it and do not change it. Both owners agreed to keep it that way for this release (#53, [docs/MATCHING-SPEC-ASSESSMENT.md](docs/MATCHING-SPEC-ASSESSMENT.md)): no combined score, and no date-specific, seasonal or forecast mode.
-- **Open terrain-reader work.** #57 tracks a correction to how terrain windows are read. The shipped numbers have not been regenerated for it; see [docs/terrain-reader-diagnostic.md](docs/terrain-reader-diagnostic.md).
+- **Open terrain-reader work.** #57 tracks corrections to how terrain windows are read, and the shipped numbers have not been regenerated for them yet. In particular, #118 fixed a bug where each window was cropped in one direction only. So the published values for the Earth sites, the scan candidates and both lunar targets summarise a strip about 6 × 12 km rather than a 6 km square (Jezero is unaffected). Both owners must approve a full regeneration before it is published; see [docs/BUILDING.md](docs/BUILDING.md), [docs/terrain-reader-followup.md](docs/terrain-reader-followup.md) and [docs/terrain-reader-diagnostic.md](docs/terrain-reader-diagnostic.md).
 - **Bounded catalog.** The scan covered the tiles around the known sites plus 11 chosen regions, not all of Earth. Nobody has checked the candidates on imagery or in the field.
 - **Provisional settings.** Weights, ranges and thresholds are provisional defaults.
 
