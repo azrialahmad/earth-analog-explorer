@@ -1,0 +1,2 @@
+# Vercel turns every file under api/ into a function; tests are not endpoints (issue #109).
+api/*.test.ts
