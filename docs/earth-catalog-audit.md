@@ -13,6 +13,7 @@
 - The `known_analog` field is provenance/presentation metadata, **not a quality tier**. Evidence for prior use varies by site and does not automatically support the particular 6 km square currently measured.
 - The audit finds **no basis to claim that all 30 entries are independently established analog sites**. This does not show they are unsuitable; it shows that the app's current catalog rationale and footprint evidence are incomplete or uneven.
 - No coordinates, flags, catalog entries, scores, or production data were changed.
+- **Post-audit decision:** retain Bromo and Rinjani provisionally as exploratory comparison cases; this does not resolve their source or footprint gaps. See [the decision record](#post-audit-decision-bromo-and-rinjani).
 
 ## Method and status meanings
 
@@ -92,6 +93,20 @@ All terrain comparisons use a 6 km × 6 km target window, with 3 km and 12 km se
 4. **Some source support is strong at region level, not footprint level.** Etna, Askja, Haughton, Dry Valleys, Yungay, Mauna Kea, Craters of the Moon, Black Point, Lanzarote and Svalbard have traceable regional research/training support. Bromo and Rinjani's current rationales remain geographic descriptions without a relevant selection source found in this audit.
 5. **Potential review priorities:** Etna's recorded ~2600 m locality rationale versus 1947 m 6 km mean; the approximate coordinate/feature boundaries for every initial site; the use of Yungay reference provenance for scan candidates 81–90 km away; and exact geological-unit identity for every scan candidate.
 6. **Do not infer a keep/remove decision from this report alone.** Decisions on coordinates, confirmation flags, wording, or catalog membership belong to the human owner. The report provides an evidence basis and states gaps without changing values.
+
+## Post-audit decision: Bromo and Rinjani
+
+**Decision owner:** @ganendraditya. **Recorded:** 2026-11-15, after the audit in [PR #96](https://github.com/azrialahmad/earth-analog-explorer/pull/96), as a follow-up to [issue #59](https://github.com/azrialahmad/earth-analog-explorer/issues/59).
+
+Retain `bromo` and `rinjani` provisionally in the existing catalog as **exploratory comparison cases**. A comparison catalog need not consist exclusively of locations admitted by the scan's retrieval filters: retaining manually specified entries allows inspection of ranking behaviour beyond the scan-selected shortlist. This is a purpose for their continued inclusion, not evidence that the overall catalog is representative or unbiased.
+
+This is a **new post-audit decision**, not a claim that the two entries were originally selected as comparison cases. Their recorded initial rationales, source gaps, approximate coordinates and unresolved footprint correspondence remain unchanged. Failure to find supporting sources in this limited audit does not establish that no sources exist.
+
+Neither location is labelled a statistical outlier, a known unsuitable analog or a negative control. No independent relevance labels or predefined expected ranks have been established. A high or low rank, including a change when weights vary, cannot by itself demonstrate that the method is correct or incorrect. Any later method assessment needs a declared task and independent evidence, rather than treating the current score as its own ground truth.
+
+This decision does not assert that either location has been run through and failed the full current scan. Scan admission and interactive ranking serve different purposes; not meeting a retrieval condition would not alone establish physical or task-specific unsuitability. No scan thresholds are waived or changed by retaining the existing entries.
+
+**Effect:** documentation of the retention rationale only. No scores, coordinates, confirmation flags, catalog membership, pipeline rules or UI categories change. Both entries still need source and footprint review; any correction, replacement or removal requires a separate explicit human decision. Their shared ranking presentation does not confer a quality tier or field endorsement.
 
 ## Limitations and follow-up
 
