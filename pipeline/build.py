@@ -305,22 +305,29 @@ def main() -> None:
             "why": item["why"], "elev_m": row.get("elev_m"), "params": params,
             "windows": ordered_windows(row, sizes), "conditions": conditions,
             "depth_evidence": etna_evidence if item["id"] == "etna" else [],
-            "known_analog": False, "flags": flags, "hillshade": hillshade, "relief": relief,
+            "known_analog": True, "flags": flags, "hillshade": hillshade, "relief": relief,
         })
+
+    # New candidates from pipeline/scan.py (issue #48), when that step has been run.
+    candidates_path = ROOT / "results" / "candidates.json"
+    candidates = read_json(candidates_path)["candidates"] if candidates_path.exists() else []
+    sites.extend(candidates)
 
     # Include all targets, preserving null terrain and empty imagery until a sourced DEM exists.
     write_json(DATA_DIR / "config.json", build_config(weights, sites_manifest))
     write_json(DATA_DIR / "targets.json", targets)
     write_json(DATA_DIR / "sites.json", sites)
     write_json(DATA_DIR / "evidence.json", evidence)
-    validate_outputs(targets, sites, evidence)
+    validate_outputs(targets, sites, evidence, {row["id"] for row in candidates})
     print(f"Built {len(targets)} targets, {len(sites)} sites, and {len(evidence['cited']['rows'])} cited evidence rows.")
     print(f"Hillshades: {len(list(IMG_DIR.glob('*.png')))}; relief grids: {len(list(RELIEF_DIR.glob('*.json')))}")
 
 
-def validate_outputs(targets: list[dict[str, Any]], sites: list[dict[str, Any]], evidence: dict[str, Any]) -> None:
+def validate_outputs(targets: list[dict[str, Any]], sites: list[dict[str, Any]], evidence: dict[str, Any],
+                     candidate_ids: set[str] = frozenset()) -> None:
     expected_ids = {row["id"] for row in read_json(SITES_PATH)["lunar"] + read_json(SITES_PATH)["mars"]}
     expected_ids |= {row["id"] for row in read_json(SITES_PATH)["earth"]}
+    expected_ids |= set(candidate_ids)
     actual_ids = {row["id"] for row in targets + sites}
     if actual_ids != expected_ids:
         raise ValueError(f"app output ID mismatch: expected {sorted(expected_ids)}, got {sorted(actual_ids)}")

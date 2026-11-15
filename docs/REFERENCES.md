@@ -76,3 +76,7 @@ NASA indicates whether the item is a NASA source, not whether NASA funded the wo
 - **Method:** the same square as the terrain numbers (the `main_window_km` window, 6 km, centred on the site on a local Azimuthal Equidistant grid with the 6,378,137 m sphere used by `terrain.py`), nearest-neighbour onto 10 m cells. `bare_ground_share` = class `60` cells ÷ land cells, where land cells exclude class `80` (permanent water) and `0` (no data). Snow and ice, moss and lichen, built-up and vegetation classes count as land that is not bare. Class 60 allows up to 10% plant cover, so the value means bare or sparsely vegetated ground. Per-site cell counts are in `results/landcover.json`.
 - **Coverage:** WorldCover has no tile for the Antarctic Dry Valleys window (`S78E159` returns HTTP 404), so that site is `null` and shown as missing. Svalbard (`N78E012`) is covered.
 - **Use:** a site condition only. It does not enter Terrain Match, the rank, stability or the warning.
+
+## Candidate scan (issue #48)
+
+`pipeline/scan.py` adds no new dataset. It reuses the SRTM 1 arc-second and Copernicus GLO-30 tiles already under `data/raw/` for the terrain numbers, ESA WorldCover 10 m 2021 v200 (read in place from AWS, as in issue #41) for bare-ground and land share, and pvlib for low-sun share. The SRTM tiles from the AWS Skadi mirror contain sea-floor depths below 0 m. These depths are not SRTM land data, so the scan drops windows below sea level.

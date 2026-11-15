@@ -32,3 +32,19 @@ This is a faithful summary of `FINDINGS.md` from the PoC repository, retrieved u
 - The PoC's approximate Earth test-area coordinates, Svalbard's fjord position, and the intended Shackleton and Malapert target windows still needed a human choice or confirmation in that report.
 - Etna extraction time and access to the data remained unknown; the PoC reports that the source makes S3LI available after a form and states CC BY-NC-SA 4.0, while Etna-LRNT's source was not found.
 - The PoC explicitly says its POLAR result cannot stand in for CHERI as evidence about polar lighting, and it did not reproduce the cited CHERI result.
+
+## New candidate scan (issue #48)
+
+These figures come from this app's own pipeline (`uv run pipeline/scan.py`), not from the PoC. Settings are in the `scan:` section of `config/weights.yaml`.
+
+- **Scanned:** 17 local DEM tiles (12 SRTM 1 arc-second, 5 Copernicus GLO-30), 3,238 window centres on a 6 km grid.
+- **Dropped:** 1,257 below sea level, 189 water-like (too flat), 130 close to a known site, 0 with DEM gaps. That left 1,662 usable windows.
+- **Kept:** 11 candidates in six regions after the WorldCover bare-ground and land checks: 4 near Mauna Kea, 3 near Atacama Yungay, 2 near Askja, 1 near Black Point and 1 near Haughton crater. Shackleton rim got 3 of its 4 slots; the other targets got 4 each, and some windows count for more than one target.
+- **Ranks with default weights:** a candidate is first for Malapert (Atacama Yungay area candidate 1, 0.92) and first to third for Jezero (Mauna Kea area candidates 1 to 3, 0.97 to 0.99). For Shackleton rim, the best candidate is fifth (0.72).
+
+What this does not show:
+
+- The candidates are terrain and land-cover matches only. Nobody has checked them on imagery, in the field, or for access and permits.
+- Only the tiles around the known sites were scanned, so every candidate is a new spot within a known analog region, not a new region.
+- The Skadi SRTM mirror fills the sea with bathymetry. The scan drops windows with more than 2% of cells below 0 m and keeps only windows that are at least 90% land in WorldCover. The Antarctic tile has no WorldCover data, so it cannot yield a candidate.
+- Terrain Match compares slope and roughness at 30 m. It says nothing about grain size, rock type, temperature or radiation.
