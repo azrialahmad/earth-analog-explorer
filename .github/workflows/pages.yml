@@ -26,6 +26,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Build
         working-directory: frontend
+        env:
+          # Ask AI runs as a Vercel function (issue #109); its URL is the repository variable ASK_URL.
+          # Unset: the app asks /api/ask on Pages, which cannot answer, and the panel says so.
+          VITE_ASK_URL: ${{ vars.ASK_URL }}
         run: |
           npm ci
           npm run build

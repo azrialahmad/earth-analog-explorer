@@ -37,7 +37,7 @@ On a phone the list, the 3D views and the details are behind the **Sites / View 
 
 ## What this release does not do
 
-- **Ask AI does not answer on the live app.** GitHub Pages only serves static files, so its `/api/ask` request fails and the panel says "Ask AI is not configured". It works with the local dev server, or with a host that runs `frontend/api/ask.ts`, once `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL` are set in `frontend/.env.local` (see `frontend/.env.example`). Never commit real keys.
+- **Ask AI needs a server.** GitHub Pages only serves static files, so the API (`frontend/api/ask.ts`) runs as a Vercel function, and the Pages build sends questions there (see **Ask AI hosting** below). If that function is not set up, the panel says "Ask AI is not configured". Locally, the dev server runs the API once `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL` are set in `frontend/.env.local` (see `frontend/.env.example`). Never commit real keys.
 - **Terrain only.** The ranking uses the three terrain parameters. Low sun and bare ground are shown next to it and do not change it. No date-specific, seasonal, forecast or multi-factor mode is shipped; that work is planned in #52 and its linked issues.
 - **Bounded catalog.** The scan covered the tiles around the known sites plus 11 chosen regions, not all of Earth. Nobody has checked the candidates on imagery or in the field.
 - **Provisional settings.** Weights, ranges and thresholds are provisional defaults.
@@ -57,6 +57,18 @@ npm run dev
 ```
 
 Checks: `npx tsc -b && npm test && npm run build`. `npm test` includes end-to-end checks over the shipped data (`src/shipped.test.tsx`). The app reads the prebuilt JSON in `frontend/public/data/`, so it needs no Python or raw data.
+
+## Ask AI hosting
+
+The app is on GitHub Pages; only the Ask AI API runs on Vercel (issue #109).
+
+1. **Vercel project:** import this repository and set **Root Directory** to `frontend`. Vercel builds the Vite app too, but only `api/ask.ts` is used.
+2. **Vercel environment variables:**
+   - `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL` for the provider;
+   - `ASK_ALLOWED_ORIGINS=https://azrialahmad.is-a.dev`, so only the live app can call the API from a browser.
+3. **GitHub repository variable `ASK_URL`:** set it to `https://<project>.vercel.app/api/ask`. This is a URL, not a secret. The next Pages build reads it.
+
+The API caps request size, message count and answer length, but anyone with the URL can still call it from a script. Set a spending limit at the provider.
 
 ## Rebuild the data (pipeline)
 
