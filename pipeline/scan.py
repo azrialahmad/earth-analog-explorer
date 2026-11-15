@@ -32,6 +32,12 @@ ranks candidates and known sites together with its own engine.
 * ``uv run pipeline/scan.py --update-app-data``   -> also replaces the
   candidates in frontend/public/data/sites.json (known sites are kept as they
   are, marked ``known_analog: true``)
+* ``uv run pipeline/scan.py --record-provenance``   -> also records every scan
+  window, selection decision, and cached WorldCover response
+* ``uv run pipeline/scan.py --record-provenance --research-only`` -> evidence
+  only; does not write app data, candidate results, hillshades, or relief assets
+* ``uv run pipeline/scan_replay.py results/scan-provenance.json`` -> offline
+  selection replay and comparison with the app candidate catalog at run start
 """
 from __future__ import annotations
 
@@ -58,6 +64,14 @@ from terrain import (
     read_earth_window,
     slope_and_roughness,
     summarize,
+)
+from scan_provenance import (
+    file_sha256,
+    make_run_record,
+    object_sha256,
+    reconcile_scan_counts,
+    selftest as provenance_selftest,
+    window_id,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -196,6 +210,14 @@ def scan_tile(path: Path, lat0: int, lon0: int, scan: dict[str, Any], main_km: f
         height, width = data.shape
     for lat, lon in tile_centres(lat0, lon0, float(scan["grid_km"]), float(scan["edge_margin_km"])):
         transform, w, h, dst_crs, _ = analysis_grid(main_km, lat, lon, EARTH_RADIUS_M)
+        grid_metadata = {
+            "crs": dst_crs.to_string(),
+            "affine_transform": list(transform)[:6],
+            "width": w,
+            "height": h,
+            "buffer_cells": BUFFER_CELLS,
+            "working_resolution_m": WORK_RES_M,
+        }
         left, bottom, right, top = dst_bounds(transform, w, h)
         west, south, east, north = transform_bounds(dst_crs, CRS.from_epsg(4326),
                                                     left, bottom, right, top)
@@ -216,7 +238,7 @@ def scan_tile(path: Path, lat0: int, lon0: int, scan: dict[str, Any], main_km: f
         center = slice(BUFFER_CELLS, h - BUFFER_CELLS)
         valid_share = float(valid[center, center].mean())
         if valid_share < float(scan["min_valid_share"]):
-            yield lat, lon, {"valid_share": valid_share}
+            yield lat, lon, {"valid_share": valid_share, "grid": grid_metadata}
             continue
         slope, rough = slope_and_roughness(np.where(valid, dst, np.nan))
         stats = summarize(dst[center, center], valid[center, center],
@@ -225,36 +247,69 @@ def scan_tile(path: Path, lat0: int, lon0: int, scan: dict[str, Any], main_km: f
         # The Skadi SRTM mirror fills the sea with bathymetry, so the seabed has real-looking relief.
         inner = dst[center, center]
         stats["below_sea_share"] = float(np.mean(inner[np.isfinite(inner)] < 0.0))
+        stats["grid"] = grid_metadata
         yield lat, lon, stats
 
 
-def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]]):
+def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]],
+             provenance: dict[str, Any] | None = None,
+             tile_inputs: list[tuple[Path, int, int]] | None = None):
     regions, near_known_km = load_regions()
     rows = []
     counts = {"tiles": 0, "windows": 0, "gaps": 0, "below_sea": 0, "water": 0, "near_known": 0, "kept": 0}
-    for path, lat0, lon0 in local_tiles():
+    for path, lat0, lon0 in tile_inputs if tile_inputs is not None else local_tiles():
         counts["tiles"] += 1
         t0 = time.time()
         n_before = len(rows)
         for lat, lon, stats in scan_tile(path, lat0, lon0, scan, main_km):
             counts["windows"] += 1
+            record = None
+            if provenance is not None:
+                record = {
+                    "window_id": window_id(path.name, lat, lon),
+                    "tile": path.name,
+                    "lat": lat,
+                    "lon": lon,
+                    "stats": stats,
+                    "stage_outcome": None,
+                    "reason": None,
+                    "worldcover_status": "not_attempted_before_selection",
+                }
             if "slope_mean_deg" not in stats or any(stats.get(k) is None for k in PARAM_KEYS):
                 counts["gaps"] += 1
+                if record is not None:
+                    record["stage_outcome"] = "excluded"
+                    record["reason"] = "missing_terrain_descriptor"
+                    provenance["window_records"].append(record)
                 continue
             if stats["below_sea_share"] > float(scan["max_below_sea_share"]):
                 counts["below_sea"] += 1
+                if record is not None:
+                    record["stage_outcome"] = "excluded"
+                    record["reason"] = "below_sea_share_limit"
+                    provenance["window_records"].append(record)
                 continue
             if stats["flat_share"] is None or stats["flat_share"] > float(scan["max_flat_share"]):
                 counts["water"] += 1
+                if record is not None:
+                    record["stage_outcome"] = "excluded"
+                    record["reason"] = "flat_share_limit_or_missing"
+                    provenance["window_records"].append(record)
                 continue
             nearest = min(known, key=lambda k: haversine_km(lat, lon, k["lat"], k["lon"]))
             dist = haversine_km(lat, lon, nearest["lat"], nearest["lon"])
             if dist < float(scan["exclude_known_km"]):
                 counts["near_known"] += 1
+                if record is not None:
+                    record["stage_outcome"] = "excluded"
+                    record["reason"] = "within_known_site_exclusion_distance"
+                    record["nearest_known"] = nearest["id"]
+                    record["nearest_known_km"] = dist
+                    provenance["window_records"].append(record)
                 continue
             counts["kept"] += 1
             region, region_name = region_of(lat0, lon0, nearest, dist, regions, near_known_km)
-            rows.append({
+            descriptor = {
                 "lat": lat, "lon": lon, "tile": path.name,
                 "region": region, "region_name": region_name,
                 "nearest_known": nearest["id"], "nearest_known_name": nearest["name"],
@@ -263,7 +318,13 @@ def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]]):
                 "flat_share": float(stats["flat_share"]),
                 "below_sea_share": float(stats["below_sea_share"]),
                 "elev_m": stats["mean_elev_m"],
-            })
+            }
+            rows.append(descriptor)
+            if record is not None:
+                record["stage_outcome"] = "eligible"
+                record["reason"] = "passed_scan_filters"
+                record["descriptor"] = descriptor
+                provenance["window_records"].append(record)
         print(f"  {path.name}: {len(rows) - n_before} usable windows ({time.time() - t0:.0f} s)", flush=True)
     return rows, counts
 
@@ -271,49 +332,164 @@ def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]]):
 # --------------------------------------------------------------------------- #
 # Selection
 # --------------------------------------------------------------------------- #
-def select(rows, targets, params, scan, bare_lookup):
-    """Greedy per-target pick. bare_lookup(lat, lon) -> landcover row dict."""
+def select(rows, targets, params, scan, bare_lookup, trace: dict[str, Any] | None = None):
+    """Greedy per-target pick; optional trace records decisions without changing policy."""
     picked: list[dict[str, Any]] = []
     bare_cache: dict[tuple[float, float], dict[str, Any]] = {}
-    for target in targets:
+    if trace is not None:
+        trace.setdefault("events", [])
+        trace.setdefault("lookup_order", [])
+        trace.setdefault("worldcover", {})
+        trace["target_order"] = [target["id"] for target in targets]
+
+    def wid(row: dict[str, Any]) -> str:
+        return window_id(row.get("tile", "unknown"), row["lat"], row["lon"])
+
+    for target_index, target in enumerate(targets):
+        target_id = target["id"]
         tparams = {k: target["params"][k]["value"] for k in PARAM_KEYS}
         if all(v is None for v in tparams.values()):
+            if trace is not None:
+                trace["events"].append({"target_id": target_id, "target_index": target_index,
+                                        "decision": "target_skipped_all_values_missing",
+                                        "worldcover_status": "not_attempted"})
             continue
         scored = []
+        unscored = []
         for row in rows:
             tm = terrain_match(row, tparams, params)
-            if tm is not None:
+            if tm is None:
+                unscored.append({"window_id": wid(row), "worldcover_status": "not_attempted"})
+            else:
                 scored.append((tm, row))
         scored.sort(key=lambda x: (-x[0], x[1]["lat"], x[1]["lon"]))
+        if trace is not None:
+            trace["events"].append({
+                "target_id": target_id,
+                "target_index": target_index,
+                "decision": "ranked_windows",
+                "worldcover_status": "not_attempted_at_ranking_stage",
+                "ranked": [{"window_id": wid(row), "terrain_match": tm, "rank": rank}
+                           for rank, (tm, row) in enumerate(scored, start=1)],
+                "unscored_windows": unscored,
+            })
         kept = tried = 0
-        for tm, row in scored:
-            if kept >= int(scan["per_target"]) or tried >= int(scan["shortlist_max"]):
+        for index, (tm, row) in enumerate(scored):
+            if kept >= int(scan["per_target"]):
+                if trace is not None:
+                    trace["events"].extend({
+                        "target_id": target_id, "window_id": wid(rest_row), "terrain_match": rest_tm,
+                        "decision": "not_considered_per_target_limit", "worldcover_status": "not_attempted",
+                    } for rest_tm, rest_row in scored[index:])
+                break
+            if tried >= int(scan["shortlist_max"]):
+                if trace is not None:
+                    trace["events"].extend({
+                        "target_id": target_id, "window_id": wid(rest_row), "terrain_match": rest_tm,
+                        "decision": "not_considered_shortlist_limit", "worldcover_status": "not_attempted",
+                    } for rest_tm, rest_row in scored[index:])
                 break
             same = next((p for p in picked if p["lat"] == row["lat"] and p["lon"] == row["lon"]), None)
             if same is not None:
-                same["picked_for"][target["id"]] = tm
+                same["picked_for"][target_id] = tm
                 kept += 1
+                if trace is not None:
+                    trace["events"].append({"target_id": target_id, "window_id": wid(row),
+                                            "terrain_match": tm, "decision": "already_selected_at_same_location",
+                                            "worldcover_status": "reused_selected_location"})
                 continue
-            if any(haversine_km(row["lat"], row["lon"], p["lat"], p["lon"]) < float(scan["min_spacing_km"])
-                   for p in picked):
+
+            spacing_conflicts = [
+                p for p in picked
+                if haversine_km(row["lat"], row["lon"], p["lat"], p["lon"])
+                < float(scan["min_spacing_km"])
+            ]
+            if spacing_conflicts:
+                if trace is not None:
+                    trace["events"].append({
+                        "target_id": target_id, "window_id": wid(row), "terrain_match": tm,
+                        "decision": "excluded_minimum_spacing",
+                        "worldcover_status": "not_attempted",
+                        "conflicts": [{"window_id": wid(p),
+                                       "distance_km": haversine_km(row["lat"], row["lon"], p["lat"], p["lon"])}
+                                      for p in spacing_conflicts],
+                    })
                 continue
+
             region = row.get("region")
-            if region is not None and sum(p.get("region") == region for p in picked) >= int(scan["max_per_region"]):
+            region_count = sum(p.get("region") == region for p in picked)
+            if region is not None and region_count >= int(scan["max_per_region"]):
+                if trace is not None:
+                    trace["events"].append({
+                        "target_id": target_id, "window_id": wid(row), "terrain_match": tm,
+                        "decision": "excluded_region_limit", "region": region,
+                        "worldcover_status": "not_attempted",
+                        "existing_region_count": region_count, "region_limit": int(scan["max_per_region"]),
+                    })
                 continue
+
             key = (row["lat"], row["lon"])
-            if key not in bare_cache:
+            trace_key = f"{row['lat']:.5f},{row['lon']:.5f}"
+            cache_hit = key in bare_cache
+            if not cache_hit:
                 tried += 1
-                bare_cache[key] = bare_lookup(row["lat"], row["lon"])
+                if trace is not None:
+                    trace["lookup_order"].append(trace_key)
+                try:
+                    bare_cache[key] = bare_lookup(row["lat"], row["lon"])
+                except Exception as exc:
+                    if trace is not None:
+                        trace["worldcover"][trace_key] = {
+                            "status": "error", "exception_type": type(exc).__name__,
+                        }
+                        trace["events"].append({"target_id": target_id, "window_id": wid(row),
+                                                "terrain_match": tm, "decision": "worldcover_lookup_error",
+                                                "lookup_key": trace_key})
+                    raise
             bare = bare_cache[key]
             share = bare.get("value")
+            if trace is not None and not cache_hit:
+                trace["worldcover"][trace_key] = {
+                    "status": "success" if share is not None else "unavailable",
+                    "response": bare,
+                    "response_sha256": object_sha256(bare),
+                }
+            lookup_status = trace["worldcover"][trace_key]["status"] if trace is not None else None
+
             if share is None or share < float(scan["min_bare_share"]):
+                decision = "worldcover_unavailable" if share is None else "below_bare_share_limit"
+                if trace is not None:
+                    trace["events"].append({"target_id": target_id, "window_id": wid(row),
+                                            "terrain_match": tm, "decision": decision,
+                                            "lookup_key": trace_key, "lookup_status": lookup_status,
+                                            "cache_hit": cache_hit, "bare_share": share})
                 continue
             cells = bare.get("counts") or {}
             if not cells.get("total") or cells.get("land", 0) / cells["total"] < float(scan["min_land_share"]):
+                if trace is not None:
+                    trace["events"].append({"target_id": target_id, "window_id": wid(row),
+                                            "terrain_match": tm, "decision": "below_land_share_limit",
+                                            "lookup_key": trace_key, "lookup_status": lookup_status,
+                                            "cache_hit": cache_hit, "land_cells": cells.get("land"),
+                                            "total_cells": cells.get("total")})
                 continue
-            picked.append({**row, "bare": bare, "picked_for": {target["id"]: tm}})
+            picked.append({**row, "bare": bare, "picked_for": {target_id: tm}})
             kept += 1
-        print(f"  {target['id']}: kept {kept} after {tried} WorldCover lookups", flush=True)
+            if trace is not None:
+                trace["events"].append({"target_id": target_id, "window_id": wid(row),
+                                        "terrain_match": tm, "decision": "selected",
+                                        "lookup_key": trace_key, "lookup_status": lookup_status,
+                                        "cache_hit": cache_hit})
+        print(f"  {target_id}: kept {kept} after {tried} WorldCover lookups", flush=True)
+        if trace is not None:
+            trace["events"].append({
+                "target_id": target_id, "target_index": target_index,
+                "decision": "target_selection_complete",
+                "selected_window_ids": [wid(row) for row in picked if target_id in row.get("picked_for", {})],
+                "worldcover_lookup_count": tried,
+            })
+    if trace is not None:
+        trace["selected_window_ids"] = [wid(row) for row in picked]
     return picked
 
 
@@ -413,13 +589,38 @@ def main(argv=None) -> int:
     parser.add_argument("--selftest", action="store_true")
     parser.add_argument("--update-app-data", action="store_true",
                         help="replace the candidates in frontend/public/data/sites.json")
+    parser.add_argument("--record-provenance", nargs="?", const=ROOT / "results" / "scan-provenance.json",
+                        type=Path, metavar="PATH",
+                        help="record scan and selection evidence (default: results/scan-provenance.json)")
+    parser.add_argument("--research-only", action="store_true",
+                        help="write provenance only; do not generate/publish app assets or candidate data")
     args = parser.parse_args(argv)
     if args.selftest:
         return selftest()
+    if args.research_only and args.record_provenance is None:
+        parser.error("--research-only requires --record-provenance")
+    if args.research_only and args.update_app_data:
+        parser.error("--research-only cannot be combined with --update-app-data")
+    if args.record_provenance is not None:
+        output = args.record_provenance.resolve()
+        protected = {
+            WEIGHTS_PATH.resolve(), SITES_PATH.resolve(), APP_TARGETS_PATH.resolve(),
+            APP_SITES_PATH.resolve(), OUT_PATH.resolve(),
+        }
+        if output.suffix.lower() != ".json":
+            parser.error("provenance output must use a .json file path")
+        if output in protected:
+            parser.error("provenance output must not overwrite scan inputs or candidate results")
+        public_data = APP_DIR.resolve()
+        raw_data = (ROOT / "data" / "raw").resolve()
+        public_images = (ROOT / "frontend" / "public" / "img").resolve()
+        if any(output == parent or parent in output.parents for parent in (public_data, raw_data, public_images)):
+            parser.error("provenance output must be outside raw inputs and public app data/assets")
 
     # Fail before writing anything: without DEM tiles the scan would find no
     # candidates and --update-app-data would erase the existing ones.
-    if not local_tiles():
+    tiles = local_tiles()
+    if not tiles:
         print(f"error: no Earth DEM tiles under {SRTM_DIR} or {COPERNICUS_DIR}; nothing written. "
               "See docs/REFERENCES.md and pipeline/fetch_tiles.py.", file=sys.stderr)
         return 1
@@ -431,23 +632,94 @@ def main(argv=None) -> int:
     manifest = json.loads(SITES_PATH.read_text(encoding="utf-8"))
     known = manifest["earth"]
     targets = json.loads(APP_TARGETS_PATH.read_text(encoding="utf-8"))
+    app_sites = json.loads(APP_SITES_PATH.read_text(encoding="utf-8")) if args.record_provenance else []
+
+    provenance = None
+    if args.record_provenance is not None:
+        provenance = make_run_record(
+            weights_path=WEIGHTS_PATH,
+            targets_path=APP_TARGETS_PATH,
+            sites_path=SITES_PATH,
+            app_sites_path=APP_SITES_PATH,
+            regions_path=REGIONS_PATH,
+            tile_paths=[entry[0] for entry in tiles],
+            weights=weights,
+            targets=targets,
+            known_sites=known,
+            app_sites=app_sites,
+            work_res_m=WORK_RES_M,
+            buffer_cells=BUFFER_CELLS,
+        )
+
+    def save_failed(stage: str, exc: Exception) -> None:
+        if provenance is not None:
+            provenance["run_status"] = "failed"
+            provenance["failure"] = {"stage": stage, "exception_type": type(exc).__name__}
+            if stage == "candidate_selection":
+                provenance["selection"]["status"] = "failed"
+            write_json(args.record_provenance, provenance)
 
     print("Scanning local DEM tiles...", flush=True)
-    rows, counts = scan_all(scan, float(weights["main_window_km"]), known)
+    try:
+        rows, counts = scan_all(scan, float(weights["main_window_km"]), known, provenance, tiles)
+    except Exception as exc:
+        save_failed("terrain_scan", exc)
+        raise
     print(f"Windows: {counts}", flush=True)
+    if provenance is not None:
+        provenance["scan_counts"] = counts
+        provenance["scan_count_reconciliation"] = reconcile_scan_counts(provenance["window_records"], counts)
+        if not provenance["scan_count_reconciliation"]["matches"]:
+            exc = RuntimeError("recorded per-window outcomes do not reconcile with scan counts")
+            save_failed("scan_count_reconciliation", exc)
+            raise exc
 
     from landcover import site_bare_ground
     print("Selecting candidates (reads ESA WorldCover windows over the network)...", flush=True)
-    picked = select(rows, targets, params, scan,
-                    lambda lat, lon: site_bare_ground(lat, lon, float(weights["main_window_km"])))
-    candidates = candidate_sites(picked, targets, sizes, main_window, scan)
+    try:
+        picked = select(rows, targets, params, scan,
+                        lambda lat, lon: site_bare_ground(lat, lon, float(weights["main_window_km"])),
+                        trace=provenance["selection"] if provenance is not None else None)
+    except Exception as exc:
+        save_failed("candidate_selection", exc)
+        raise
+    if provenance is not None:
+        provenance["selection"]["selected_window_ids"] = [
+            window_id(row["tile"], row["lat"], row["lon"]) for row in picked
+        ]
+        provenance["selection"]["status"] = "complete"
+    if args.research_only:
+        provenance["run_status"] = "complete"
+        provenance["final_publication"] = {"status": "skipped-research-only"}
+        write_json(args.record_provenance, provenance)
+        print(f"Recorded research-only scan evidence to {args.record_provenance}")
+        return 0
+
+    try:
+        candidates = candidate_sites(picked, targets, sizes, main_window, scan)
+    except Exception as exc:
+        save_failed("final_candidate_descriptors", exc)
+        raise
     if not candidates:
         # Zero candidates almost always means missing inputs (or no WorldCover access),
         # not a real result; keep the existing results and app data.
         print(f"error: the scan kept no candidates (windows: {counts}); nothing written.", file=sys.stderr)
+        save_failed("empty_selection", RuntimeError("selection produced no publishable candidates"))
         return 1
 
     write_json(OUT_PATH, {"counts": counts, "scan": scan, "candidates": candidates})
+    if provenance is not None:
+        provenance["final_publication"] = {
+            "status": "generated-not-appended",
+            "candidate_result_path": OUT_PATH.relative_to(ROOT).as_posix(),
+            "candidate_result_sha256": file_sha256(OUT_PATH),
+            "candidate_site_ids": [candidate["id"] for candidate in candidates],
+            "candidate_window_mapping": [
+                {"site_id": candidate["id"], "lat": candidate["lat"], "lon": candidate["lon"]}
+                for candidate in candidates
+            ],
+            "final_candidate_descriptors_sha256": object_sha256(candidates),
+        }
     for c in candidates:
         p = {k: c["params"][k]["value"] for k in PARAM_KEYS}
         print(f"  {c['id']:<22} {c['lat']:>9.4f} {c['lon']:>10.4f}  "
@@ -456,6 +728,13 @@ def main(argv=None) -> int:
     if args.update_app_data:
         update_app_data(candidates, {k["id"] for k in known})
         print(f"Updated {APP_SITES_PATH.relative_to(ROOT)} with {len(candidates)} candidates")
+        if provenance is not None:
+            provenance["final_publication"]["status"] = "app-data-updated"
+            provenance["final_publication"]["app_sites_sha256"] = file_sha256(APP_SITES_PATH)
+    if provenance is not None:
+        provenance["run_status"] = "complete"
+        write_json(args.record_provenance, provenance)
+        print(f"Recorded scan provenance to {args.record_provenance}")
     return 0
 
 
@@ -473,6 +752,8 @@ def selftest() -> int:
     assert abs(terrain_match(s, t, params) - (0 + 1) / 2) < 1e-12
     assert terrain_match({k: None for k in PARAM_KEYS}, t, params) is None
     assert similarity(1.0, 1.0, 0.0) is None
+
+    selftest_scan_trace()
 
     assert abs(haversine_km(0, 0, 1, 0) - KM_PER_DEG_LAT) < 1e-9
     assert haversine_km(10, 20, 10, 20) == 0.0
@@ -502,6 +783,11 @@ def selftest() -> int:
     lookup = lambda la, lo: {"value": bare[(la, lo)], "counts": {"land": land[(la, lo)], "total": 100}}
     picked = select(rows, targets, params, scan, lookup)
     assert [(p["lat"], p["lon"]) for p in picked] == [(0.0, 0.0), (2.0, 0.0)], picked
+    trace = {"events": [], "lookup_order": [], "worldcover": {}}
+    traced = select(rows, targets, params, scan, lookup, trace=trace)
+    assert [(p["lat"], p["lon"]) for p in traced] == [(p["lat"], p["lon"]) for p in picked]
+    assert "excluded_minimum_spacing" in {event.get("decision") for event in trace["events"]}
+    assert trace["selected_window_ids"] == [window_id("unknown", p["lat"], p["lon"]) for p in picked]
     land[(0.0, 0.0)] = 40  # mostly sea in WorldCover: not kept
     picked = select(rows, targets, params, scan, lookup)
     assert [(p["lat"], p["lon"]) for p in picked] == [(0.05, 0.0), (2.0, 0.0)], picked
@@ -521,10 +807,46 @@ def selftest() -> int:
     assert region_of(-25, -70, known, 250.0, regions, 100.0) == ("yungay", "Atacama Yungay area")
 
     selftest_missing_dem_keeps_output()
+    provenance_selftest()
 
     print("selftest: PASS (terrain match mirror, distance, tile grid, tile names, greedy pick, regions, "
           "missing DEM keeps output)")
     return 0
+
+
+def selftest_scan_trace() -> None:
+    """Synthetic stage trace: each window gets one reason and counts reconcile."""
+    original_scan_tile = scan_tile
+    grid = {"crs": "synthetic", "affine_transform": [30, 0, 0, 0, -30, 0],
+            "width": 1, "height": 1, "buffer_cells": 0, "working_resolution_m": 30}
+    good = {key: 1.0 for key in PARAM_KEYS}
+    def stats(**changes: Any) -> dict[str, Any]:
+        return {**good, "valid_share": 1.0, "below_sea_share": 0.0, "flat_share": 0.0,
+                "mean_elev_m": 100.0, "grid": grid, **changes}
+    windows = [
+        (0.1, 0.1, {"valid_share": 0.5, "grid": grid}),
+        (0.2, 0.2, stats(below_sea_share=0.1)),
+        (0.3, 0.3, stats(flat_share=0.8)),
+        (1.0, 1.0, stats()),
+        (0.0, 0.0, stats()),
+    ]
+    def fake_scan_tile(*_args: Any, **_kwargs: Any):
+        yield from windows
+    trace: dict[str, Any] = {"window_records": []}
+    try:
+        globals()["scan_tile"] = fake_scan_tile
+        known = [{"id": "near", "name": "Near", "lat": 1.0, "lon": 1.0}]
+        scan_config = {"max_below_sea_share": 0.02, "max_flat_share": 0.2, "exclude_known_km": 15.0}
+        _, counts = scan_all(scan_config, 6.0, known, trace, [(Path("synthetic-tile.hgt"), 0, 0)])
+    finally:
+        globals()["scan_tile"] = original_scan_tile
+    from scan_provenance import reconcile_scan_counts
+    reconciliation = reconcile_scan_counts(trace["window_records"], counts)
+    assert reconciliation["matches"], reconciliation
+    assert [row["reason"] for row in trace["window_records"]] == [
+        "missing_terrain_descriptor", "below_sea_share_limit", "flat_share_limit_or_missing",
+        "within_known_site_exclusion_distance", "passed_scan_filters",
+    ]
 
 
 def selftest_missing_dem_keeps_output() -> None:
