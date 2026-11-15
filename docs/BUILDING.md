@@ -2,6 +2,29 @@
 
 `pipeline/build.py` writes the static JSON and terrain assets used by the frontend. Run it with `uv`; a full rebuild needs the authorized raw inputs and intermediate results already present in the data-owning checkout.
 
+## Terrain producer migration hold (#57)
+
+The square-window correction in `terrain.build_row` changes the summary footprint
+from row-only cropping to cropping both axes. The checked-in `results/terrain.json`
+and published terrain measurements under `frontend/public/data/` still come from
+the **pre-fix producer** (baseline `e305c6a`); merging the code fix does not migrate
+those data. Both Earth sites/candidates and lunar targets are affected. Jezero
+uses a separate, already-two-axis implementation.
+
+**Do not partly regenerate or publish terrain data with the corrected producer.**
+In particular, do not replace only Earth rows, only targets, or a subset of
+candidate windows while retaining the other pre-fix measurements. Running
+`pipeline/terrain.py` without `--selftest` rewrites the terrain intermediate; it is
+not a harmless check. An explicit reference-only build is not a workaround for
+this migration hold.
+
+Keep the current published release unchanged until the owners approve a coherent
+regeneration and release disposition on [#57](https://github.com/azrialahmad/earth-analog-explorer/issues/57).
+That requires authorized candidate/source inputs, code-generated measurement and
+selection/rank impact evidence, and staged publication checks. The remaining
+scan/final resampling decision is separate from the square-crop bug fix. Existing
+publication checks protect file integrity, not mixed-producer scientific consistency.
+
 ## Candidate input is explicit
 
 The normal command is:
