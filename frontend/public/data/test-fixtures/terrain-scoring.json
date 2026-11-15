@@ -1,0 +1,1062 @@
+{
+  "cases": [
+    {
+      "description": "All available parameters match the synthetic target.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "identical-values",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "One parameter at its configured range; other values match.",
+      "expected": {
+        "ranked_site_ids": [
+          "boundary-roughness_m",
+          "boundary-slope_mean_deg",
+          "boundary-slope_p90_deg"
+        ],
+        "sites": {
+          "boundary-roughness_m": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 0.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "boundary-slope_mean_deg": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 0.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "boundary-slope_p90_deg": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 0.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          }
+        }
+      },
+      "id": "each-parameter-at-range",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "boundary-slope_mean_deg",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 20.0,
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "boundary-slope_p90_deg",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 30.0
+          }
+        },
+        {
+          "id": "boundary-roughness_m",
+          "values": {
+            "roughness_m": 3.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "One parameter beyond its configured range; similarity remains at its floor.",
+      "expected": {
+        "ranked_site_ids": [
+          "beyond-roughness_m",
+          "beyond-slope_mean_deg",
+          "beyond-slope_p90_deg"
+        ],
+        "sites": {
+          "beyond-roughness_m": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 0.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "beyond-slope_mean_deg": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 0.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "beyond-slope_p90_deg": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 0.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          }
+        }
+      },
+      "id": "each-parameter-beyond-range",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "beyond-slope_mean_deg",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 40.0,
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "beyond-slope_p90_deg",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 60.0
+          }
+        },
+        {
+          "id": "beyond-roughness_m",
+          "values": {
+            "roughness_m": 6.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "Missing support on opposite parameters with a deterministic unequal-weight case.",
+      "expected": {
+        "ranked_site_ids": [
+          "partial-a",
+          "partial-b"
+        ],
+        "sites": {
+          "partial-a": {
+            "completeness": 0.5,
+            "included_weight": 2.0,
+            "missing": [
+              "slope_mean_deg"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": null,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 4.0,
+            "weighted_sum": 2.0
+          },
+          "partial-b": {
+            "completeness": 0.75,
+            "included_weight": 3.0,
+            "missing": [
+              "slope_p90_deg"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": null
+            },
+            "terrain_match": 1.0,
+            "total_weight": 4.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "partial-missing-unequal-weights",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "partial-a",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": null,
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "partial-b",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": null
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 2.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "One target parameter is missing, so the corresponding site comparison is unavailable.",
+      "expected": {
+        "ranked_site_ids": [
+          "target-missing"
+        ],
+        "sites": {
+          "target-missing": {
+            "completeness": 0.6666666666666666,
+            "included_weight": 2.0,
+            "missing": [
+              "roughness_m"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": null,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          }
+        }
+      },
+      "id": "partial-target-missing",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "target-missing",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": null,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "Every site parameter is missing; score is unscored and missing keys remain explicit.",
+      "expected": {
+        "ranked_site_ids": [
+          "all-missing"
+        ],
+        "sites": {
+          "all-missing": {
+            "completeness": 0.0,
+            "included_weight": 0,
+            "missing": [
+              "slope_mean_deg",
+              "slope_p90_deg",
+              "roughness_m"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": null,
+              "slope_mean_deg": null,
+              "slope_p90_deg": null
+            },
+            "terrain_match": null,
+            "total_weight": 3.0,
+            "weighted_sum": 0
+          }
+        }
+      },
+      "id": "all-values-missing",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "all-missing",
+          "values": {
+            "roughness_m": null,
+            "slope_mean_deg": null,
+            "slope_p90_deg": null
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "A difference on a zero-weight parameter does not change the weighted mean.",
+      "expected": {
+        "ranked_site_ids": [
+          "zero-weight-difference"
+        ],
+        "sites": {
+          "zero-weight-difference": {
+            "completeness": 1.0,
+            "included_weight": 2.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 0.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 2.0,
+            "weighted_sum": 2.0
+          }
+        }
+      },
+      "id": "one-zero-weight",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "zero-weight-difference",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 40.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "Only the zero-weight parameter is available, so no positive-weight score denominator exists.",
+      "expected": {
+        "ranked_site_ids": [
+          "zero-weight-only"
+        ],
+        "sites": {
+          "zero-weight-only": {
+            "completeness": 0.0,
+            "included_weight": 0.0,
+            "missing": [
+              "slope_p90_deg",
+              "roughness_m"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": null,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": null
+            },
+            "terrain_match": null,
+            "total_weight": 2.0,
+            "weighted_sum": 0.0
+          }
+        }
+      },
+      "id": "zero-weight-only-support",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "zero-weight-only",
+          "values": {
+            "roughness_m": null,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": null
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "All values are present but all weights are zero; score is unscored and completeness is zero.",
+      "expected": {
+        "ranked_site_ids": [
+          "zero-weights"
+        ],
+        "sites": {
+          "zero-weights": {
+            "completeness": 0.0,
+            "included_weight": 0.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": null,
+            "total_weight": 0.0,
+            "weighted_sum": 0.0
+          }
+        }
+      },
+      "id": "all-zero-weights",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "zero-weights",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      }
+    },
+    {
+      "description": "Equal scores are ordered by site id; null scores follow scored sites.",
+      "expected": {
+        "ranked_site_ids": [
+          "tie-a",
+          "tie-z",
+          "unscored"
+        ],
+        "sites": {
+          "tie-a": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 0.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "tie-z": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 0.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 0.6666666666666666,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "unscored": {
+            "completeness": 0.0,
+            "included_weight": 0,
+            "missing": [
+              "slope_mean_deg",
+              "slope_p90_deg",
+              "roughness_m"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": null,
+              "slope_mean_deg": null,
+              "slope_p90_deg": null
+            },
+            "terrain_match": null,
+            "total_weight": 3.0,
+            "weighted_sum": 0
+          }
+        }
+      },
+      "id": "ties-and-unscored-order",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "tie-z",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 20.0,
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "tie-a",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 20.0,
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "unscored",
+          "values": {
+            "roughness_m": null,
+            "slope_mean_deg": null,
+            "slope_p90_deg": null
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "JSON-safe markers decode to non-finite numbers for scorer tests; those parameter comparisons are missing.",
+      "expected": {
+        "ranked_site_ids": [
+          "nonfinite-negative-infinite",
+          "nonfinite-not-a-number",
+          "nonfinite-positive-infinite"
+        ],
+        "sites": {
+          "nonfinite-negative-infinite": {
+            "completeness": 0.6666666666666666,
+            "included_weight": 2.0,
+            "missing": [
+              "slope_mean_deg"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": null,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "nonfinite-not-a-number": {
+            "completeness": 0.6666666666666666,
+            "included_weight": 2.0,
+            "missing": [
+              "slope_mean_deg"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": null,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          },
+          "nonfinite-positive-infinite": {
+            "completeness": 0.6666666666666666,
+            "included_weight": 2.0,
+            "missing": [
+              "slope_mean_deg"
+            ],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": null,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 2.0
+          }
+        }
+      },
+      "id": "nonfinite-input-markers",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "nonfinite-not-a-number",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": {
+              "non_finite": "not-a-number"
+            },
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "nonfinite-positive-infinite",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": {
+              "non_finite": "positive-infinite"
+            },
+            "slope_p90_deg": 0.0
+          }
+        },
+        {
+          "id": "nonfinite-negative-infinite",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": {
+              "non_finite": "negative-infinite"
+            },
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      }
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-3-moon",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 3.0
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-3-mars",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "mars",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 3.0
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-6-moon",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 6.0
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-6-mars",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "mars",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 6.0
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-12-moon",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "moon",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 12.0
+    },
+    {
+      "description": "Same terrain-scoring contract for this supported window/body label; values are synthetic descriptors.",
+      "expected": {
+        "ranked_site_ids": [
+          "site_exact"
+        ],
+        "sites": {
+          "site_exact": {
+            "completeness": 1.0,
+            "included_weight": 3.0,
+            "missing": [],
+            "per_parameter_similarity": {
+              "roughness_m": 1.0,
+              "slope_mean_deg": 1.0,
+              "slope_p90_deg": 1.0
+            },
+            "terrain_match": 1.0,
+            "total_weight": 3.0,
+            "weighted_sum": 3.0
+          }
+        }
+      },
+      "id": "window-12-mars",
+      "kind": "synthetic",
+      "sites": [
+        {
+          "id": "site_exact",
+          "values": {
+            "roughness_m": 0.0,
+            "slope_mean_deg": 0.0,
+            "slope_p90_deg": 0.0
+          }
+        }
+      ],
+      "target_body": "mars",
+      "target_values": {
+        "roughness_m": 0.0,
+        "slope_mean_deg": 0.0,
+        "slope_p90_deg": 0.0
+      },
+      "weights": {
+        "roughness_m": 1.0,
+        "slope_mean_deg": 1.0,
+        "slope_p90_deg": 1.0
+      },
+      "window_km": 12.0
+    }
+  ],
+  "nonfinite_note": "A values object with a non_finite label is a JSON-safe test marker; labels are not-a-number, positive-infinite, or negative-infinite. A consumer decodes the label to its corresponding non-finite number before calling similarity.",
+  "ordering_note": "Fixture ranking uses the frontend contract: score descending, null last, site id ascending for ties. pipeline/scan.py selection instead breaks equal window scores by latitude then longitude.",
+  "producer": {
+    "config": "config/weights.yaml",
+    "config_sha256": "a192d0719a208302fb1ced8237b7fb57d79332a3411bbbd6922469dc3d5b4ee0",
+    "configured_params": {
+      "roughness_m": {
+        "label": "Roughness (150 m)",
+        "range": 3.0,
+        "unit": "m",
+        "weight": 1.0
+      },
+      "slope_mean_deg": {
+        "label": "Mean slope",
+        "range": 20.0,
+        "unit": "\u00b0",
+        "weight": 1.0
+      },
+      "slope_p90_deg": {
+        "label": "90th percentile slope",
+        "range": 30.0,
+        "unit": "\u00b0",
+        "weight": 1.0
+      }
+    },
+    "configured_window_sizes_km": [
+      3.0,
+      6.0,
+      12.0
+    ],
+    "generator": "pipeline/scoring_fixtures.py",
+    "generator_sha256": "e7076d9c62a6b2bd3c7804db0898b7e3b7f459bf5f6faa4fb97faa7f259c9778",
+    "parameter_order": [
+      "slope_mean_deg",
+      "slope_p90_deg",
+      "roughness_m"
+    ],
+    "scorer": "pipeline/scan.py:similarity and terrain_match",
+    "scorer_sha256": "c21393932719d7872e0fce6efed407e6839e1fca3e01cdccf365499a71ea8b3c"
+  },
+  "purpose": "test-only synthetic fixtures; not production app data or observed site measurements",
+  "schema_version": 1,
+  "window_note": "window_km labels synthetic precomputed descriptors for the consumer; the Python scan scorer itself uses its configured main window. No new terrain windows are computed by this fixture generator."
+}
