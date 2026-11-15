@@ -1,6 +1,6 @@
 import type { CardExplanation, Neighbour } from '../explain/card'
 import { listText, ordinal } from '../explain/card'
-import { Bar, fmt, fmtUnit, pct, TierBadge } from '../ui'
+import { Bar, coordText, flagText, fmt, fmtUnit, pct, TierBadge } from '../ui'
 import WhyText from './WhyText'
 import './SiteDetails.css'
 
@@ -26,15 +26,6 @@ function Compare({ me, n, dir }: { me: number; n: Neighbour; dir: 'above' | 'bel
     </li>
   )
 }
-
-/** Coordinates no more precise than the site's caveat allows. */
-function coords(lat: number, lon: number, approximate: boolean): string {
-  const d = approximate ? 2 : 3
-  const c = `${Math.abs(lat).toFixed(d)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(d)}°${lon >= 0 ? 'E' : 'W'}`
-  return approximate ? `≈ ${c} (approximate)` : c
-}
-
-const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 /**
  * The selected site's details and interpretation, always visible. Starts with the site itself
@@ -69,7 +60,7 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
 
       <div className="details-body">
         <section aria-label="Site">
-          <p className="coords num">{coords(ex.site.lat, ex.site.lon, ex.site.coordsApproximate)}</p>
+          <p className="coords num">{coordText(ex.site.lat, ex.site.lon, ex.site.coordsApproximate)}</p>
           <WhyText why={ex.site.why} kind={ex.site.whyKind} targetName={ex.targetName} />
           <p className="note entry-source">
             {ex.site.knownAnalog
@@ -80,7 +71,7 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
           </p>
           {otherFlags.length > 0 && (
             <ul className="flags" aria-label="Site caveats">
-              {otherFlags.map(f => <li key={f} className="chip caveat">{sentence(f)}</li>)}
+              {otherFlags.map(f => <li key={f} className="chip caveat">{flagText(f)}</li>)}
             </ul>
           )}
         </section>
@@ -187,7 +178,10 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
               </div>
             ))}
           </dl>
-          <p className="note">Terrain Match by window size. The ranking uses the main window.</p>
+          <p className="note">
+            Terrain Match by window size, with the same weights. The ranking uses the main window; a large spread means the
+            score depends on the window chosen.
+          </p>
         </section>
 
         <details className="sources">

@@ -1,7 +1,7 @@
 import type { Config, Evidence, RankedSite, Target } from '../types'
 import { WINDOW_KEYS } from '../types'
 import { weakestParam } from '../engine'
-import { fmt, fmtUnit, pct, TierBadge, Bar } from '../ui'
+import { coordText, flagText, fmt, fmtUnit, pct, TierBadge, Bar } from '../ui'
 import Hillshade from './Hillshade'
 import WhyText from './WhyText'
 import { whyKind } from '../explain/card'
@@ -18,9 +18,6 @@ export interface DataDrawerProps {
   onClose: () => void
 }
 
-const coord = (lat: number, lon: number) =>
-  `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(3)}°${lon >= 0 ? 'E' : 'W'}`
-
 const Missing = ({ text = 'missing' }: { text?: string }) => <span className="missing-text">{text}</span>
 
 /** Exact numbers for the selected site, in the order of brief F3. */
@@ -35,7 +32,7 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
         <div>
           <span className="label">{entry ? `Rank ${entry.rank} · ${target.name}` : target.name}</span>
           <h2>{site?.name ?? 'No site selected'}</h2>
-          {site && <p className="coords num">{coord(site.lat, site.lon)}</p>}
+          {site && <p className="coords num">{coordText(site.lat, site.lon, site.flags.includes('coordinates approximate'))}</p>}
         </div>
         <button type="button" className="close" aria-label="Close site data" onClick={onClose}>×</button>
       </header>
@@ -43,14 +40,24 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
       {entry && site && (
         <>
           <WhyText why={site.why} kind={whyKind(site)} targetName={target.name} className="why" />
+          {site.flags.some(f => f !== 'coordinates approximate') && (
+            <ul className="flags" aria-label="Site caveats">
+              {site.flags.filter(f => f !== 'coordinates approximate').map(f => <li key={f}>{flagText(f)}</li>)}
+            </ul>
+          )}
 
           {entry.warning.fired && <p className="warning" role="note">{entry.warning.text}</p>}
 
           <dl className="facts">
             <div><dt className="label">Terrain Match</dt><dd className="num">{fmt(entry.terrainMatch)}</dd></div>
             <div><dt className="label">Completeness</dt><dd className="num">{pct(entry.completeness)}</dd></div>
-            <div><dt className="label">Top-3 stability</dt><dd className="num">{pct(stability)}</dd></div>
+            <div><dt className="label">Top-{config.stability.top_n} stability</dt><dd className="num">{entry.terrainMatch === null ? 'not scored' : pct(stability)}</dd></div>
           </dl>
+          <p className="muted small">
+            Completeness is the share of the weight with a value on both sides. Stability is the share of{' '}
+            {config.stability.runs} reruns, with the weights varied and values shifted by up to ±{Math.round(config.stability.noise_rel * 100)}%,
+            in which this site stays in the top {config.stability.top_n}; it shows how sensitive the rank is and is not a probability.
+          </p>
 
           <p className="weakest">
             {weak
@@ -143,6 +150,7 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
                 </div>
               ))}
             </dl>
+            <p className="muted small">Same weights in each window. The ranking uses the main window.</p>
           </section>
 
           <section aria-label="Depth evidence for this site">

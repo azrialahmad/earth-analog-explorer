@@ -17,6 +17,31 @@ export function pct(x: number | null | undefined): string {
   return x === null || x === undefined || !Number.isFinite(x) ? 'missing' : `${Math.round(x * 100)}%`
 }
 
+/**
+ * Coordinates no more precise than the site's caveat allows: 3 decimals, or 2 with "≈ … (approximate)"
+ * when the site carries the "coordinates approximate" flag. Used by every view that shows them.
+ */
+export function coordText(lat: number, lon: number, approximate: boolean): string {
+  const d = approximate ? 2 : 3
+  const c = `${Math.abs(lat).toFixed(d)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(d)}°${lon >= 0 ? 'E' : 'W'}`
+  return approximate ? `≈ ${c} (approximate)` : c
+}
+
+/**
+ * Display wording for a pipeline site flag, so every view says the same thing.
+ * "includes water" is set by the pipeline from the share of near-flat cells (flat_share), not from a
+ * water map, so it is shown as a possibility. Unknown flags are shown as supplied.
+ */
+export function flagText(flag: string): string {
+  switch (flag) {
+    case 'includes water': return 'May include water (a flatness check, not a water map)'
+    case 'coordinates approximate': return 'Coordinates approximate'
+    case 'non-NASA elevation source': return 'Non-NASA elevation source'
+    case 'scan candidate, not field-checked': return 'Scan candidate, not field-checked'
+    default: return flag.charAt(0).toUpperCase() + flag.slice(1)
+  }
+}
+
 const TIER_LABEL: Record<Tier, string> = {
   computed: 'Computed', cited: 'Cited', estimated: 'Estimated', missing: 'Missing', 'by definition': 'By definition',
 }

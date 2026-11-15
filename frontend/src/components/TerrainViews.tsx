@@ -8,7 +8,7 @@ import './TerrainViews.css'
 export interface TerrainViewsProps {
   target: Target
   site: Site | null
-  /** Moon targets only: light both views with a low polar sun and no sky. */
+  /** Moon targets only: light both views with a low polar sun, a black sky and a dim ambient fill. */
   relit: boolean
   onToggleRelit: () => void
   /** The analysis window from config, named so the display mesh is not mistaken for the scoring grid. */
@@ -189,8 +189,8 @@ export default function TerrainViews({ target, site, relit, onToggleRelit, mainW
 
       <p className="views-foot">
         {relit && moon
-          ? 'Polar sun on both views: a sun about 2° up and no sky light, as at the lunar pole. Display lighting only.'
-          : 'Same display lighting on both views, for comparing shape. It is illustrative, not a simulation of either place.'}{' '}
+          ? 'Polar sun on both views: a sun about 2° up under a black sky, as at the lunar pole, plus a dim ambient fill so shaded ground stays visible. Real polar shadows would be darker. Display lighting only, not an illumination simulation.'
+          : 'Same display lighting on both views, with a soft ambient fill, for comparing shape. It is illustrative, not a simulation of either place.'}{' '}
         The meshes are for viewing; Terrain Match uses the {mainWindowKm} km window values.
       </p>
     </div>

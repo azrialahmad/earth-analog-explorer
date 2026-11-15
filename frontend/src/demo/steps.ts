@@ -73,7 +73,7 @@ export function buildDemoSteps(data: AppData): DemoStep[] {
     })
     steps.push({
       ms: 11000,
-      caption: `Light it like the pole: the same ${f.site.name} ground under a low polar sun with no sky. The shadows go black, as they would at ${ft.name}.`,
+      caption: `Light it like the pole: the same ${f.site.name} ground under a low sun and a black sky. A dim fill keeps the shaded ground visible; at ${ft.name} the shadows would be darker. Display lighting only.`,
       apply: a => a.setRelit(true),
     })
 
