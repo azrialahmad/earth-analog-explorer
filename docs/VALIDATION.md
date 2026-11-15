@@ -32,3 +32,22 @@ This is a faithful summary of `FINDINGS.md` from the PoC repository, retrieved u
 - The PoC's approximate Earth test-area coordinates, Svalbard's fjord position, and the intended Shackleton and Malapert target windows still needed a human choice or confirmation in that report.
 - Etna extraction time and access to the data remained unknown; the PoC reports that the source makes S3LI available after a form and states CC BY-NC-SA 4.0, while Etna-LRNT's source was not found.
 - The PoC explicitly says its POLAR result cannot stand in for CHERI as evidence about polar lighting, and it did not reproduce the cited CHERI result.
+
+## New candidate scan (issue #48)
+
+These figures come from this app's own pipeline (`uv run pipeline/scan.py`), not from the PoC. Settings are in the `scan:` section of `config/weights.yaml`. The extra regions are listed in `config/scan_regions.json`.
+
+- **Scanned:** 40 DEM tiles: the 17 around the known sites, plus 23 downloaded for 11 new regions (Afar, Lut, Qaidam, Tibesti, Haruj, Harrat Khaybar, Puna de Atacama, southern Altiplano, Pilbara, Holuhraun, Axel Heiberg). That gave 8,686 window centres on a 6 km grid.
+- **Dropped:** 1,563 below sea level, 225 water-like (too flat), 130 close to a known site, 0 with DEM gaps. That left 6,768 usable windows.
+- **Kept:** 18 candidates after the WorldCover bare-ground and land checks, at most 2 per region. 11 are in new regions (Afar, southern Altiplano ×2, Axel Heiberg, Harrat Khaybar ×2, Puna ×2, Qaidam ×2, Tibesti). 7 are within 100 km of a known site and are named after it (Askja ×2, Haughton, Mauna Kea ×2, Atacama Yungay ×2). One of those is the Holuhraun area, south of Askja. Haruj and Pilbara gave no candidate.
+- **Ranks with default weights (30 sites):**
+  - Shackleton rim: southern Altiplano candidate 1 is first (0.87), and the best known site is third.
+  - Malapert: Atacama Yungay area candidate 1 is first (0.92), and the best known site is third.
+  - Jezero: the top five are all candidates (0.97 to 0.99), led by Qaidam basin candidate 1, and the best known site is sixth.
+
+What this does not show:
+
+- The candidates are terrain and land-cover matches only. Nobody has checked them on imagery, in the field, or for access and permits.
+- The regions were chosen by the agent, not found by searching all of Earth. Other good regions were not scanned.
+- The Skadi SRTM mirror fills the sea with bathymetry. The scan drops windows with more than 2% of cells below 0 m and keeps only windows that are at least 90% land in WorldCover. The Antarctic tile has no WorldCover data, so it cannot yield a candidate.
+- Terrain Match compares slope and roughness at 30 m. It says nothing about grain size, rock type, temperature or radiation.

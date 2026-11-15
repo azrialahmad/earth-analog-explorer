@@ -32,6 +32,9 @@ jobs:
           if [ ! -f pyproject.toml ]; then echo "No pipeline yet, skipping"; else
             uv sync
             uv run python -m compileall -q pipeline
+            uv run pipeline/terrain.py --selftest
+            uv run pipeline/scan.py --selftest
+            uv run pipeline/landcover.py --selftest
           fi
       - name: JSON checks
         run: |
