@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OPTIONS, POST } from './ask'
+import { OPTIONS, POST, SERVER_RERUN_TOOL } from './ask'
+import { RERUN_TOOL } from '../src/chat/prompt'
+import { readFileSync } from 'node:fs'
 
 const KEY = 'test-key-not-real'
 const req = (body: unknown) => new Request('http://localhost/api/ask', { method: 'POST', body: typeof body === 'string' ? body : JSON.stringify(body) })
@@ -47,6 +49,16 @@ describe('POST /api/ask', () => {
     const r = await POST(req(good))
     expect(r.status).toBe(502)
     expect(await r.text()).not.toContain(KEY)
+  })
+
+  it('has no imports, so Vercel can load it as a plain Node ES module (issue #109)', () => {
+    const src = readFileSync(new URL('./ask.ts', import.meta.url), 'utf-8')
+    expect(src).not.toMatch(/^\s*import\s/m)
+    expect(src).not.toMatch(/import\(/)
+  })
+
+  it('offers the model exactly the same rerun tool as the app (the server keeps its own copy)', () => {
+    expect(JSON.parse(JSON.stringify(SERVER_RERUN_TOOL))).toEqual(JSON.parse(JSON.stringify(RERUN_TOOL)))
   })
 
   // issue #109: the Pages app calls this endpoint on Vercel, so it is cross-origin.
