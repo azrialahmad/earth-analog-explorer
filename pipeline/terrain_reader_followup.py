@@ -37,8 +37,11 @@ MODES = {
 
 
 def fingerprints(paths):
-    return {str(p.relative_to(ROOT)): hashlib.file_digest(p.open("rb"), "sha256").hexdigest()
-            for p in sorted(set(paths))}
+    result = {}
+    for path in sorted(set(paths)):
+        with path.open("rb") as stream:
+            result[str(path.relative_to(ROOT))] = hashlib.file_digest(stream, "sha256").hexdigest()
+    return result
 
 
 def protected_fingerprints():
@@ -395,8 +398,25 @@ def run():
 
 
 def selftest():
+    import gc
+    import tempfile
+    import warnings
+
     from affine import Affine
     from rasterio.crs import CRS
+
+    # Explicitly closed hash streams must not produce unclosed-file warnings.
+    # The scoped synthetic file never touches an input or published artifact.
+    with tempfile.TemporaryDirectory(prefix="reader-fingerprint-", dir=ROOT) as directory:
+        path = Path(directory) / "synthetic.bin"
+        content = b"synthetic fingerprint fixture"
+        path.write_bytes(content)
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always", ResourceWarning)
+            actual = fingerprints([path])
+            gc.collect()
+        assert actual == {path.relative_to(ROOT).as_posix(): hashlib.sha256(content).hexdigest()}
+        assert not any(issubclass(w.category, ResourceWarning) for w in caught)
 
     # Analytic plane with an interior hole; complete-neighborhood reference is
     # independent of the warp. Synthetic inputs are not scientific settings.
@@ -434,7 +454,7 @@ def selftest():
     # Incomplete multi-tile support must be reported even when a tile exists.
     missing = missing_tile_tokens([Path("N37E014.hgt")], 37.722, 15.005, 6)
     assert "N37E015" in missing
-    print("PASS: reference, crop/full, nested grids, nodata, and mutation detection")
+    print("PASS: closed fingerprint streams, reference, crop/full, nested grids, nodata, and mutation detection")
 
 
 def main():

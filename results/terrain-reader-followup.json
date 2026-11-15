@@ -5078,8 +5078,8 @@
       "pipeline/scan.py": "6ae5135722e08e4f21bb2203f9503d8990da5e539e2b39590e9d9ba06310c770",
       "pipeline/terrain.py": "85e2f8e418b9d42019398d2cc9387c71890cf2e910d8c486635d595800d6f559",
       "pipeline/terrain_reader_diagnostic.py": "b4739b10b0e5a1bcbfc5707c118b39b1fed1a60393d2d5393c3c7fba7dffcd03",
-      "pipeline/terrain_reader_followup.py": "2c0afbfc55c639edf12c274fbf10265754ba7255b260c7a4f739dbdf91de5cb2",
-      "pipeline/test_terrain_windows.py": "c31dcafe31c0e21ca19119f0c5883b3c768d443dfd8fc6431fa1501982a3a74e",
+      "pipeline/terrain_reader_followup.py": "1ebf2c0aa0e2363e2089bb7921eebc80446b61c92d434d168d4ebc1e7563cbe2",
+      "pipeline/test_terrain_windows.py": "4e1746d391d5c20349a97caa06e65af79664bb5f08bfa9c0003b3cbf56133f39",
       "results/terrain.json": "c64081cdcf1a675c32fc7a4769220253c03d32c031d42fd9f1ec4d13725a0f6d",
       "uv.lock": "e1926a320bf704ebd7d187d7c13178e5021666d8d006b6627042117381d10eac"
     },

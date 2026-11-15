@@ -4,9 +4,11 @@
 
 **Code:** `pipeline/terrain_reader_followup.py`, `pipeline/test_terrain_windows.py` · **Evidence:** `results/terrain-reader-followup.json`
 
+**Split delivery:** the producer correction, square-window tests and migration-hold note are in [PR #118](https://github.com/azrialahmad/earth-analog-explorer/pull/118). Draft #116 contains only the diagnostic code, report, references and generated evidence relative to that prerequisite branch. Until #118 lands, #116 is stacked on `57-square-window-crop`; afterward it must be retargeted to `main`. Neither partial PR closes #57.
+
 ## Decision: partial correction, release migration still blocked
 
-The bounded pass found and fixes a definite **one-axis summary crop defect** in `terrain.build_row`. It also isolates contributions from automatic warp-kernel scaling and approximate transformation in the tested Earth reader comparisons. It does **not** approve a replacement resampling method, replay candidate selection, publish new measurements, or resolve all of #57.
+The bounded pass found a definite **one-axis summary crop defect** in `terrain.build_row`, corrected separately by #118. This diagnostic isolates contributions from automatic warp-kernel scaling and approximate transformation in the tested Earth reader comparisons. It does **not** approve a replacement resampling method, replay candidate selection, publish new measurements, or resolve all of #57.
 
 No resampling options, coordinates, scientific/scoring formulas, config contracts, raw DEMs or published data/assets changed. In particular, the running app still has the previous measurements; this producer correction is not an app-data migration. Do not describe the current catalog or ranking as corrected by this patch.
 
@@ -84,7 +86,7 @@ At each Etna/Yungay boundary, one source tile has 204 warp-valid cells without a
 
 ## 4. Reproduction and checks
 
-From the repository root, with the declared cached inputs present:
+From the repository root, with the declared cached inputs and the square-crop prerequisite from #118 present:
 
 ```sh
 uv sync --locked
@@ -99,7 +101,7 @@ uv run pipeline/landcover.py --selftest
 uv run pipeline/build.py --selftest
 ```
 
-The follow-up writes only its research artifact by default. An alternate `--output` JSON destination must be outside the checkout; protected source/public paths cannot be selected. It fingerprints all raw/config/public data and image files before and after the run and refuses the report if they change.
+The follow-up writes only its research artifact by default. An alternate `--output` JSON destination must be outside the checkout; protected source/public paths cannot be selected. It fingerprints all raw/config/public data and image files before and after the run and refuses the report if they change. Hash streams are explicitly closed; a synthetic selftest checks their digest and absence of unclosed-file warnings.
 
 Completed checks:
 

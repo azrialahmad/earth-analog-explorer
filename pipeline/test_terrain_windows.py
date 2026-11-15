@@ -78,7 +78,9 @@ class SquareWindowTests(unittest.TestCase):
         # Entire columns outside the smallest square are missing. They must not
         # contribute cells or make the small-square statistics incomplete.
         small_n = terrain.window_cells(min(sizes))
-        left = terrain.BUFFER_CELLS + (n - small_n) // 2 - terrain.BUFFER_CELLS
+        # NaN columns stop BUFFER_CELLS before the small square, preserving its
+        # slope and roughness neighborhoods.
+        left = (n - small_n) // 2
         z[:, :left] = np.nan
         valid[:, :left] = False
         center = slice(terrain.BUFFER_CELLS, side - terrain.BUFFER_CELLS)
