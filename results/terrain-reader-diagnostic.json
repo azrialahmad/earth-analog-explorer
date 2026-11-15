@@ -1,0 +1,1844 @@
+{
+  "cases": [
+    {
+      "case_kind": "single-tile control",
+      "coordinates": {
+        "confirmed": false,
+        "lat": 19.76,
+        "lon": -155.46,
+        "source": "config/sites.json"
+      },
+      "descriptor_difference": {
+        "roughness_m": {
+          "absolute_difference": 0.0,
+          "comparison": 1.5683468106005432,
+          "reference": 1.5683468106005432,
+          "signed_difference": 0.0
+        },
+        "slope_mean_deg": {
+          "absolute_difference": 0.0,
+          "comparison": 14.358917338905242,
+          "reference": 14.358917338905242,
+          "signed_difference": 0.0
+        },
+        "slope_p90_deg": {
+          "absolute_difference": 0.0,
+          "comparison": 22.529988933699297,
+          "reference": 22.529988933699297,
+          "signed_difference": 0.0
+        }
+      },
+      "final_full_source_read": {
+        "descriptors": {
+          "roughness_m": 1.5683468106005432,
+          "slope_cells": 40000,
+          "slope_mean_deg": 14.358917338905242,
+          "slope_p90_deg": 22.529988933699297,
+          "valid_cells": 40000
+        },
+        "full_tile_mosaic_matches_final_reader": {
+          "absolute_elevation_difference_m": {
+            "count_gt_0_01m": 0,
+            "count_gt_0_1m": 0,
+            "count_gt_1m": 0,
+            "max": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "rmse": 0.0
+          },
+          "common_valid_cells": 41616,
+          "comparison_only_cells": 0,
+          "comparison_valid_cells": 41616,
+          "reference_only_cells": 0,
+          "reference_valid_cells": 41616
+        },
+        "per_tile_full_source": [
+          {
+            "contributed_cells": 41616,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 33517,
+                "count_gt_0_1m": 1370,
+                "count_gt_1m": 0,
+                "max": 0.194580078125,
+                "mean": 0.03719731396503148,
+                "p95": 0.0927734375,
+                "rmse": 0.04734871195407396
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 7.16244530849508e-05,
+                "cropped_tile_reproject_m": 3486.997802734375,
+                "destination_row_col": [
+                  0,
+                  0
+                ],
+                "direct_bilinear_m": 3486.997874358828,
+                "full_absolute_error_m": 7.16244530849508e-05,
+                "full_tile_reproject_m": 3486.997802734375,
+                "source_pixel_center_coordinates": [
+                  1839.3475318771088,
+                  765.5351279575116
+                ]
+              },
+              {
+                "crop_absolute_error_m": 6.192978798935656e-05,
+                "cropped_tile_reproject_m": 3126.0595703125,
+                "destination_row_col": [
+                  50,
+                  203
+                ],
+                "direct_bilinear_m": 3126.059632242288,
+                "full_absolute_error_m": 6.192978798935656e-05,
+                "full_tile_reproject_m": 3126.0595703125,
+                "source_pixel_center_coordinates": [
+                  2048.643619989394,
+                  814.0441507427167
+                ]
+              },
+              {
+                "crop_absolute_error_m": 5.744998588852468e-05,
+                "cropped_tile_reproject_m": 2764.3349609375,
+                "destination_row_col": [
+                  101,
+                  203
+                ],
+                "direct_bilinear_m": 2764.334903487514,
+                "full_absolute_error_m": 5.744998588852468e-05,
+                "full_tile_reproject_m": 2764.3349609375,
+                "source_pixel_center_coordinates": [
+                  2048.63460040919,
+                  863.5233539843903
+                ]
+              },
+              {
+                "crop_absolute_error_m": 9.082160249818116e-05,
+                "cropped_tile_reproject_m": 2508.9873046875,
+                "destination_row_col": [
+                  152,
+                  203
+                ],
+                "direct_bilinear_m": 2508.9872138658975,
+                "full_absolute_error_m": 9.082160249818116e-05,
+                "full_tile_reproject_m": 2508.9873046875,
+                "source_pixel_center_coordinates": [
+                  2048.6255863967817,
+                  913.0025572268205
+                ]
+              },
+              {
+                "crop_absolute_error_m": 7.973762694746256e-05,
+                "cropped_tile_reproject_m": 2305.22314453125,
+                "destination_row_col": [
+                  203,
+                  203
+                ],
+                "direct_bilinear_m": 2305.223224268877,
+                "full_absolute_error_m": 7.973762694746256e-05,
+                "full_tile_reproject_m": 2305.22314453125,
+                "source_pixel_center_coordinates": [
+                  2048.6165779503062,
+                  962.4817604700511
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 33517,
+                "count_gt_0_1m": 1370,
+                "count_gt_1m": 0,
+                "max": 0.194580078125,
+                "mean": 0.03719731396503148,
+                "p95": 0.0927734375,
+                "rmse": 0.04734871195407396
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "path": "data/raw/srtm/N19W156.hgt"
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "grid": {
+        "affine_transform": [
+          30.0,
+          0.0,
+          -3060.0,
+          0.0,
+          -30.0,
+          3060.0
+        ],
+        "buffer_cells": 2,
+        "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",6378137,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Azimuthal_Equidistant\"],PARAMETER[\"latitude_of_center\",19.76],PARAMETER[\"longitude_of_center\",-155.46],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+        "shape": [
+          204,
+          204
+        ],
+        "working_resolution_m": 30.0
+      },
+      "pixel_difference": {
+        "absolute_elevation_difference_m": {
+          "count_gt_0_01m": 0,
+          "count_gt_0_1m": 0,
+          "count_gt_1m": 0,
+          "max": 0.0,
+          "mean": 0.0,
+          "p95": 0.0,
+          "rmse": 0.0
+        },
+        "common_valid_cells": 41616,
+        "comparison_only_cells": 0,
+        "comparison_valid_cells": 41616,
+        "reference_only_cells": 0,
+        "reference_valid_cells": 41616
+      },
+      "scan_style_cropped_source_read": {
+        "descriptors": {
+          "roughness_m": 1.5683468106005432,
+          "slope_cells": 40000,
+          "slope_mean_deg": 14.358917338905242,
+          "slope_p90_deg": 22.529988933699297,
+          "valid_cells": 40000
+        },
+        "per_tile_crop": [
+          {
+            "contributed_cells": 41616,
+            "crop_bounds_in_source_pixels": [
+              763,
+              1837,
+              966,
+              2052
+            ],
+            "crop_shape": [
+              203,
+              215
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              -155.4898611111111,
+              0.0,
+              -0.0002777777777777778,
+              19.788194444444443
+            ],
+            "path": "data/raw/srtm/N19W156.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              -156.0001388888889,
+              0.0,
+              -0.0002777777777777778,
+              20.000138888888888
+            ]
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "site_id": "mauna_kea",
+      "source_label": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.76\u00b0), resampled 30 m)",
+      "source_tiles": [
+        "data/raw/srtm/N19W156.hgt"
+      ],
+      "status": "compared",
+      "terrain_match_by_target": {
+        "jezero": {
+          "cropped_source_score": 0.5045959560856857,
+          "difference": 0.0,
+          "full_source_score": 0.5045959560856857
+        },
+        "malapert": {
+          "cropped_source_score": 0.8571767950876219,
+          "difference": 0.0,
+          "full_source_score": 0.8571767950876219
+        },
+        "shackleton_rim": {
+          "cropped_source_score": 0.7212085930381935,
+          "difference": 0.0,
+          "full_source_score": 0.7212085930381935
+        }
+      },
+      "window_km": 6.0
+    },
+    {
+      "case_kind": "tile-boundary case",
+      "coordinates": {
+        "confirmed": false,
+        "lat": 37.722,
+        "lon": 15.005,
+        "source": "config/sites.json"
+      },
+      "descriptor_difference": {
+        "roughness_m": {
+          "absolute_difference": 0.0239200850067518,
+          "comparison": 1.7982973054405167,
+          "reference": 1.774377220433765,
+          "signed_difference": 0.0239200850067518
+        },
+        "slope_mean_deg": {
+          "absolute_difference": 0.007058747950956956,
+          "comparison": 18.3643547592597,
+          "reference": 18.357296011308744,
+          "signed_difference": 0.007058747950956956
+        },
+        "slope_p90_deg": {
+          "absolute_difference": 0.07359028171050142,
+          "comparison": 30.024384610503567,
+          "reference": 29.950794328793066,
+          "signed_difference": 0.07359028171050142
+        }
+      },
+      "final_full_source_read": {
+        "descriptors": {
+          "roughness_m": 1.774377220433765,
+          "slope_cells": 40000,
+          "slope_mean_deg": 18.357296011308744,
+          "slope_p90_deg": 29.950794328793066,
+          "valid_cells": 40000
+        },
+        "full_tile_mosaic_matches_final_reader": {
+          "absolute_elevation_difference_m": {
+            "count_gt_0_01m": 0,
+            "count_gt_0_1m": 0,
+            "count_gt_1m": 0,
+            "max": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "rmse": 0.0
+          },
+          "common_valid_cells": 41616,
+          "comparison_only_cells": 0,
+          "comparison_valid_cells": 41616,
+          "reference_only_cells": 0,
+          "reference_valid_cells": 41616
+        },
+        "per_tile_full_source": [
+          {
+            "contributed_cells": 17952,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 13790,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.09423828125,
+                "mean": 0.021633120994091884,
+                "p95": 0.047119140625,
+                "rmse": 0.025850911963164462
+              },
+              "common_valid_cells": 17952,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 17952,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 17952
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 17952,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 17952,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 17952
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 17952,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 17952,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 17952
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 0.0378681079891976,
+                "cropped_tile_reproject_m": 2442.1435546875,
+                "destination_row_col": [
+                  0,
+                  0
+                ],
+                "direct_bilinear_m": 2442.105686579511,
+                "full_absolute_error_m": 0.0378681079891976,
+                "full_tile_reproject_m": 2442.1435546875,
+                "source_pixel_center_coordinates": [
+                  3493.4600333117996,
+                  902.344871075562
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.06132917016202555,
+                "cropped_tile_reproject_m": 2866.426025390625,
+                "destination_row_col": [
+                  50,
+                  86
+                ],
+                "direct_bilinear_m": 2866.487354560787,
+                "full_absolute_error_m": 0.06132917016202555,
+                "full_tile_reproject_m": 2866.426025390625,
+                "source_pixel_center_coordinates": [
+                  3598.9850419737195,
+                  950.8361280293611
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.03619220013933955,
+                "cropped_tile_reproject_m": 2549.763427734375,
+                "destination_row_col": [
+                  101,
+                  86
+                ],
+                "direct_bilinear_m": 2549.7272355342357,
+                "full_absolute_error_m": 0.03619220013933955,
+                "full_tile_reproject_m": 2549.763427734375,
+                "source_pixel_center_coordinates": [
+                  3598.988570558846,
+                  1000.3153337561525
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.020492604574428697,
+                "cropped_tile_reproject_m": 2119.190185546875,
+                "destination_row_col": [
+                  152,
+                  86
+                ],
+                "direct_bilinear_m": 2119.2106781514494,
+                "full_absolute_error_m": 0.020492604574428697,
+                "full_tile_reproject_m": 2119.190185546875,
+                "source_pixel_center_coordinates": [
+                  3598.9920971055617,
+                  1049.7945394830022
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.04161169864983094,
+                "cropped_tile_reproject_m": 1802.7716064453125,
+                "destination_row_col": [
+                  203,
+                  86
+                ],
+                "direct_bilinear_m": 1802.8132181439623,
+                "full_absolute_error_m": 0.04161169864983094,
+                "full_tile_reproject_m": 1802.7716064453125,
+                "source_pixel_center_coordinates": [
+                  3598.995621615417,
+                  1099.2737452098518
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 13790,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.09423828125,
+                "mean": 0.021633120994091884,
+                "p95": 0.047119140625,
+                "rmse": 0.025850911963164462
+              },
+              "common_valid_cells": 17952,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 17952,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 17952
+            },
+            "path": "data/raw/srtm/N37E014.hgt"
+          },
+          {
+            "contributed_cells": 23868,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 20502,
+                "count_gt_0_1m": 8944,
+                "count_gt_1m": 0,
+                "max": 0.712890625,
+                "mean": 0.08893633919663618,
+                "p95": 0.243408203125,
+                "rmse": 0.11821830218431066
+              },
+              "common_valid_cells": 23868,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 23868,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 23868
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 22552,
+                "count_gt_0_1m": 16269,
+                "count_gt_1m": 1244,
+                "max": 5.98828125,
+                "mean": 0.3093049573762464,
+                "p95": 1.0121215820312495,
+                "rmse": 0.4617989406000818
+              },
+              "common_valid_cells": 23868,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 23868,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 23868
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 22563,
+                "count_gt_0_1m": 16263,
+                "count_gt_1m": 1242,
+                "max": 5.99560546875,
+                "mean": 0.30933071345525387,
+                "p95": 1.0128540039062495,
+                "rmse": 0.46185915756141366
+              },
+              "common_valid_cells": 23868,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 23868,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 23868
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 0.302314074835067,
+                "cropped_tile_reproject_m": 3140.222412109375,
+                "destination_row_col": [
+                  0,
+                  87
+                ],
+                "direct_bilinear_m": 3139.92009803454,
+                "full_absolute_error_m": 0.127617565789933,
+                "full_tile_reproject_m": 3139.79248046875,
+                "source_pixel_center_coordinates": [
+                  0.20857539410644677,
+                  902.3270498307538
+                ]
+              },
+              {
+                "crop_absolute_error_m": 3.7785666336276336e-05,
+                "cropped_tile_reproject_m": 1764.48779296875,
+                "destination_row_col": [
+                  50,
+                  203
+                ],
+                "direct_bilinear_m": 1764.4877551830837,
+                "full_absolute_error_m": 0.0038219653538362763,
+                "full_tile_reproject_m": 1764.4915771484375,
+                "source_pixel_center_coordinates": [
+                  142.51730025316647,
+                  950.8538912638614
+                ]
+              },
+              {
+                "crop_absolute_error_m": 4.502810588746797e-05,
+                "cropped_tile_reproject_m": 1653.847412109375,
+                "destination_row_col": [
+                  101,
+                  203
+                ],
+                "direct_bilinear_m": 1653.847367081269,
+                "full_absolute_error_m": 0.004227432831612532,
+                "full_tile_reproject_m": 1653.8431396484375,
+                "source_pixel_center_coordinates": [
+                  142.49419371671684,
+                  1000.3330918585998
+                ]
+              },
+              {
+                "crop_absolute_error_m": 3.561012999853119e-05,
+                "cropped_tile_reproject_m": 1848.88671875,
+                "destination_row_col": [
+                  152,
+                  203
+                ],
+                "direct_bilinear_m": 1848.88668313987,
+                "full_absolute_error_m": 0.06319681174500147,
+                "full_tile_reproject_m": 1848.823486328125,
+                "source_pixel_center_coordinates": [
+                  142.47110052849894,
+                  1049.8122924559575
+                ]
+              },
+              {
+                "crop_absolute_error_m": 5.324458470568061e-05,
+                "cropped_tile_reproject_m": 1496.6248779296875,
+                "destination_row_col": [
+                  203,
+                  203
+                ],
+                "direct_bilinear_m": 1496.6249311742722,
+                "full_absolute_error_m": 0.06487258052220568,
+                "full_tile_reproject_m": 1496.56005859375,
+                "source_pixel_center_coordinates": [
+                  142.44802067842102,
+                  1099.2914930560219
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 20449,
+                "count_gt_0_1m": 8906,
+                "count_gt_1m": 0,
+                "max": 0.662353515625,
+                "mean": 0.08863186920150673,
+                "p95": 0.24263305664062473,
+                "rmse": 0.11762198514314527
+              },
+              "common_valid_cells": 23868,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 23868,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 23868
+            },
+            "path": "data/raw/srtm/N37E015.hgt"
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "grid": {
+        "affine_transform": [
+          30.0,
+          0.0,
+          -3060.0,
+          0.0,
+          -30.0,
+          3060.0
+        ],
+        "buffer_cells": 2,
+        "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",6378137,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Azimuthal_Equidistant\"],PARAMETER[\"latitude_of_center\",37.722],PARAMETER[\"longitude_of_center\",15.005],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+        "shape": [
+          204,
+          204
+        ],
+        "working_resolution_m": 30.0
+      },
+      "pixel_difference": {
+        "absolute_elevation_difference_m": {
+          "count_gt_0_01m": 22552,
+          "count_gt_0_1m": 16269,
+          "count_gt_1m": 1244,
+          "max": 5.98828125,
+          "mean": 0.17739549025990606,
+          "p95": 0.81005859375,
+          "rmse": 0.34972830210698097
+        },
+        "common_valid_cells": 41616,
+        "comparison_only_cells": 0,
+        "comparison_valid_cells": 41616,
+        "reference_only_cells": 0,
+        "reference_valid_cells": 41616
+      },
+      "scan_style_cropped_source_read": {
+        "descriptors": {
+          "roughness_m": 1.7982973054405167,
+          "slope_cells": 40000,
+          "slope_mean_deg": 18.3643547592597,
+          "slope_p90_deg": 30.024384610503567,
+          "valid_cells": 40000
+        },
+        "per_tile_crop": [
+          {
+            "contributed_cells": 17952,
+            "crop_bounds_in_source_pixels": [
+              900,
+              3491,
+              1103,
+              3601
+            ],
+            "crop_shape": [
+              203,
+              110
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              14.969583333333333,
+              0.0,
+              -0.0002777777777777778,
+              37.75013888888889
+            ],
+            "path": "data/raw/srtm/N37E014.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              13.99986111111111,
+              0.0,
+              -0.0002777777777777778,
+              38.00013888888889
+            ]
+          },
+          {
+            "contributed_cells": 23868,
+            "crop_bounds_in_source_pixels": [
+              900,
+              0,
+              1103,
+              146
+            ],
+            "crop_shape": [
+              203,
+              146
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              14.99986111111111,
+              0.0,
+              -0.0002777777777777778,
+              37.75013888888889
+            ],
+            "path": "data/raw/srtm/N37E015.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              14.99986111111111,
+              0.0,
+              -0.0002777777777777778,
+              38.00013888888889
+            ]
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "site_id": "etna",
+      "source_label": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.5 m E-W x 30.9 m N-S at 37.722\u00b0), resampled 30 m)",
+      "source_tiles": [
+        "data/raw/srtm/N37E014.hgt",
+        "data/raw/srtm/N37E015.hgt"
+      ],
+      "status": "compared",
+      "terrain_match_by_target": {
+        "jezero": {
+          "cropped_source_score": 0.3290175476886224,
+          "difference": -0.0035931028189383762,
+          "full_source_score": 0.3326106505075608
+        },
+        "malapert": {
+          "cropped_source_score": 0.6815983866905587,
+          "difference": -0.0035931028189383207,
+          "full_source_score": 0.685191489509497
+        },
+        "shackleton_rim": {
+          "cropped_source_score": 0.8456868914708181,
+          "difference": -0.00172247162700645,
+          "full_source_score": 0.8474093630978246
+        }
+      },
+      "window_km": 6.0
+    },
+    {
+      "case_kind": "tile-boundary case",
+      "coordinates": {
+        "confirmed": false,
+        "lat": -24.1,
+        "lon": -70.02,
+        "source": "config/sites.json"
+      },
+      "descriptor_difference": {
+        "roughness_m": {
+          "absolute_difference": 0.0015603910263279896,
+          "comparison": 1.4326125238739877,
+          "reference": 1.4310521328476598,
+          "signed_difference": 0.0015603910263279896
+        },
+        "slope_mean_deg": {
+          "absolute_difference": 0.002600613059237311,
+          "comparison": 5.761308227774527,
+          "reference": 5.75870761471529,
+          "signed_difference": 0.002600613059237311
+        },
+        "slope_p90_deg": {
+          "absolute_difference": 0.005589892272780617,
+          "comparison": 13.232549983449086,
+          "reference": 13.226960091176306,
+          "signed_difference": 0.005589892272780617
+        }
+      },
+      "final_full_source_read": {
+        "descriptors": {
+          "roughness_m": 1.4310521328476598,
+          "slope_cells": 40000,
+          "slope_mean_deg": 5.75870761471529,
+          "slope_p90_deg": 13.226960091176306,
+          "valid_cells": 40000
+        },
+        "full_tile_mosaic_matches_final_reader": {
+          "absolute_elevation_difference_m": {
+            "count_gt_0_01m": 0,
+            "count_gt_0_1m": 0,
+            "count_gt_1m": 0,
+            "max": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "rmse": 0.0
+          },
+          "common_valid_cells": 41616,
+          "comparison_only_cells": 0,
+          "comparison_valid_cells": 41616,
+          "reference_only_cells": 0,
+          "reference_valid_cells": 41616
+        },
+        "per_tile_full_source": [
+          {
+            "contributed_cells": 7140,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 5,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.012939453125,
+                "mean": 0.0012127275226496848,
+                "p95": 0.0042724609375,
+                "rmse": 0.0018845172671443193
+              },
+              "common_valid_cells": 7140,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 7140,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 7140
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 5267,
+                "count_gt_0_1m": 1143,
+                "count_gt_1m": 0,
+                "max": 0.7337646484375,
+                "mean": 0.05385172013141194,
+                "p95": 0.19129638671874982,
+                "rmse": 0.08682887234078959
+              },
+              "common_valid_cells": 7140,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 7140,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 7140
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 5265,
+                "count_gt_0_1m": 1142,
+                "count_gt_1m": 0,
+                "max": 0.7335205078125,
+                "mean": 0.05385099352240896,
+                "p95": 0.19129638671874982,
+                "rmse": 0.08682773947726424
+              },
+              "common_valid_cells": 7140,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 7140,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 7140
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 0.0017378781631123275,
+                "cropped_tile_reproject_m": 1059.284912109375,
+                "destination_row_col": [
+                  0,
+                  170
+                ],
+                "direct_bilinear_m": 1059.283174231212,
+                "full_absolute_error_m": 0.13015584691311233,
+                "full_tile_reproject_m": 1059.413330078125,
+                "source_pixel_center_coordinates": [
+                  0.787787282752106,
+                  261.52189221259323
+                ]
+              },
+              {
+                "crop_absolute_error_m": 1.4690733451061533e-05,
+                "cropped_tile_reproject_m": 1004.6322021484375,
+                "destination_row_col": [
+                  50,
+                  203
+                ],
+                "direct_bilinear_m": 1004.632187457704,
+                "full_absolute_error_m": 0.08042964520404894,
+                "full_tile_reproject_m": 1004.5517578125,
+                "source_pixel_center_coordinates": [
+                  35.86477464725613,
+                  310.025192112269
+                ]
+              },
+              {
+                "crop_absolute_error_m": 2.963482984341681e-06,
+                "cropped_tile_reproject_m": 1018.947509765625,
+                "destination_row_col": [
+                  101,
+                  203
+                ],
+                "direct_bilinear_m": 1018.947506802142,
+                "full_absolute_error_m": 0.02087105995451566,
+                "full_tile_reproject_m": 1018.9266357421875,
+                "source_pixel_center_coordinates": [
+                  35.87634688770049,
+                  359.5043949542596
+                ]
+              },
+              {
+                "crop_absolute_error_m": 5.058106489741476e-05,
+                "cropped_tile_reproject_m": 1134.3243408203125,
+                "destination_row_col": [
+                  152,
+                  203
+                ],
+                "direct_bilinear_m": 1134.3242902392476,
+                "full_absolute_error_m": 0.17021659668989741,
+                "full_tile_reproject_m": 1134.4945068359375,
+                "source_pixel_center_coordinates": [
+                  35.88792575077969,
+                  408.98359779518796
+                ]
+              },
+              {
+                "crop_absolute_error_m": 4.514577449299395e-05,
+                "cropped_tile_reproject_m": 1183.3248291015625,
+                "destination_row_col": [
+                  203,
+                  203
+                ],
+                "direct_bilinear_m": 1183.324874247337,
+                "full_absolute_error_m": 0.227340067649493,
+                "full_tile_reproject_m": 1183.0975341796875,
+                "source_pixel_center_coordinates": [
+                  35.89951123984065,
+                  458.4628006350831
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 5,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0128173828125,
+                "mean": 0.0012109922093837535,
+                "p95": 0.0042724609375,
+                "rmse": 0.0018800521619437326
+              },
+              "common_valid_cells": 7140,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 7140,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 7140
+            },
+            "path": "data/raw/srtm/S25W070.hgt"
+          },
+          {
+            "contributed_cells": 34680,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 20444,
+                "count_gt_0_1m": 128,
+                "count_gt_1m": 0,
+                "max": 0.18994140625,
+                "mean": 0.018901051452003135,
+                "p95": 0.0589599609375,
+                "rmse": 0.026888441685497363
+              },
+              "common_valid_cells": 34680,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 34680,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 34680
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 34680,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 34680,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 34680
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 34680,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 34680,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 34680
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 2.8710078595395316e-05,
+                "cropped_tile_reproject_m": 1197.00146484375,
+                "destination_row_col": [
+                  0,
+                  0
+                ],
+                "direct_bilinear_m": 1197.0014935538286,
+                "full_absolute_error_m": 2.8710078595395316e-05,
+                "full_tile_reproject_m": 1197.00146484375,
+                "source_pixel_center_coordinates": [
+                  3420.1465642607654,
+                  261.516169717157
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.018742620047646597,
+                "cropped_tile_reproject_m": 1021.3848876953125,
+                "destination_row_col": [
+                  50,
+                  169
+                ],
+                "direct_bilinear_m": 1021.3661450752649,
+                "full_absolute_error_m": 0.018742620047646597,
+                "full_tile_reproject_m": 1021.3848876953125,
+                "source_pixel_center_coordinates": [
+                  3599.732732516015,
+                  310.03105497871
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.013269288561900794,
+                "cropped_tile_reproject_m": 1012.119873046875,
+                "destination_row_col": [
+                  101,
+                  169
+                ],
+                "direct_bilinear_m": 1012.1066037583131,
+                "full_absolute_error_m": 0.013269288561900794,
+                "full_tile_reproject_m": 1012.119873046875,
+                "source_pixel_center_coordinates": [
+                  3599.7404283414944,
+                  359.5102594980126
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.04252843648964699,
+                "cropped_tile_reproject_m": 1113.3848876953125,
+                "destination_row_col": [
+                  152,
+                  169
+                ],
+                "direct_bilinear_m": 1113.4274161318021,
+                "full_absolute_error_m": 0.04252843648964699,
+                "full_tile_reproject_m": 1113.3848876953125,
+                "source_pixel_center_coordinates": [
+                  3599.74812857114,
+                  408.989464016835
+                ]
+              },
+              {
+                "crop_absolute_error_m": 0.0013961837421447854,
+                "cropped_tile_reproject_m": 1064.113037109375,
+                "destination_row_col": [
+                  203,
+                  169
+                ],
+                "direct_bilinear_m": 1064.1144332931171,
+                "full_absolute_error_m": 0.0013961837421447854,
+                "full_tile_reproject_m": 1064.113037109375,
+                "source_pixel_center_coordinates": [
+                  3599.755833207222,
+                  458.46866853520623
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 20444,
+                "count_gt_0_1m": 128,
+                "count_gt_1m": 0,
+                "max": 0.18994140625,
+                "mean": 0.018901051452003135,
+                "p95": 0.0589599609375,
+                "rmse": 0.026888441685497363
+              },
+              "common_valid_cells": 34680,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 34680,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 34680
+            },
+            "path": "data/raw/srtm/S25W071.hgt"
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "grid": {
+        "affine_transform": [
+          30.0,
+          0.0,
+          -3060.0,
+          0.0,
+          -30.0,
+          3060.0
+        ],
+        "buffer_cells": 2,
+        "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",6378137,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Azimuthal_Equidistant\"],PARAMETER[\"latitude_of_center\",-24.1],PARAMETER[\"longitude_of_center\",-70.02],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+        "shape": [
+          204,
+          204
+        ],
+        "working_resolution_m": 30.0
+      },
+      "pixel_difference": {
+        "absolute_elevation_difference_m": {
+          "count_gt_0_01m": 5267,
+          "count_gt_0_1m": 1143,
+          "count_gt_1m": 0,
+          "max": 0.7337646484375,
+          "mean": 0.009239265708820676,
+          "p95": 0.0614013671875,
+          "rmse": 0.035965251306838086
+        },
+        "common_valid_cells": 41616,
+        "comparison_only_cells": 0,
+        "comparison_valid_cells": 41616,
+        "reference_only_cells": 0,
+        "reference_valid_cells": 41616
+      },
+      "scan_style_cropped_source_read": {
+        "descriptors": {
+          "roughness_m": 1.4326125238739877,
+          "slope_cells": 40000,
+          "slope_mean_deg": 5.761308227774527,
+          "slope_p90_deg": 13.232549983449086,
+          "valid_cells": 40000
+        },
+        "per_tile_crop": [
+          {
+            "contributed_cells": 7140,
+            "crop_bounds_in_source_pixels": [
+              259,
+              0,
+              462,
+              39
+            ],
+            "crop_shape": [
+              203,
+              39
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              -70.00013888888888,
+              0.0,
+              -0.0002777777777777778,
+              -24.071805555555557
+            ],
+            "path": "data/raw/srtm/S25W070.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              -70.00013888888888,
+              0.0,
+              -0.0002777777777777778,
+              -23.999861111111112
+            ]
+          },
+          {
+            "contributed_cells": 34680,
+            "crop_bounds_in_source_pixels": [
+              259,
+              3418,
+              462,
+              3601
+            ],
+            "crop_shape": [
+              203,
+              183
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              -70.05069444444445,
+              0.0,
+              -0.0002777777777777778,
+              -24.071805555555557
+            ],
+            "path": "data/raw/srtm/S25W071.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              -71.00013888888888,
+              0.0,
+              -0.0002777777777777778,
+              -23.999861111111112
+            ]
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "site_id": "yungay",
+      "source_label": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.2 m E-W x 30.9 m N-S at -24.1\u00b0), resampled 30 m)",
+      "source_tiles": [
+        "data/raw/srtm/S25W070.hgt",
+        "data/raw/srtm/S25W071.hgt"
+      ],
+      "status": "compared",
+      "terrain_match_by_target": {
+        "jezero": {
+          "cropped_source_score": 0.7662759059102617,
+          "difference": -0.00027883024583230664,
+          "full_source_score": 0.766554736156094
+        },
+        "malapert": {
+          "cropped_source_score": 0.7786862304741322,
+          "difference": -6.792331557370357e-05,
+          "full_source_score": 0.7787541537897059
+        },
+        "shackleton_rim": {
+          "cropped_source_score": 0.4896918180417409,
+          "difference": -6.792331557381459e-05,
+          "full_source_score": 0.4897597413573147
+        }
+      },
+      "window_km": 6.0
+    },
+    {
+      "case_kind": "single-tile scan-grid control",
+      "coordinates": {
+        "distance_to_mauna_kea_km": 1.6209250152851964,
+        "edge_margin_km": 7.0,
+        "grid_spacing_km": 6.0,
+        "lat": 19.76357,
+        "lon": -155.475,
+        "scan_tile": "N19W156.hgt",
+        "source": "pipeline/scan.py tile_centres"
+      },
+      "descriptor_difference": {
+        "roughness_m": {
+          "absolute_difference": 0.0,
+          "comparison": 1.7677651577861515,
+          "reference": 1.7677651577861515,
+          "signed_difference": 0.0
+        },
+        "slope_mean_deg": {
+          "absolute_difference": 0.0,
+          "comparison": 15.921219390170188,
+          "reference": 15.921219390170188,
+          "signed_difference": 0.0
+        },
+        "slope_p90_deg": {
+          "absolute_difference": 0.0,
+          "comparison": 23.46403338755061,
+          "reference": 23.46403338755061,
+          "signed_difference": 0.0
+        }
+      },
+      "final_full_source_read": {
+        "descriptors": {
+          "roughness_m": 1.7677651577861515,
+          "slope_cells": 40000,
+          "slope_mean_deg": 15.921219390170188,
+          "slope_p90_deg": 23.46403338755061,
+          "valid_cells": 40000
+        },
+        "full_tile_mosaic_matches_final_reader": {
+          "absolute_elevation_difference_m": {
+            "count_gt_0_01m": 0,
+            "count_gt_0_1m": 0,
+            "count_gt_1m": 0,
+            "max": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "rmse": 0.0
+          },
+          "common_valid_cells": 41616,
+          "comparison_only_cells": 0,
+          "comparison_valid_cells": 41616,
+          "reference_only_cells": 0,
+          "reference_valid_cells": 41616
+        },
+        "per_tile_full_source": [
+          {
+            "contributed_cells": 41616,
+            "crop_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 34110,
+                "count_gt_0_1m": 1606,
+                "count_gt_1m": 0,
+                "max": 0.250732421875,
+                "mean": 0.04031695901591335,
+                "p95": 0.095703125,
+                "rmse": 0.050353713509677774
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "difference_full_vs_crop_default_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "difference_full_vs_crop_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 0,
+                "count_gt_0_1m": 0,
+                "count_gt_1m": 0,
+                "max": 0.0,
+                "mean": 0.0,
+                "p95": 0.0,
+                "rmse": 0.0
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "direct_bilinear_reference_samples": [
+              {
+                "crop_absolute_error_m": 2.256098377984017e-05,
+                "cropped_tile_reproject_m": 3290.310302734375,
+                "destination_row_col": [
+                  0,
+                  0
+                ],
+                "direct_bilinear_m": 3290.310280173391,
+                "full_absolute_error_m": 2.256098377984017e-05,
+                "full_tile_reproject_m": 3290.310302734375,
+                "source_pixel_center_coordinates": [
+                  1785.345185646438,
+                  752.6831296117598
+                ]
+              },
+              {
+                "crop_absolute_error_m": 8.132444736475009e-05,
+                "cropped_tile_reproject_m": 3361.358642578125,
+                "destination_row_col": [
+                  50,
+                  203
+                ],
+                "direct_bilinear_m": 3361.3585612536776,
+                "full_absolute_error_m": 8.132444736475009e-05,
+                "full_tile_reproject_m": 3361.358642578125,
+                "source_pixel_center_coordinates": [
+                  1994.6459642897826,
+                  801.1921523966739
+                ]
+              },
+              {
+                "crop_absolute_error_m": 5.2899423280905467e-05,
+                "cropped_tile_reproject_m": 2949.345947265625,
+                "destination_row_col": [
+                  101,
+                  203
+                ],
+                "direct_bilinear_m": 2949.3458943662017,
+                "full_absolute_error_m": 5.2899423280905467e-05,
+                "full_tile_reproject_m": 2949.345947265625,
+                "source_pixel_center_coordinates": [
+                  1994.636942741461,
+                  850.6713556380564
+                ]
+              },
+              {
+                "crop_absolute_error_m": 5.647545913234353e-05,
+                "cropped_tile_reproject_m": 2626.025634765625,
+                "destination_row_col": [
+                  152,
+                  203
+                ],
+                "direct_bilinear_m": 2626.025691241084,
+                "full_absolute_error_m": 5.647545913234353e-05,
+                "full_tile_reproject_m": 2626.025634765625,
+                "source_pixel_center_coordinates": [
+                  1994.627926761983,
+                  900.1505588802247
+                ]
+              },
+              {
+                "crop_absolute_error_m": 1.9864412024617195e-05,
+                "cropped_tile_reproject_m": 2437.381103515625,
+                "destination_row_col": [
+                  203,
+                  203
+                ],
+                "direct_bilinear_m": 2437.381083651213,
+                "full_absolute_error_m": 1.9864412024617195e-05,
+                "full_tile_reproject_m": 2437.381103515625,
+                "source_pixel_center_coordinates": [
+                  1994.618916348787,
+                  949.6297621231497
+                ]
+              }
+            ],
+            "full_default_vs_exact_transformer": {
+              "absolute_elevation_difference_m": {
+                "count_gt_0_01m": 34110,
+                "count_gt_0_1m": 1606,
+                "count_gt_1m": 0,
+                "max": 0.250732421875,
+                "mean": 0.04031695901591335,
+                "p95": 0.095703125,
+                "rmse": 0.050353713509677774
+              },
+              "common_valid_cells": 41616,
+              "comparison_only_cells": 0,
+              "comparison_valid_cells": 41616,
+              "reference_only_cells": 0,
+              "reference_valid_cells": 41616
+            },
+            "path": "data/raw/srtm/N19W156.hgt"
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "grid": {
+        "affine_transform": [
+          30.0,
+          0.0,
+          -3060.0,
+          0.0,
+          -30.0,
+          3060.0
+        ],
+        "buffer_cells": 2,
+        "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",6378137,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Azimuthal_Equidistant\"],PARAMETER[\"latitude_of_center\",19.76357],PARAMETER[\"longitude_of_center\",-155.475],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+        "shape": [
+          204,
+          204
+        ],
+        "working_resolution_m": 30.0
+      },
+      "pixel_difference": {
+        "absolute_elevation_difference_m": {
+          "count_gt_0_01m": 0,
+          "count_gt_0_1m": 0,
+          "count_gt_1m": 0,
+          "max": 0.0,
+          "mean": 0.0,
+          "p95": 0.0,
+          "rmse": 0.0
+        },
+        "common_valid_cells": 41616,
+        "comparison_only_cells": 0,
+        "comparison_valid_cells": 41616,
+        "reference_only_cells": 0,
+        "reference_valid_cells": 41616
+      },
+      "scan_style_cropped_source_read": {
+        "descriptors": {
+          "roughness_m": 1.7677651577861515,
+          "slope_cells": 40000,
+          "slope_mean_deg": 15.921219390170188,
+          "slope_p90_deg": 23.46403338755061,
+          "valid_cells": 40000
+        },
+        "per_tile_crop": [
+          {
+            "contributed_cells": 41616,
+            "crop_bounds_in_source_pixels": [
+              750,
+              1783,
+              953,
+              1998
+            ],
+            "crop_shape": [
+              203,
+              215
+            ],
+            "crop_transform": [
+              0.0002777777777777778,
+              0.0,
+              -155.50486111111113,
+              0.0,
+              -0.0002777777777777778,
+              19.791805555555555
+            ],
+            "path": "data/raw/srtm/N19W156.hgt",
+            "source_crs": "EPSG:4326",
+            "source_dtype": "int16",
+            "source_nodata": -32768.0,
+            "source_shape": [
+              3601,
+              3601
+            ],
+            "source_transform": [
+              0.0002777777777777778,
+              0.0,
+              -156.0001388888889,
+              0.0,
+              -0.0002777777777777778,
+              20.000138888888888
+            ]
+          }
+        ],
+        "valid_cells": 41616
+      },
+      "site_id": "srtm_single_tile_scan_window",
+      "source_label": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.7636\u00b0), resampled 30 m)",
+      "source_tiles": [
+        "data/raw/srtm/N19W156.hgt"
+      ],
+      "status": "compared",
+      "terrain_match_by_target": {
+        "jezero": {
+          "cropped_source_score": 0.44602172272340995,
+          "difference": 0.0,
+          "full_source_score": 0.44602172272340995
+        },
+        "malapert": {
+          "cropped_source_score": 0.7986025617253462,
+          "difference": 0.0,
+          "full_source_score": 0.7986025617253462
+        },
+        "shackleton_rim": {
+          "cropped_source_score": 0.7354676381370006,
+          "difference": 0.0,
+          "full_source_score": 0.7354676381370006
+        }
+      },
+      "window_km": 6.0
+    },
+    {
+      "available_source_tiles": [],
+      "case_kind": "requested scan candidate",
+      "coordinates": {
+        "lat": 13.49407,
+        "lon": 40.61896,
+        "source": "frontend/public/data/sites.json"
+      },
+      "expected_local_tile_tokens": [
+        "N13E040"
+      ],
+      "limitation": "The required local SRTM tile is absent; no download was performed.",
+      "site_id": "cand_afar_1",
+      "status": "missing_source_tiles"
+    }
+  ],
+  "inputs": {
+    "code_and_config_sha256": {
+      "config/sites.json": "aea2531cdd3d9a0169b2eda27bc4613bfe9ea1edf5eb61a46a33c0f7387768ec",
+      "config/weights.yaml": "a192d0719a208302fb1ced8237b7fb57d79332a3411bbbd6922469dc3d5b4ee0",
+      "frontend/public/data/config.json": "0e90e4daad097910cf9ee5c3fd60b272ee12975d9b1e9801b7b8a6b402e1a55e",
+      "frontend/public/data/targets.json": "792c4999ced458fbedc5908876b8b4a6702cc2c1c447c5d2dbc606d5d1d19174",
+      "pipeline/scan.py": "6ae5135722e08e4f21bb2203f9503d8990da5e539e2b39590e9d9ba06310c770",
+      "pipeline/terrain.py": "04d37ee2b24252a214538be7b00b195d385605cd5229e4b4c33054b7f928dd55",
+      "pipeline/terrain_reader_diagnostic.py": "b4739b10b0e5a1bcbfc5707c118b39b1fed1a60393d2d5393c3c7fba7dffcd03"
+    },
+    "comparison_transformer_tolerance_pixels": [
+      0.125,
+      0.0
+    ],
+    "earth_radius_m": 6378137.0,
+    "gdal": "3.12.2",
+    "main_window_km": 6.0,
+    "nodata": "masked source values propagated as NaN; no filling",
+    "provenance": [
+      {
+        "bounds": [
+          -156.0001388888889,
+          18.99986111111111,
+          -154.99986111111113,
+          20.000138888888888
+        ],
+        "crs": "EPSG:4326",
+        "dtype": "int16",
+        "mask_flags": [
+          [
+            "nodata"
+          ]
+        ],
+        "native_resolution": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "nodata": -32768.0,
+        "path": "data/raw/srtm/N19W156.hgt",
+        "sha256": "ff875f93744a29b4ff2974751d6a104e506db3a91c5c1da66f2a88b971ec3fd0",
+        "shape": [
+          3601,
+          3601
+        ],
+        "size_bytes": 25934402,
+        "transform": [
+          0.0002777777777777778,
+          0.0,
+          -156.0001388888889,
+          0.0,
+          -0.0002777777777777778,
+          20.000138888888888
+        ],
+        "units": [
+          "m"
+        ]
+      },
+      {
+        "bounds": [
+          13.99986111111111,
+          36.999861111111116,
+          15.000138888888888,
+          38.00013888888889
+        ],
+        "crs": "EPSG:4326",
+        "dtype": "int16",
+        "mask_flags": [
+          [
+            "nodata"
+          ]
+        ],
+        "native_resolution": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "nodata": -32768.0,
+        "path": "data/raw/srtm/N37E014.hgt",
+        "sha256": "81a20cc646bc2dbbf4bd21a09ac6c3e6a9737c26ae17256094c21aa07a4ab752",
+        "shape": [
+          3601,
+          3601
+        ],
+        "size_bytes": 25934402,
+        "transform": [
+          0.0002777777777777778,
+          0.0,
+          13.99986111111111,
+          0.0,
+          -0.0002777777777777778,
+          38.00013888888889
+        ],
+        "units": [
+          "m"
+        ]
+      },
+      {
+        "bounds": [
+          14.99986111111111,
+          36.999861111111116,
+          16.000138888888888,
+          38.00013888888889
+        ],
+        "crs": "EPSG:4326",
+        "dtype": "int16",
+        "mask_flags": [
+          [
+            "nodata"
+          ]
+        ],
+        "native_resolution": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "nodata": -32768.0,
+        "path": "data/raw/srtm/N37E015.hgt",
+        "sha256": "6acbb92dc241a6defacd81f3dab88afe82744453550258e44886721429dd27ce",
+        "shape": [
+          3601,
+          3601
+        ],
+        "size_bytes": 25934402,
+        "transform": [
+          0.0002777777777777778,
+          0.0,
+          14.99986111111111,
+          0.0,
+          -0.0002777777777777778,
+          38.00013888888889
+        ],
+        "units": [
+          "m"
+        ]
+      },
+      {
+        "bounds": [
+          -70.00013888888888,
+          -25.00013888888889,
+          -68.9998611111111,
+          -23.999861111111112
+        ],
+        "crs": "EPSG:4326",
+        "dtype": "int16",
+        "mask_flags": [
+          [
+            "nodata"
+          ]
+        ],
+        "native_resolution": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "nodata": -32768.0,
+        "path": "data/raw/srtm/S25W070.hgt",
+        "sha256": "ea6c285a74b02192f2f4e2372641234eb79aa904a30ba1a701871ed363def0fb",
+        "shape": [
+          3601,
+          3601
+        ],
+        "size_bytes": 25934402,
+        "transform": [
+          0.0002777777777777778,
+          0.0,
+          -70.00013888888888,
+          0.0,
+          -0.0002777777777777778,
+          -23.999861111111112
+        ],
+        "units": [
+          "m"
+        ]
+      },
+      {
+        "bounds": [
+          -71.00013888888888,
+          -25.00013888888889,
+          -69.9998611111111,
+          -23.999861111111112
+        ],
+        "crs": "EPSG:4326",
+        "dtype": "int16",
+        "mask_flags": [
+          [
+            "nodata"
+          ]
+        ],
+        "native_resolution": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "nodata": -32768.0,
+        "path": "data/raw/srtm/S25W071.hgt",
+        "sha256": "dcdb51e90411c4459ecbedbaee71e08b97b5b66ef45509f343166d12791e5677",
+        "shape": [
+          3601,
+          3601
+        ],
+        "size_bytes": 25934402,
+        "transform": [
+          0.0002777777777777778,
+          0.0,
+          -71.00013888888888,
+          0.0,
+          -0.0002777777777777778,
+          -23.999861111111112
+        ],
+        "units": [
+          "m"
+        ]
+      }
+    ],
+    "rasterio": "1.5.2",
+    "rasterio_transformer_tolerance_default_pixels": 0.125,
+    "resampling": "bilinear",
+    "vertical_datum": "not recorded in the local SRTM GeoTIFF/HGT metadata read by this diagnostic"
+  },
+  "issue": 56,
+  "limitations": [
+    "Coordinates are the current approximate manifest/app coordinates, not newly confirmed footprints.",
+    "Afar could not be processed because its local source tile is absent; no raw data was downloaded.",
+    "The diagnostic isolates source crop/full-tile reprojection on a shared grid; it does not replay the historical scan or WorldCover selection.",
+    "Etna and Yungay are known-site footprints close to tile boundaries; scan candidate centres are constrained to stay inside a single tile, so these cases diagnose reader behavior rather than prove selected-candidate history.",
+    "The explicit transformer-tolerance comparison is a diagnostic setting test; it does not identify the underlying GDAL cause or establish which output is scientifically preferable."
+  ],
+  "method": "same 6 km destination footprint/grid; compare full-source final reader with per-tile scan-style cropped-source reprojection and same mosaic overwrite order"
+}
