@@ -24,5 +24,6 @@ scan:
   min_spacing_km: 20      # between any two candidates
   min_bare_share: 0.5     # ESA WorldCover bare / sparse vegetation share in the 6 km window
   min_land_share: 0.9     # ESA WorldCover land cells (not water, not no-data) in the 6 km window
-  per_target: 4           # candidates kept per target
-  shortlist_max: 30       # WorldCover lookups tried per target before giving up
+  per_target: 6           # candidates kept per target
+  max_per_region: 2       # candidates kept per region (known-site area or config/scan_regions.json)
+  shortlist_max: 60       # WorldCover lookups tried per target before giving up

@@ -1,0 +1,17 @@
+{
+  "_note": "Extra 1x1 degree DEM tiles for the candidate scan (issue #48). The regions were chosen by the agent from general knowledge of arid, volcanic and polar terrain; 'why' explains the choice and is not a sourced claim. Tiles with |lat| <= 60 come from the SRTM Skadi mirror, others from Copernicus GLO-30, as listed in docs/REFERENCES.md. Candidates more than near_known_km from a known site are named after their region.",
+  "near_known_km": 100,
+  "regions": [
+    {"id": "afar", "name": "Afar / Danakil, Ethiopia", "why": "Hyper-arid volcanic depression with lava fields and salt flats", "tiles": ["N13E040", "N14E040", "N13E041"]},
+    {"id": "lut", "name": "Lut desert, Iran", "why": "Hyper-arid desert with wind-eroded ridges and dark lava plains", "tiles": ["N29E059", "N30E058", "N30E059"]},
+    {"id": "qaidam", "name": "Qaidam basin, China", "why": "High, cold, hyper-arid basin with yardangs and salt playas", "tiles": ["N37E092", "N38E092", "N38E091"]},
+    {"id": "tibesti", "name": "Tibesti, Chad", "why": "Large volcanic massif in the central Sahara", "tiles": ["N19E018", "N20E017", "N20E018"]},
+    {"id": "haruj", "name": "Haruj volcanic field, Libya", "why": "Extensive basalt field in the Sahara", "tiles": ["N27E017", "N27E018"]},
+    {"id": "khaybar", "name": "Harrat Khaybar, Saudi Arabia", "why": "Basaltic lava field with cones and young flows in an arid setting", "tiles": ["N25E039", "N25E040"]},
+    {"id": "puna", "name": "Puna de Atacama, Argentina", "why": "High, dry, volcanic plateau with salt flats", "tiles": ["S26W068", "S26W067"]},
+    {"id": "altiplano_south", "name": "Southern Altiplano, Chile / Bolivia border", "why": "High, dry volcanic terrain east of the Atacama", "tiles": ["S23W068"]},
+    {"id": "pilbara", "name": "Pilbara, Australia", "why": "Old, arid, sparsely vegetated terrain", "tiles": ["S22E119", "S21E119"]},
+    {"id": "holuhraun", "name": "Holuhraun, Iceland", "why": "Young lava field north of Vatnajokull, south of Askja", "tiles": ["N64W017"]},
+    {"id": "axel_heiberg", "name": "Axel Heiberg Island, Canada", "why": "Cold polar desert terrain in the High Arctic", "tiles": ["N79W091"]}
+  ]
+}

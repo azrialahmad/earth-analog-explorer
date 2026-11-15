@@ -788,8 +788,265 @@
     "relief": "data/relief/svalbard.json"
   },
   {
+    "id": "cand_afar_1",
+    "name": "Afar / Danakil candidate 1",
+    "lat": 13.49407,
+    "lon": 40.61896,
+    "why": "New candidate from the DEM scan (issue #48): 13.49\u00b0N 40.62\u00b0E, 3701 km from Etna, Italy. Picked among the scanned windows for Malapert massif (0.96) Terrain Match with default weights, and 99% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 276.2729187011719,
+    "params": {
+      "slope_mean_deg": {
+        "value": 7.152858457866206,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~30.1 m E-W x 30.9 m N-S at 13.4941\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 17.013592849514065,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~30.1 m E-W x 30.9 m N-S at 13.4941\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.8976902084801777,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~30.1 m E-W x 30.9 m N-S at 13.4941\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 8.120540140113684,
+        "slope_p90_deg": 18.0949153071191,
+        "roughness_m": 0.9572648253389135
+      },
+      "6": {
+        "slope_mean_deg": 7.152858457866206,
+        "slope_p90_deg": 17.013592849514065,
+        "roughness_m": 0.8976902084801777
+      },
+      "12": {
+        "slope_mean_deg": 5.641118123329909,
+        "slope_p90_deg": 14.22156382415256,
+        "roughness_m": 0.8495461980110337
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.11057582014223445,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9916662956614651,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_afar_1.png",
+    "relief": "data/relief/cand_afar_1.json"
+  },
+  {
+    "id": "cand_altiplano_south_1",
+    "name": "Southern Altiplano candidate 1",
+    "lat": -22.82932,
+    "lon": -67.87329,
+    "why": "New candidate from the DEM scan (issue #48): 22.83\u00b0S 67.87\u00b0W, 261 km from Atacama Yungay, Chile. Picked among the scanned windows for Shackleton rim (0.86) Terrain Match with default weights, and 98% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 4675.82421875,
+    "params": {
+      "slope_mean_deg": {
+        "value": 19.135925824869226,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.8293\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 33.07006004146043,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.8293\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 2.018462166712797,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.8293\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 21.637923680974048,
+        "slope_p90_deg": 34.39700835415575,
+        "roughness_m": 2.1219725976032477
+      },
+      "6": {
+        "slope_mean_deg": 19.135925824869226,
+        "slope_p90_deg": 33.07006004146043,
+        "roughness_m": 2.018462166712797
+      },
+      "12": {
+        "slope_mean_deg": 15.287209053185247,
+        "slope_p90_deg": 30.42250786571366,
+        "roughness_m": 1.6190173399816576
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.12120520429125771,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9781237063564607,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_altiplano_south_1.png",
+    "relief": "data/relief/cand_altiplano_south_1.json"
+  },
+  {
+    "id": "cand_altiplano_south_2",
+    "name": "Southern Altiplano candidate 2",
+    "lat": -22.72152,
+    "lon": -67.63966,
+    "why": "New candidate from the DEM scan (issue #48): 22.72\u00b0S 67.64\u00b0W, 288 km from Atacama Yungay, Chile. Picked among the scanned windows for Shackleton rim (0.83) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 4942.470703125,
+    "params": {
+      "slope_mean_deg": {
+        "value": 15.35486277086865,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.7215\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 28.494019220222437,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.7215\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 1.7731711251593718,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.5 m E-W x 30.9 m N-S at -22.7215\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 17.74614023991533,
+        "slope_p90_deg": 30.68105043174845,
+        "roughness_m": 2.074553449556544
+      },
+      "6": {
+        "slope_mean_deg": 15.35486277086865,
+        "slope_p90_deg": 28.494019220222437,
+        "roughness_m": 1.7731711251593718
+      },
+      "12": {
+        "slope_mean_deg": 12.044632044558739,
+        "slope_p90_deg": 26.022385727369667,
+        "roughness_m": 1.4156739783653298
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.12029217073727459,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9989994258543899,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_altiplano_south_2.png",
+    "relief": "data/relief/cand_altiplano_south_2.json"
+  },
+  {
     "id": "cand_askja_1",
     "name": "Askja area candidate 1",
+    "lat": 64.92526,
+    "lon": -16.85162,
+    "why": "New candidate from the DEM scan (issue #48): 64.93\u00b0N 16.85\u00b0W, 20 km from Askja, Iceland. Picked among the scanned windows for Jezero crater floor (0.99) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 765.4613037109375,
+    "params": {
+      "slope_mean_deg": {
+        "value": 2.8446125326631395,
+        "tier": "computed",
+        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~26.2 m E-W x 30.9 m N-S at 64.9253\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 6.801657643150157,
+        "tier": "computed",
+        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~26.2 m E-W x 30.9 m N-S at 64.9253\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.4728535368252924,
+        "tier": "computed",
+        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~26.2 m E-W x 30.9 m N-S at 64.9253\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 2.7228955754235384,
+        "slope_p90_deg": 6.539686065528959,
+        "roughness_m": 0.4797244836614833
+      },
+      "6": {
+        "slope_mean_deg": 2.8446125326631395,
+        "slope_p90_deg": 6.801657643150157,
+        "roughness_m": 0.4728535368252924
+      },
+      "12": {
+        "slope_mean_deg": 2.969156795487207,
+        "slope_p90_deg": 6.910926425582592,
+        "roughness_m": 0.4733659183301675
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.34228339350180503,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9998999958331597,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked",
+      "non-NASA elevation source"
+    ],
+    "hillshade": "img/cand_askja_1.png",
+    "relief": "data/relief/cand_askja_1.json"
+  },
+  {
+    "id": "cand_askja_2",
+    "name": "Askja area candidate 2",
     "lat": 65.17068,
     "lon": -16.33683,
     "why": "New candidate from the DEM scan (issue #48): 65.17\u00b0N 16.34\u00b0W, 20 km from Askja, Iceland. Picked among the scanned windows for Shackleton rim (0.82) Terrain Match with default weights, and 95% bare ground. Not checked on imagery or in the field.",
@@ -849,61 +1106,61 @@
       "scan candidate, not field-checked",
       "non-NASA elevation source"
     ],
-    "hillshade": "img/cand_askja_1.png",
-    "relief": "data/relief/cand_askja_1.json"
+    "hillshade": "img/cand_askja_2.png",
+    "relief": "data/relief/cand_askja_2.json"
   },
   {
-    "id": "cand_askja_2",
-    "name": "Askja area candidate 2",
-    "lat": 65.44017,
-    "lon": -16.84871,
-    "why": "New candidate from the DEM scan (issue #48): 65.44\u00b0N 16.85\u00b0W, 38 km from Askja, Iceland. Picked among the scanned windows for Shackleton rim (0.80) Terrain Match with default weights, and 88% bare ground. Not checked on imagery or in the field.",
-    "elev_m": 682.7109375,
+    "id": "cand_axel_heiberg_1",
+    "name": "Axel Heiberg Island candidate 1",
+    "lat": 79.11678,
+    "lon": -90.38148,
+    "why": "New candidate from the DEM scan (issue #48): 79.12\u00b0N 90.38\u00b0W, 416 km from Haughton crater, Devon Island. Picked among the scanned windows for Shackleton rim (0.81) Terrain Match with default weights, and 58% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 373.31060791015625,
     "params": {
       "slope_mean_deg": {
-        "value": 8.17016333728538,
+        "value": 17.059151813230315,
         "tier": "computed",
-        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~25.7 m E-W x 30.9 m N-S at 65.4402\u00b0), resampled 30 m)",
+        "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~17.5 m E-W x 30.9 m N-S at 79.1168\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": 24.76810630386281,
+        "value": 31.355077633106244,
         "tier": "computed",
-        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~25.7 m E-W x 30.9 m N-S at 65.4402\u00b0), resampled 30 m)",
+        "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~17.5 m E-W x 30.9 m N-S at 79.1168\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "roughness_m": {
-        "value": 0.9548185272647853,
+        "value": 2.2082997462606158,
         "tier": "computed",
-        "source": "Copernicus GLO-30 (ESA) (native 2\u2033 lon x 1\u2033 lat (~25.7 m E-W x 30.9 m N-S at 65.4402\u00b0), resampled 30 m)",
+        "source": "Copernicus GLO-30 (ESA) (native 3\u2033 lon x 1\u2033 lat (~17.5 m E-W x 30.9 m N-S at 79.1168\u00b0), resampled 30 m)",
         "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 8.27326041470642,
-        "slope_p90_deg": 25.183615494886507,
-        "roughness_m": 0.9902133772836352
+        "slope_mean_deg": 17.417960031375312,
+        "slope_p90_deg": 31.971947880901883,
+        "roughness_m": 2.279759812740659
       },
       "6": {
-        "slope_mean_deg": 8.17016333728538,
-        "slope_p90_deg": 24.76810630386281,
-        "roughness_m": 0.9548185272647853
+        "slope_mean_deg": 17.059151813230315,
+        "slope_p90_deg": 31.355077633106244,
+        "roughness_m": 2.2082997462606158
       },
       "12": {
-        "slope_mean_deg": 7.3524096795139675,
-        "slope_p90_deg": 21.53582272349624,
-        "roughness_m": 0.8657999895816877
+        "slope_mean_deg": 16.365109054849036,
+        "slope_p90_deg": 30.859572945878064,
+        "roughness_m": 2.1042045594851606
       }
     },
     "conditions": {
       "low_sun_share": {
-        "value": 0.34492099322799097,
+        "value": 0.3111559139784946,
         "tier": "computed",
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": 0.8823267971677542,
+        "value": 0.5816883251257701,
         "tier": "computed",
         "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
@@ -914,72 +1171,8 @@
       "scan candidate, not field-checked",
       "non-NASA elevation source"
     ],
-    "hillshade": "img/cand_askja_2.png",
-    "relief": "data/relief/cand_askja_2.json"
-  },
-  {
-    "id": "cand_black_point_1",
-    "name": "Black Point lava flow area candidate 1",
-    "lat": 35.92526,
-    "lon": -111.19019,
-    "why": "New candidate from the DEM scan (issue #48): 35.93\u00b0N 111.19\u00b0W, 37 km from Black Point lava flow, Arizona. Picked among the scanned windows for Jezero crater floor (0.98) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
-    "elev_m": 1590.26416015625,
-    "params": {
-      "slope_mean_deg": {
-        "value": 4.30260828131798,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~25.0 m E-W x 30.9 m N-S at 35.9253\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      },
-      "slope_p90_deg": {
-        "value": 11.687766702436004,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~25.0 m E-W x 30.9 m N-S at 35.9253\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      },
-      "roughness_m": {
-        "value": 0.43794582752665817,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~25.0 m E-W x 30.9 m N-S at 35.9253\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      }
-    },
-    "windows": {
-      "3": {
-        "slope_mean_deg": 4.5514936066926,
-        "slope_p90_deg": 13.94689383075085,
-        "roughness_m": 0.4491485340204111
-      },
-      "6": {
-        "slope_mean_deg": 4.30260828131798,
-        "slope_p90_deg": 11.687766702436004,
-        "roughness_m": 0.43794582752665817
-      },
-      "12": {
-        "slope_mean_deg": 4.232663494739712,
-        "slope_p90_deg": 10.143018904678485,
-        "roughness_m": 0.4830900172506234
-      }
-    },
-    "conditions": {
-      "low_sun_share": {
-        "value": 0.15129486597001363,
-        "tier": "computed",
-        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
-      },
-      "bare_ground_share": {
-        "value": 0.9959583333333333,
-        "tier": "computed",
-        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
-      }
-    },
-    "depth_evidence": [],
-    "known_analog": false,
-    "flags": [
-      "scan candidate, not field-checked"
-    ],
-    "hillshade": "img/cand_black_point_1.png",
-    "relief": "data/relief/cand_black_point_1.json"
+    "hillshade": "img/cand_axel_heiberg_1.png",
+    "relief": "data/relief/cand_axel_heiberg_1.json"
   },
   {
     "id": "cand_haughton_1",
@@ -1045,6 +1238,134 @@
     ],
     "hillshade": "img/cand_haughton_1.png",
     "relief": "data/relief/cand_haughton_1.json"
+  },
+  {
+    "id": "cand_khaybar_1",
+    "name": "Harrat Khaybar candidate 1",
+    "lat": 25.38628,
+    "lon": 39.48722,
+    "why": "New candidate from the DEM scan (issue #48): 25.39\u00b0N 39.49\u00b0E, 2685 km from Etna, Italy. Picked among the scanned windows for Jezero crater floor (0.98) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 892.5863647460938,
+    "params": {
+      "slope_mean_deg": {
+        "value": 3.4880700566146667,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.3863\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 7.685566609593457,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.3863\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.6695287418647347,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.3863\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 4.552174849991882,
+        "slope_p90_deg": 15.18111152357691,
+        "roughness_m": 0.7044749955735012
+      },
+      "6": {
+        "slope_mean_deg": 3.4880700566146667,
+        "slope_p90_deg": 7.685566609593457,
+        "roughness_m": 0.6695287418647347
+      },
+      "12": {
+        "slope_mean_deg": 2.69830758752299,
+        "slope_p90_deg": 4.179824551042559,
+        "roughness_m": 0.6577102427505637
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.12770316412474392,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9989824627737064,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_khaybar_1.png",
+    "relief": "data/relief/cand_khaybar_1.json"
+  },
+  {
+    "id": "cand_khaybar_2",
+    "name": "Harrat Khaybar candidate 2",
+    "lat": 25.65577,
+    "lon": 39.90687,
+    "why": "New candidate from the DEM scan (issue #48): 25.66\u00b0N 39.91\u00b0E, 2702 km from Etna, Italy. Picked among the scanned windows for Malapert massif (0.92) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 1544.8555908203125,
+    "params": {
+      "slope_mean_deg": {
+        "value": 6.023212305680178,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 15.567069085538707,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.785342676387427,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at 25.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 6.8393413922752515,
+        "slope_p90_deg": 16.985364670069295,
+        "roughness_m": 0.8617261106326454
+      },
+      "6": {
+        "slope_mean_deg": 6.023212305680178,
+        "slope_p90_deg": 15.567069085538707,
+        "roughness_m": 0.785342676387427
+      },
+      "12": {
+        "slope_mean_deg": 5.40941077075683,
+        "slope_p90_deg": 13.07366951512865,
+        "roughness_m": 0.7548020956993916
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.12793079899840656,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9998444444444444,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_khaybar_2.png",
+    "relief": "data/relief/cand_khaybar_2.json"
   },
   {
     "id": "cand_mauna_kea_1",
@@ -1175,57 +1496,57 @@
     "relief": "data/relief/cand_mauna_kea_2.json"
   },
   {
-    "id": "cand_mauna_kea_3",
-    "name": "Mauna Kea area candidate 3",
-    "lat": 19.65577,
-    "lon": -155.58982,
-    "why": "New candidate from the DEM scan (issue #48): 19.66\u00b0N 155.59\u00b0W, 18 km from Mauna Kea, Hawaii. Picked among the scanned windows for Jezero crater floor (0.98) Terrain Match with default weights, and 93% bare ground. Not checked on imagery or in the field.",
-    "elev_m": 2022.5181884765625,
+    "id": "cand_puna_1",
+    "name": "Puna de Atacama candidate 1",
+    "lat": -25.34423,
+    "lon": -67.51295,
+    "why": "New candidate from the DEM scan (issue #48): 25.34\u00b0S 67.51\u00b0W, 289 km from Atacama Yungay, Chile. Picked among the scanned windows for Shackleton rim (0.86) Terrain Match with default weights, and 99% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 4200.58056640625,
     "params": {
       "slope_mean_deg": {
-        "value": 3.5020163175804613,
+        "value": 16.481826083988224,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.6558\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at -25.3442\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": 5.924567496127713,
+        "value": 30.870828983427643,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.6558\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at -25.3442\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "roughness_m": {
-        "value": 0.45899599886498293,
+        "value": 1.9152761167206116,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.1 m E-W x 30.9 m N-S at 19.6558\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~27.9 m E-W x 30.9 m N-S at -25.3442\u00b0), resampled 30 m)",
         "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 3.379929888668826,
-        "slope_p90_deg": 5.63189840002889,
-        "roughness_m": 0.455905305199992
+        "slope_mean_deg": 16.201720500307452,
+        "slope_p90_deg": 30.20254521801842,
+        "roughness_m": 1.8364136294395874
       },
       "6": {
-        "slope_mean_deg": 3.5020163175804613,
-        "slope_p90_deg": 5.924567496127713,
-        "roughness_m": 0.45899599886498293
+        "slope_mean_deg": 16.481826083988224,
+        "slope_p90_deg": 30.870828983427643,
+        "roughness_m": 1.9152761167206116
       },
       "12": {
-        "slope_mean_deg": 3.67977980304784,
-        "slope_p90_deg": 6.486157888038827,
-        "roughness_m": 0.4634821274103692
+        "slope_mean_deg": 14.986628526250586,
+        "slope_p90_deg": 28.82536685863615,
+        "roughness_m": 1.7361984145023346
       }
     },
     "conditions": {
       "low_sun_share": {
-        "value": 0.11027051811095828,
+        "value": 0.13311985361390669,
         "tier": "computed",
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": 0.934420396613166,
+        "value": 0.9925466425166402,
         "tier": "computed",
         "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
@@ -1235,61 +1556,61 @@
     "flags": [
       "scan candidate, not field-checked"
     ],
-    "hillshade": "img/cand_mauna_kea_3.png",
-    "relief": "data/relief/cand_mauna_kea_3.json"
+    "hillshade": "img/cand_puna_1.png",
+    "relief": "data/relief/cand_puna_1.json"
   },
   {
-    "id": "cand_mauna_kea_4",
-    "name": "Mauna Kea area candidate 4",
-    "lat": 19.38628,
-    "lon": -155.53337,
-    "why": "New candidate from the DEM scan (issue #48): 19.39\u00b0N 155.53\u00b0W, 42 km from Mauna Kea, Hawaii. Picked among the scanned windows for Malapert massif (0.90) Terrain Match with default weights, and 69% bare ground. Not checked on imagery or in the field.",
-    "elev_m": 2642.205078125,
+    "id": "cand_puna_2",
+    "name": "Puna de Atacama candidate 2",
+    "lat": -25.18253,
+    "lon": -66.5136,
+    "why": "New candidate from the DEM scan (issue #48): 25.18\u00b0S 66.51\u00b0W, 375 km from Atacama Yungay, Chile. Picked among the scanned windows for Shackleton rim (0.85) Terrain Match with default weights, and 67% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 4341.37109375,
     "params": {
       "slope_mean_deg": {
-        "value": 10.078541067751868,
+        "value": 21.91996540645099,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.2 m E-W x 30.9 m N-S at 19.3863\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.0 m E-W x 30.9 m N-S at -25.1825\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "slope_p90_deg": {
-        "value": 13.403706267043512,
+        "value": 33.722783164313846,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.2 m E-W x 30.9 m N-S at 19.3863\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.0 m E-W x 30.9 m N-S at -25.1825\u00b0), resampled 30 m)",
         "res_m": 30.0
       },
       "roughness_m": {
-        "value": 1.0605922670541927,
+        "value": 2.5235648588254236,
         "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~29.2 m E-W x 30.9 m N-S at 19.3863\u00b0), resampled 30 m)",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.0 m E-W x 30.9 m N-S at -25.1825\u00b0), resampled 30 m)",
         "res_m": 30.0
       }
     },
     "windows": {
       "3": {
-        "slope_mean_deg": 10.133285999859252,
-        "slope_p90_deg": 13.18370214719487,
-        "roughness_m": 1.0515771067484492
+        "slope_mean_deg": 22.387086566312753,
+        "slope_p90_deg": 33.39086477974005,
+        "roughness_m": 2.4301124553548297
       },
       "6": {
-        "slope_mean_deg": 10.078541067751868,
-        "slope_p90_deg": 13.403706267043512,
-        "roughness_m": 1.0605922670541927
+        "slope_mean_deg": 21.91996540645099,
+        "slope_p90_deg": 33.722783164313846,
+        "roughness_m": 2.5235648588254236
       },
       "12": {
-        "slope_mean_deg": 9.547425378677403,
-        "slope_p90_deg": 13.135061195156824,
-        "roughness_m": 1.0062808254564897
+        "slope_mean_deg": 21.387209412237073,
+        "slope_p90_deg": 33.76441563335244,
+        "roughness_m": 2.59485442057115
       }
     },
     "conditions": {
       "low_sun_share": {
-        "value": 0.10945387792565398,
+        "value": 0.13249427917620138,
         "tier": "computed",
         "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
       },
       "bare_ground_share": {
-        "value": 0.6911777777777778,
+        "value": 0.6650472222222222,
         "tier": "computed",
         "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
       }
@@ -1299,8 +1620,200 @@
     "flags": [
       "scan candidate, not field-checked"
     ],
-    "hillshade": "img/cand_mauna_kea_4.png",
-    "relief": "data/relief/cand_mauna_kea_4.json"
+    "hillshade": "img/cand_puna_2.png",
+    "relief": "data/relief/cand_puna_2.json"
+  },
+  {
+    "id": "cand_qaidam_1",
+    "name": "Qaidam basin candidate 1",
+    "lat": 38.65577,
+    "lon": 91.63269,
+    "why": "New candidate from the DEM scan (issue #48): 38.66\u00b0N 91.63\u00b0E, 5564 km from Svalbard, Norway. Picked among the scanned windows for Jezero crater floor (0.99) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 2766.8193359375,
+    "params": {
+      "slope_mean_deg": {
+        "value": 3.1009533222123546,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 5.655765779344228,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.5276916588227191,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.6558\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 1.810926312989292,
+        "slope_p90_deg": 3.428116994797303,
+        "roughness_m": 0.49885394248952697
+      },
+      "6": {
+        "slope_mean_deg": 3.1009533222123546,
+        "slope_p90_deg": 5.655765779344228,
+        "roughness_m": 0.5276916588227191
+      },
+      "12": {
+        "slope_mean_deg": 5.208619939352492,
+        "slope_p90_deg": 18.832759453458586,
+        "roughness_m": 0.5581410016567236
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.15246534878436718,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 1.0,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_qaidam_1.png",
+    "relief": "data/relief/cand_qaidam_1.json"
+  },
+  {
+    "id": "cand_qaidam_2",
+    "name": "Qaidam basin candidate 2",
+    "lat": 38.81747,
+    "lon": 92.63412,
+    "why": "New candidate from the DEM scan (issue #48): 38.82\u00b0N 92.63\u00b0E, 5566 km from Svalbard, Norway. Picked among the scanned windows for Malapert massif (0.91) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 3034.709716796875,
+    "params": {
+      "slope_mean_deg": {
+        "value": 5.818406227698354,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 12.583085120930594,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.9072505188144375,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~24.1 m E-W x 30.9 m N-S at 38.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 5.438404914716504,
+        "slope_p90_deg": 10.507408949755886,
+        "roughness_m": 0.9486248144983145
+      },
+      "6": {
+        "slope_mean_deg": 5.818406227698354,
+        "slope_p90_deg": 12.583085120930594,
+        "roughness_m": 0.9072505188144375
+      },
+      "12": {
+        "slope_mean_deg": 5.786041408446812,
+        "slope_p90_deg": 13.17298537088957,
+        "roughness_m": 0.88401702255266
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.15330456506927095,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 1.0,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_qaidam_2.png",
+    "relief": "data/relief/cand_qaidam_2.json"
+  },
+  {
+    "id": "cand_tibesti_1",
+    "name": "Tibesti candidate 1",
+    "lat": 20.81747,
+    "lon": 18.1826,
+    "why": "New candidate from the DEM scan (issue #48): 20.82\u00b0N 18.18\u00b0E, 1907 km from Etna, Italy. Picked among the scanned windows for Jezero crater floor (0.98) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
+    "elev_m": 1730.3714599609375,
+    "params": {
+      "slope_mean_deg": {
+        "value": 3.0119402917960465,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.9 m E-W x 30.9 m N-S at 20.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "slope_p90_deg": {
+        "value": 5.717465250360111,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.9 m E-W x 30.9 m N-S at 20.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      },
+      "roughness_m": {
+        "value": 0.6585887571418434,
+        "tier": "computed",
+        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.9 m E-W x 30.9 m N-S at 20.8175\u00b0), resampled 30 m)",
+        "res_m": 30.0
+      }
+    },
+    "windows": {
+      "3": {
+        "slope_mean_deg": 3.667200224078075,
+        "slope_p90_deg": 7.7808933633190644,
+        "roughness_m": 0.6990518497089071
+      },
+      "6": {
+        "slope_mean_deg": 3.0119402917960465,
+        "slope_p90_deg": 5.717465250360111,
+        "roughness_m": 0.6585887571418434
+      },
+      "12": {
+        "slope_mean_deg": 3.227749376662659,
+        "slope_p90_deg": 6.914194963479943,
+        "roughness_m": 0.6972784674005974
+      }
+    },
+    "conditions": {
+      "low_sun_share": {
+        "value": 0.1307308216068997,
+        "tier": "computed",
+        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
+      },
+      "bare_ground_share": {
+        "value": 0.9998833330092584,
+        "tier": "computed",
+        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
+      }
+    },
+    "depth_evidence": [],
+    "known_analog": false,
+    "flags": [
+      "scan candidate, not field-checked"
+    ],
+    "hillshade": "img/cand_tibesti_1.png",
+    "relief": "data/relief/cand_tibesti_1.json"
   },
   {
     "id": "cand_yungay_1",
@@ -1429,69 +1942,5 @@
     ],
     "hillshade": "img/cand_yungay_2.png",
     "relief": "data/relief/cand_yungay_2.json"
-  },
-  {
-    "id": "cand_yungay_3",
-    "name": "Atacama Yungay area candidate 3",
-    "lat": -24.12863,
-    "lon": -70.39957,
-    "why": "New candidate from the DEM scan (issue #48): 24.13\u00b0S 70.40\u00b0W, 39 km from Atacama Yungay, Chile. Picked among the scanned windows for Shackleton rim (0.78) Terrain Match with default weights, and 100% bare ground. Not checked on imagery or in the field.",
-    "elev_m": 1386.395263671875,
-    "params": {
-      "slope_mean_deg": {
-        "value": 12.766161226624696,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.2 m E-W x 30.9 m N-S at -24.1286\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      },
-      "slope_p90_deg": {
-        "value": 26.051980973029327,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.2 m E-W x 30.9 m N-S at -24.1286\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      },
-      "roughness_m": {
-        "value": 1.6754919326619173,
-        "tier": "computed",
-        "source": "NASA SRTM 1 arc-second (native 1\u2033 lon x 1\u2033 lat (~28.2 m E-W x 30.9 m N-S at -24.1286\u00b0), resampled 30 m)",
-        "res_m": 30.0
-      }
-    },
-    "windows": {
-      "3": {
-        "slope_mean_deg": 13.250210135915376,
-        "slope_p90_deg": 26.294181145949594,
-        "roughness_m": 1.7074062563235224
-      },
-      "6": {
-        "slope_mean_deg": 12.766161226624696,
-        "slope_p90_deg": 26.051980973029327,
-        "roughness_m": 1.6754919326619173
-      },
-      "12": {
-        "slope_mean_deg": 12.002968485829271,
-        "slope_p90_deg": 24.254954191702765,
-        "roughness_m": 1.6933242166593092
-      }
-    },
-    "conditions": {
-      "low_sun_share": {
-        "value": 0.13035551504102097,
-        "tier": "computed",
-        "source": "pvlib solar position; hourly UTC samples in 2026; geometric elevation; no terrain shading or weather"
-      },
-      "bare_ground_share": {
-        "value": 1.0,
-        "tier": "computed",
-        "source": "ESA WorldCover 10 m 2021 v200 (CC BY 4.0); class 60 'Bare / sparse vegetation' as a share of land cells (permanent water excluded) in the 6 km window; nearest-neighbour 10 m"
-      }
-    },
-    "depth_evidence": [],
-    "known_analog": false,
-    "flags": [
-      "scan candidate, not field-checked"
-    ],
-    "hillshade": "img/cand_yungay_3.png",
-    "relief": "data/relief/cand_yungay_3.json"
   }
 ]

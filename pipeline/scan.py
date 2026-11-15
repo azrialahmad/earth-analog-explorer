@@ -62,6 +62,7 @@ from terrain import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SITES_PATH = ROOT / "config" / "sites.json"
+REGIONS_PATH = ROOT / "config" / "scan_regions.json"
 WEIGHTS_PATH = ROOT / "config" / "weights.yaml"
 OUT_PATH = ROOT / "results" / "candidates.json"
 APP_DIR = ROOT / "frontend" / "public" / "data"
@@ -143,6 +144,28 @@ def parse_tile(path: Path) -> tuple[int, int, str] | None:
     return None
 
 
+def tile_key(lat: int, lon: int) -> str:
+    """SRTM-style tile name, e.g. N13E040, used in config/scan_regions.json."""
+    return f"{'N' if lat >= 0 else 'S'}{abs(lat):02d}{'E' if lon >= 0 else 'W'}{abs(lon):03d}"
+
+
+def load_regions() -> tuple[dict[str, dict[str, Any]], float]:
+    if not REGIONS_PATH.exists():
+        return {}, 0.0
+    doc = json.loads(REGIONS_PATH.read_text(encoding="utf-8"))
+    by_tile = {t: r for r in doc["regions"] for t in r["tiles"]}
+    return by_tile, float(doc["near_known_km"])
+
+
+def region_of(lat0: int, lon0: int, nearest: dict[str, Any], dist_km: float,
+              regions: dict[str, dict[str, Any]], near_known_km: float) -> tuple[str, str]:
+    """(region id, display name): the known site's area when close, else the scan region."""
+    region = regions.get(tile_key(lat0, lon0))
+    if region is None or dist_km <= near_known_km:
+        return nearest["id"], f"{nearest['name'].split(',')[0].strip()} area"
+    return region["id"], region["name"].split(",")[0].strip()
+
+
 def local_tiles() -> list[tuple[Path, int, int]]:
     tiles = []
     for directory in (SRTM_DIR, COPERNICUS_DIR):
@@ -206,6 +229,7 @@ def scan_tile(path: Path, lat0: int, lon0: int, scan: dict[str, Any], main_km: f
 
 
 def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]]):
+    regions, near_known_km = load_regions()
     rows = []
     counts = {"tiles": 0, "windows": 0, "gaps": 0, "below_sea": 0, "water": 0, "near_known": 0, "kept": 0}
     for path, lat0, lon0 in local_tiles():
@@ -229,8 +253,10 @@ def scan_all(scan: dict[str, Any], main_km: float, known: list[dict[str, Any]]):
                 counts["near_known"] += 1
                 continue
             counts["kept"] += 1
+            region, region_name = region_of(lat0, lon0, nearest, dist, regions, near_known_km)
             rows.append({
                 "lat": lat, "lon": lon, "tile": path.name,
+                "region": region, "region_name": region_name,
                 "nearest_known": nearest["id"], "nearest_known_name": nearest["name"],
                 "nearest_known_km": dist,
                 **{k: float(stats[k]) for k in PARAM_KEYS},
@@ -271,6 +297,9 @@ def select(rows, targets, params, scan, bare_lookup):
             if any(haversine_km(row["lat"], row["lon"], p["lat"], p["lon"]) < float(scan["min_spacing_km"])
                    for p in picked):
                 continue
+            region = row.get("region")
+            if region is not None and sum(p.get("region") == region for p in picked) >= int(scan["max_per_region"]):
+                continue
             key = (row["lat"], row["lon"])
             if key not in bare_cache:
                 tried += 1
@@ -295,10 +324,6 @@ def fmt_coord(lat: float, lon: float) -> str:
     return f"{abs(lat):.2f}°{'N' if lat >= 0 else 'S'} {abs(lon):.2f}°{'E' if lon >= 0 else 'W'}"
 
 
-def short_region(name: str) -> str:
-    return name.split(",")[0].strip()
-
-
 def candidate_sites(picked, targets, sizes, main_window, scan):
     from build import ordered_params, ordered_windows, render_hillshade, source_res_m, value, write_relief
     from landcover import bare_ground_value
@@ -306,10 +331,10 @@ def candidate_sites(picked, targets, sizes, main_window, scan):
 
     names = {t["id"]: t["name"] for t in targets}
     sites = []
-    picked = sorted(picked, key=lambda p: (p["nearest_known"], -max(p["picked_for"].values())))
+    picked = sorted(picked, key=lambda p: (p["region"], -max(p["picked_for"].values())))
     seq: dict[str, int] = {}
     for p in picked:
-        region = p["nearest_known"]
+        region = p["region"]
         seq[region] = seq.get(region, 0) + 1
         ident = f"{CANDIDATE_PREFIX}{region}_{seq[region]}"
         holder: dict[str, Any] = {}
@@ -344,7 +369,7 @@ def candidate_sites(picked, targets, sizes, main_window, scan):
         sun = annual_low_sun_share(p["lat"], p["lon"])
         sites.append({
             "id": ident,
-            "name": f"{short_region(p['nearest_known_name'])} area candidate {seq[region]}",
+            "name": f"{p['region_name']} candidate {seq[region]}",
             "lat": p["lat"], "lon": p["lon"], "why": why,
             "elev_m": row.get("elev_m"),
             "params": ordered_params(row["windows"].get(main_window, {}), row.get("source"), source_res_m(row)),
@@ -374,10 +399,8 @@ def update_app_data(candidates: list[dict[str, Any]], known_ids: set[str]) -> No
         if site["id"] in known_ids:
             site["known_analog"] = True
             keep.append(site)
-        elif site["id"].startswith(CANDIDATE_PREFIX):
-            # Remove the previous scan's assets so stale candidates do not linger.
-            (IMG_DIR / f"{site['id']}.png").unlink(missing_ok=True)
-            (RELIEF_DIR / f"{site['id']}.json").unlink(missing_ok=True)
+    # Remove assets of earlier candidates that this scan did not keep. The kept
+    # candidates' assets were just written, so they must not be touched.
     new_ids = {c["id"] for c in candidates}
     for path in list(IMG_DIR.glob(f"{CANDIDATE_PREFIX}*.png")) + list(RELIEF_DIR.glob(f"{CANDIDATE_PREFIX}*.json")):
         if path.stem not in new_ids:
@@ -461,7 +484,7 @@ def selftest() -> int:
     ]
     targets = [{"id": "x", "params": {k: {"value": v} for k, v in t.items()}}]
     scan = {"per_target": 2, "shortlist_max": 10, "min_spacing_km": 20, "min_bare_share": 0.5,
-            "min_land_share": 0.9}
+            "min_land_share": 0.9, "max_per_region": 5}
     bare = {(0.0, 0.0): 0.9, (0.05, 0.0): 0.9, (1.0, 0.0): 0.1, (2.0, 0.0): 0.8}
     land = {(0.0, 0.0): 100, (0.05, 0.0): 100, (1.0, 0.0): 100, (2.0, 0.0): 100}
     lookup = lambda la, lo: {"value": bare[(la, lo)], "counts": {"land": land[(la, lo)], "total": 100}}
@@ -471,7 +494,21 @@ def selftest() -> int:
     picked = select(rows, targets, params, scan, lookup)
     assert [(p["lat"], p["lon"]) for p in picked] == [(0.05, 0.0), (2.0, 0.0)], picked
 
-    print("selftest: PASS (terrain match mirror, distance, tile grid, tile names, greedy pick)")
+    land[(0.0, 0.0)] = 100
+    for r in rows:
+        r["region"] = "a"
+    scan["max_per_region"] = 1  # one per region: only the best window is kept
+    picked = select(rows, targets, params, scan, lookup)
+    assert [(p["lat"], p["lon"]) for p in picked] == [(0.0, 0.0)], picked
+
+    assert tile_key(-26, -68) == "S26W068" and tile_key(79, -91) == "N79W091"
+    known = {"id": "yungay", "name": "Atacama Yungay, Chile"}
+    regions = {"S26W068": {"id": "puna", "name": "Puna de Atacama, Argentina"}}
+    assert region_of(-26, -68, known, 250.0, regions, 100.0) == ("puna", "Puna de Atacama")
+    assert region_of(-26, -68, known, 50.0, regions, 100.0) == ("yungay", "Atacama Yungay area")
+    assert region_of(-25, -70, known, 250.0, regions, 100.0) == ("yungay", "Atacama Yungay area")
+
+    print("selftest: PASS (terrain match mirror, distance, tile grid, tile names, greedy pick, regions)")
     return 0
 
 

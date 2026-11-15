@@ -35,16 +35,19 @@ This is a faithful summary of `FINDINGS.md` from the PoC repository, retrieved u
 
 ## New candidate scan (issue #48)
 
-These figures come from this app's own pipeline (`uv run pipeline/scan.py`), not from the PoC. Settings are in the `scan:` section of `config/weights.yaml`.
+These figures come from this app's own pipeline (`uv run pipeline/scan.py`), not from the PoC. Settings are in the `scan:` section of `config/weights.yaml`. The extra regions are listed in `config/scan_regions.json`.
 
-- **Scanned:** 17 local DEM tiles (12 SRTM 1 arc-second, 5 Copernicus GLO-30), 3,238 window centres on a 6 km grid.
-- **Dropped:** 1,257 below sea level, 189 water-like (too flat), 130 close to a known site, 0 with DEM gaps. That left 1,662 usable windows.
-- **Kept:** 11 candidates in six regions after the WorldCover bare-ground and land checks: 4 near Mauna Kea, 3 near Atacama Yungay, 2 near Askja, 1 near Black Point and 1 near Haughton crater. Shackleton rim got 3 of its 4 slots; the other targets got 4 each, and some windows count for more than one target.
-- **Ranks with default weights:** a candidate is first for Malapert (Atacama Yungay area candidate 1, 0.92) and first to third for Jezero (Mauna Kea area candidates 1 to 3, 0.97 to 0.99). For Shackleton rim, the best candidate is fifth (0.72).
+- **Scanned:** 40 DEM tiles: the 17 around the known sites, plus 23 downloaded for 11 new regions (Afar, Lut, Qaidam, Tibesti, Haruj, Harrat Khaybar, Puna de Atacama, southern Altiplano, Pilbara, Holuhraun, Axel Heiberg). That gave 8,686 window centres on a 6 km grid.
+- **Dropped:** 1,563 below sea level, 225 water-like (too flat), 130 close to a known site, 0 with DEM gaps. That left 6,768 usable windows.
+- **Kept:** 18 candidates after the WorldCover bare-ground and land checks, at most 2 per region. 10 are in new regions (Afar, southern Altiplano ×2, Axel Heiberg, Harrat Khaybar ×2, Puna ×2, Qaidam ×2, Tibesti). 8 are within 100 km of a known site and are named after it (Askja ×2, Haughton, Mauna Kea ×2, Atacama Yungay ×2). One of those is the Holuhraun area, south of Askja. Haruj and Pilbara gave no candidate.
+- **Ranks with default weights (30 sites):**
+  - Shackleton rim: southern Altiplano candidate 1 is first (0.87), and the best known site is third.
+  - Malapert: Atacama Yungay area candidate 1 is first (0.92), and the best known site is third.
+  - Jezero: the top five are all candidates (0.97 to 0.99), led by Qaidam basin candidate 1, and the best known site is sixth.
 
 What this does not show:
 
 - The candidates are terrain and land-cover matches only. Nobody has checked them on imagery, in the field, or for access and permits.
-- Only the tiles around the known sites were scanned, so every candidate is a new spot within a known analog region, not a new region.
+- The regions were chosen by the agent, not found by searching all of Earth. Other good regions were not scanned.
 - The Skadi SRTM mirror fills the sea with bathymetry. The scan drops windows with more than 2% of cells below 0 m and keeps only windows that are at least 90% land in WorldCover. The Antarctic tile has no WorldCover data, so it cannot yield a candidate.
 - Terrain Match compares slope and roughness at 30 m. It says nothing about grain size, rock type, temperature or radiation.
