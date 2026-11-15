@@ -2,9 +2,9 @@
 
 NASA Space Apps 2026 entry for the challenge *Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*.
 
-**Live app:** https://azrialahmad.is-a.dev/earth-analog-explorer/ (GitHub Pages, deployed from `main` on every merge)
+**Live app:** https://azrialahmad.is-a.dev/earth-analog-explorer/ (GitHub Pages, deployed from `main` on every merge). Ask AI is served by a Vercel function (see **Ask AI hosting** below).
 
-**Release described here:** `main` at `588e4a5` (2026-11-15), the revision checked on the live app for #82. The counts below were read from that revision's `frontend/public/data/` files.
+**Release described here:** `main` at `e305c6a` (2026-11-15). The app data in `frontend/public/data/` is unchanged since `588e4a5`, the revision checked on the live app for #82, so the counts below still hold.
 
 ## What it does
 
@@ -16,6 +16,7 @@ The app ranks Earth sites by how closely their terrain matches a target. The tar
 - **Bare-ground share:** the share of land in the 6 km window classed as bare or sparse vegetation (under 10% plant cover) by ESA WorldCover. It is shown in the Data panel as a site condition and does not enter the score. The McMurdo Dry Valleys is "missing", because WorldCover does not cover that part of Antarctica.
 - **New candidates:** `pipeline/scan.py` cuts every Earth DEM tile under `data/raw/` into 6 km windows and computes the same three terrain numbers for each. It drops windows with DEM gaps, windows that look like water, and windows close to a known site. For each target it keeps the best Terrain Match windows that are spread apart and mostly bare ground (ESA WorldCover). The app ranks them in one list with the known sites, using the same engine; each site's details say whether it came from the initial list or from the scan. These are terrain and land-cover matches only: nobody has checked them on imagery or in the field. It scans the tiles around the known sites plus 11 extra regions listed in `config/scan_regions.json` (downloaded with `uv run pipeline/fetch_tiles.py`), not all of Earth. All scan settings are in the `scan:` section of `config/weights.yaml`.
 - **Top-N stability:** how often a site stays in the top N (currently 3, set in `config/weights.yaml`) when the weights and values are perturbed. It measures how sensitive the rank is; it is not a probability.
+- **Ask AI:** a chat panel that answers questions about the current analysis. Each question is sent with the active target, weights and whole ranking, and each answer shows the **Context used**. The AI cannot change a score. It can ask the ranking engine to rerun with other weights, and the engine computes those results. If you change the target or weights, a pending question is cancelled, and earlier answers keep the context they were given.
 
 **Layout:**
 - Left: the ranked list.
@@ -32,18 +33,20 @@ The app ranks Earth sites by how closely their terrain matches a target. The tar
 4. Open **Weights** and move a slider. The list re-ranks at once, and the selected site stays selected.
 5. Switch to **Jezero crater floor** (Mars). Terrain ranks the same way, and lighting is shown for reference only, with no warning.
 6. Open **Data** for exact values, sources, hillshades and land cover, and **Evidence** for the depth-model results. The play button runs the same tour automatically, using the live numbers.
+7. Open **Ask AI** and try an example question, such as what changes if roughness counts three times as much. Expand **Context used** under the answer to see the target and weights it was given.
 
 On a phone the list, the 3D views and the details are behind the **Sites / View / Details** tabs.
 
 ## What this release does not do
 
-- **Ask AI needs a server.** GitHub Pages only serves static files, so the API (`frontend/api/ask.ts`) runs as a Vercel function, and the Pages build sends questions there (see **Ask AI hosting** below). If that function is not set up, the panel says "Ask AI is not configured". Locally, the dev server runs the API once `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL` are set in `frontend/.env.local` (see `frontend/.env.example`). Never commit real keys.
-- **Terrain only.** The ranking uses the three terrain parameters. Low sun and bare ground are shown next to it and do not change it. No date-specific, seasonal, forecast or multi-factor mode is shipped; that work is planned in #52 and its linked issues.
+- **Terrain only.** The ranking uses the three terrain parameters. Low sun and bare ground are shown next to it and do not change it. Both owners agreed to keep it that way for this release (#53, [docs/MATCHING-SPEC-ASSESSMENT.md](docs/MATCHING-SPEC-ASSESSMENT.md)): no combined score, and no date-specific, seasonal or forecast mode.
+- **Open terrain-reader work.** #57 tracks a correction to how terrain windows are read. The shipped numbers have not been regenerated for it; see [docs/terrain-reader-diagnostic.md](docs/terrain-reader-diagnostic.md).
 - **Bounded catalog.** The scan covered the tiles around the known sites plus 11 chosen regions, not all of Earth. Nobody has checked the candidates on imagery or in the field.
 - **Provisional settings.** Weights, ranges and thresholds are provisional defaults.
 
-Unknown values are shown as "missing", never filled in. Every dataset is listed with its owner, link and licence in [docs/REFERENCES.md](docs/REFERENCES.md). Method notes and evidence from the data side:
+Unknown values are shown as "missing", never filled in; [docs/COMPARISON-POLICY.md](docs/COMPARISON-POLICY.md) records how missing data is handled in comparisons (#54). Every dataset is listed with its owner, link and licence in [docs/REFERENCES.md](docs/REFERENCES.md). Method notes and evidence from the data side:
 - [docs/VALIDATION.md](docs/VALIDATION.md): proof-of-concept results and the candidate scan's counts and limits.
+- [docs/SCORING-FIXTURES.md](docs/SCORING-FIXTURES.md): the test-only fixtures that check the browser engine scores the same as the Python scoring code.
 - [docs/earth-catalog-audit.md](docs/earth-catalog-audit.md): why each Earth entry is in the catalog.
 - [docs/SCANNING-PROVENANCE.md](docs/SCANNING-PROVENANCE.md): how to record and replay a scan run.
 - [docs/BUILDING.md](docs/BUILDING.md): how `build.py` publishes the app data safely.
@@ -56,11 +59,13 @@ npm ci
 npm run dev
 ```
 
-Checks: `npx tsc -b && npm test && npm run build`. `npm test` includes end-to-end checks over the shipped data (`src/shipped.test.tsx`). The app reads the prebuilt JSON in `frontend/public/data/`, so it needs no Python or raw data.
+Checks: `npx tsc -b && npm test && npm run build`. `npm test` includes end-to-end checks over the shipped data (`src/shipped.test.tsx`) and a check that the browser engine matches the Python scoring fixtures (`src/engine/parity.test.ts`). The app reads the prebuilt JSON in `frontend/public/data/`, so it needs no Python or raw data.
+
+Ask AI works locally too: the dev server runs the API once `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL` are set in `frontend/.env.local` (see `frontend/.env.example`). Without them the panel says "Ask AI is not configured". Never commit real keys.
 
 ## Ask AI hosting
 
-The app is on GitHub Pages; only the Ask AI API runs on Vercel (issue #109).
+The app is on GitHub Pages, which only serves static files, so the Ask AI API (`frontend/api/ask.ts`) runs as a Vercel function (issue #109). This is set up for the live app; the steps below are how to set it up again or for a fork.
 
 1. **Vercel project:** import this repository and set **Root Directory** to `frontend`. Vercel builds the Vite app too, but only `api/ask.ts` is used.
 2. **Vercel environment variables:**
