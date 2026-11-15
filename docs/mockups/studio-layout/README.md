@@ -5,8 +5,8 @@ components, data, ranking engine, relief renderer, and slider state. The header
 preview at port 4175 is unchanged.
 
 The executable preview and tests stay on
-[`studio-layout-mockup`](https://github.com/azrialahmad/earth-analog-explorer/tree/studio-layout-mockup),
-tied to that branch's app source, without ongoing compatibility with future
+[`studio-layout-mockup-archive`](https://github.com/azrialahmad/earth-analog-explorer/tree/studio-layout-mockup-archive),
+at source snapshot `9ccfcf7`, without ongoing compatibility with future
 frontend changes. Per [issue #47](https://github.com/azrialahmad/earth-analog-explorer/issues/47),
 the intended `main` deliverable is selected screenshots and documentation only.
 The current PR still needs narrowing before merge; this does not approve any
