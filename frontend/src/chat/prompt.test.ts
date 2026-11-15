@@ -67,3 +67,15 @@ describe('rerun tool', () => {
     expect(r.ranked.map(x => x.id)).toEqual(['a', 'b'])
   })
 })
+
+// issue #62: a scan candidate's why text carries the score from the run that picked it. Ask AI must
+// not receive it as if it explained the current ranking; the prompt carries live engine numbers only.
+describe('selection history stays out of the prompt', () => {
+  it('does not include any site why text', () => {
+    const history = 'Picked among the scanned windows for Malapert massif (0.96) Terrain Match with default weights'
+    const cands = [{ ...makeSite('cand', [10, 20, 1]), why: history }, makeSite('a', [10.4, 20.4, 1.04])]
+    const p = buildSystemPrompt({ target: moon, ranked: rankSites(cands, moon, config, w), stability: stability(cands, moon, config, w), config, weights: w, evidence })
+    expect(p).not.toContain('Picked among the scanned windows')
+    expect(p).not.toContain('0.96')
+  })
+})
