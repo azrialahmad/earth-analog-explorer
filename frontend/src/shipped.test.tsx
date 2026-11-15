@@ -13,7 +13,7 @@ import evidenceJson from '../public/data/evidence.json'
 import { defaultWeights, rankSites, stability } from './engine'
 import { selectedEntry } from './selection'
 import { explainCard } from './explain/card'
-import { compactRun } from './chat/prompt'
+import { compactRun, PROMPT_RULES } from './chat/prompt'
 import { reliefHeights } from './scene/terrain'
 import { buildDemoSteps } from './demo/steps'
 import SiteList from './components/SiteList'
@@ -172,3 +172,18 @@ describe('shipped release transitions', () => {
 function escape(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 }
+
+// issue #114: a real id used as a format example made answers talk about that site.
+describe('Ask AI prompt rules', () => {
+  it('use no real site, target or source id as an example', () => {
+    const real = new Set<string>([
+      ...(sitesJson as { id: string }[]).map(s => s.id),
+      ...(targetsJson as { id: string }[]).map(t => t.id),
+      ...JSON.stringify(evidenceJson).match(/"(?:source_id|site_id)":"[^"]+"/g)!.map(m => m.split(':')[1].slice(1, -1)),
+    ])
+    expect(real.has('etna')).toBe(true)
+    const examples = PROMPT_RULES.join('\n').match(/\[[^\]]+\]/g)?.map(m => m.slice(1, -1)) ?? []
+    expect(examples.length).toBeGreaterThan(0)
+    for (const id of examples) expect(real.has(id), id).toBe(false)
+  })
+})
