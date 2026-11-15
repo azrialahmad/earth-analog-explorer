@@ -68,6 +68,12 @@ export default function App() {
     [data, target, weights],
   )
 
+  // One completed analysis owns the next AI request, independent of card selection/panel state.
+  const askRun = useMemo(() => data && target && weights ? ({
+    target, ranked, stability, config: data.config, weights, evidence: data.evidence,
+    siteOrder: data.sites.map(s => s.id),
+  }) : null, [data, target, weights, ranked, stability])
+
   // One selection drives all three panes: the chosen site, or the top-ranked one when it is gone.
   const selected = selectedEntry(ranked, siteId)
 
@@ -199,12 +205,12 @@ export default function App() {
           onClose={() => setPanel('none')}
         />
         <EvidencePanel open={panel === 'evidence'} evidence={data.evidence} onClose={() => setPanel('none')} />
-        <AskPanel
+        {askRun && <AskPanel
           open={panel === 'ask'}
-          run={{ target, ranked, stability, config: data.config, weights, evidence: data.evidence }}
-          onRerun={w => { setWeights(w); return rankSites(data.sites, target, data.config, w) }}
+          run={askRun}
+          onRerun={setWeights}
           onClose={() => setPanel('none')}
-        />
+        />}
       </main>
     </div>
   )

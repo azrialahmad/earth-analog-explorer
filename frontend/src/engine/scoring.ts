@@ -1,5 +1,5 @@
 import type { Config, ParamKey, ParamScore, RankedSite, Site, SiteScore, Target, Value, Weights, WindowKey } from '../types'
-import { PARAM_KEYS, WINDOW_KEYS } from '../types'
+import { PARAM_KEYS, WINDOW_KEYS } from '../types.ts'
 
 /** The default weight of each parameter, read from config (never hard-coded). */
 export function defaultWeights(config: Config): Weights {
