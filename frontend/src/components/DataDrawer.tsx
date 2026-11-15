@@ -3,6 +3,8 @@ import { WINDOW_KEYS } from '../types'
 import { weakestParam } from '../engine'
 import { fmt, fmtUnit, pct, TierBadge, Bar } from '../ui'
 import Hillshade from './Hillshade'
+import WhyText from './WhyText'
+import { whyKind } from '../explain/card'
 import './DataDrawer.css'
 
 export interface DataDrawerProps {
@@ -40,7 +42,7 @@ export default function DataDrawer({ open, entry, target, config, stability, evi
 
       {entry && site && (
         <>
-          <p className="why">{site.why}</p>
+          <WhyText why={site.why} kind={whyKind(site)} targetName={target.name} className="why" />
 
           {entry.warning.fired && <p className="warning" role="note">{entry.warning.text}</p>}
 

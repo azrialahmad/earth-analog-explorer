@@ -38,3 +38,7 @@
 .details .sources ul { margin-block-start: 8px; font-size: 12px; overflow-wrap: anywhere; }
 .details .sources .note { margin-block-start: 6px; }
 .details .foot { font-size: 12px; padding-block-start: 10px; border-block-start: 1px solid var(--edge); }
+
+/* a scan candidate's pick record: set apart from the live score (issue #62) */
+.why-history { display: grid; gap: 4px; padding: 8px 10px; border-radius: 12px; border: 1px dashed var(--edge-strong); }
+.why-history .note { font-size: 12px; }

@@ -36,11 +36,20 @@ export interface Neighbour {
   tie: boolean
 }
 
+/**
+ * What a site's `why` text is. A known site's is a short description of the place. A scan
+ * candidate's is the scan's record of how it was picked, with the score from that run, so it is
+ * selection history and not an explanation of the current rank (issue #62). Decided from
+ * `known_analog` only; the prose itself is never parsed.
+ */
+export type WhyKind = 'description' | 'selection history'
+export const whyKind = (site: { known_analog: boolean }): WhyKind => (site.known_analog ? 'description' : 'selection history')
+
 export interface CardExplanation {
   rank: number
   total: number
   siteName: string
-  site: { lat: number; lon: number; why: string; flags: string[]; knownAnalog: boolean; coordsApproximate: boolean }
+  site: { lat: number; lon: number; why: string; whyKind: WhyKind; flags: string[]; knownAnalog: boolean; coordsApproximate: boolean }
   targetName: string
   body: Target['body']
   terrainMatch: number | null
@@ -120,6 +129,7 @@ export function explainCard(
       lat: entry.site.lat,
       lon: entry.site.lon,
       why: entry.site.why,
+      whyKind: whyKind(entry.site),
       flags: entry.site.flags,
       knownAnalog: entry.site.known_analog,
       coordsApproximate: entry.site.flags.includes('coordinates approximate'),

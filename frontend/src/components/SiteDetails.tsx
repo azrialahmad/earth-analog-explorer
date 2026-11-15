@@ -1,6 +1,7 @@
 import type { CardExplanation, Neighbour } from '../explain/card'
 import { listText, ordinal } from '../explain/card'
 import { Bar, fmt, fmtUnit, pct, TierBadge } from '../ui'
+import WhyText from './WhyText'
 import './SiteDetails.css'
 
 export interface SiteDetailsProps {
@@ -69,7 +70,7 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
       <div className="details-body">
         <section aria-label="Site">
           <p className="coords num">{coords(ex.site.lat, ex.site.lon, ex.site.coordsApproximate)}</p>
-          <p>{ex.site.why}</p>
+          <WhyText why={ex.site.why} kind={ex.site.whyKind} targetName={ex.targetName} />
           <p className="note entry-source">
             {ex.site.knownAnalog
               ? <>Entry source: the project&apos;s initial list of places reported as analog test areas. Being on that list is
