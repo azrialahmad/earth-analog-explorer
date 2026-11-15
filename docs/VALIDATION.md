@@ -39,7 +39,7 @@ These figures come from this app's own pipeline (`uv run pipeline/scan.py`), not
 
 - **Scanned:** 40 DEM tiles: the 17 around the known sites, plus 23 downloaded for 11 new regions (Afar, Lut, Qaidam, Tibesti, Haruj, Harrat Khaybar, Puna de Atacama, southern Altiplano, Pilbara, Holuhraun, Axel Heiberg). That gave 8,686 window centres on a 6 km grid.
 - **Dropped:** 1,563 below sea level, 225 water-like (too flat), 130 close to a known site, 0 with DEM gaps. That left 6,768 usable windows.
-- **Kept:** 18 candidates after the WorldCover bare-ground and land checks, at most 2 per region. 10 are in new regions (Afar, southern Altiplano ×2, Axel Heiberg, Harrat Khaybar ×2, Puna ×2, Qaidam ×2, Tibesti). 8 are within 100 km of a known site and are named after it (Askja ×2, Haughton, Mauna Kea ×2, Atacama Yungay ×2). One of those is the Holuhraun area, south of Askja. Haruj and Pilbara gave no candidate.
+- **Kept:** 18 candidates after the WorldCover bare-ground and land checks, at most 2 per region. 11 are in new regions (Afar, southern Altiplano ×2, Axel Heiberg, Harrat Khaybar ×2, Puna ×2, Qaidam ×2, Tibesti). 7 are within 100 km of a known site and are named after it (Askja ×2, Haughton, Mauna Kea ×2, Atacama Yungay ×2). One of those is the Holuhraun area, south of Askja. Haruj and Pilbara gave no candidate.
 - **Ranks with default weights (30 sites):**
   - Shackleton rim: southern Altiplano candidate 1 is first (0.87), and the best known site is third.
   - Malapert: Atacama Yungay area candidate 1 is first (0.92), and the best known site is third.

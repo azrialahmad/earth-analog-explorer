@@ -417,6 +417,13 @@ def main(argv=None) -> int:
     if args.selftest:
         return selftest()
 
+    # Fail before writing anything: without DEM tiles the scan would find no
+    # candidates and --update-app-data would erase the existing ones.
+    if not local_tiles():
+        print(f"error: no Earth DEM tiles under {SRTM_DIR} or {COPERNICUS_DIR}; nothing written. "
+              "See docs/REFERENCES.md and pipeline/fetch_tiles.py.", file=sys.stderr)
+        return 1
+
     weights = yaml.safe_load(WEIGHTS_PATH.read_text(encoding="utf-8"))
     scan, params = weights["scan"], weights["params"]
     main_window = str(int(weights["main_window_km"]))
@@ -434,6 +441,11 @@ def main(argv=None) -> int:
     picked = select(rows, targets, params, scan,
                     lambda lat, lon: site_bare_ground(lat, lon, float(weights["main_window_km"])))
     candidates = candidate_sites(picked, targets, sizes, main_window, scan)
+    if not candidates:
+        # Zero candidates almost always means missing inputs (or no WorldCover access),
+        # not a real result; keep the existing results and app data.
+        print(f"error: the scan kept no candidates (windows: {counts}); nothing written.", file=sys.stderr)
+        return 1
 
     write_json(OUT_PATH, {"counts": counts, "scan": scan, "candidates": candidates})
     for c in candidates:
@@ -508,8 +520,47 @@ def selftest() -> int:
     assert region_of(-26, -68, known, 50.0, regions, 100.0) == ("yungay", "Atacama Yungay area")
     assert region_of(-25, -70, known, 250.0, regions, 100.0) == ("yungay", "Atacama Yungay area")
 
-    print("selftest: PASS (terrain match mirror, distance, tile grid, tile names, greedy pick, regions)")
+    selftest_missing_dem_keeps_output()
+
+    print("selftest: PASS (terrain match mirror, distance, tile grid, tile names, greedy pick, regions, "
+          "missing DEM keeps output)")
     return 0
+
+
+def selftest_missing_dem_keeps_output() -> None:
+    """Regression (PR #49 review): with no DEM tiles, --update-app-data must fail
+    and leave the app data, results and candidate assets exactly as they were."""
+    import contextlib
+    import io
+    import tempfile
+
+    names = ("SRTM_DIR", "COPERNICUS_DIR", "APP_SITES_PATH", "OUT_PATH", "IMG_DIR", "RELIEF_DIR")
+    saved = {n: globals()[n] for n in names}
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        try:
+            globals().update({
+                "SRTM_DIR": root / "raw" / "srtm", "COPERNICUS_DIR": root / "raw" / "copernicus",
+                "APP_SITES_PATH": root / "sites.json", "OUT_PATH": root / "candidates.json",
+                "IMG_DIR": root / "img", "RELIEF_DIR": root / "relief",
+            })
+            SRTM_DIR.mkdir(parents=True)
+            APP_SITES_PATH.write_text(json.dumps([{"id": "known"}, {"id": f"{CANDIDATE_PREFIX}x_1"}]),
+                                      encoding="utf-8")
+            OUT_PATH.write_text('{"candidates": ["old"]}', encoding="utf-8")
+            IMG_DIR.mkdir()
+            RELIEF_DIR.mkdir()
+            (IMG_DIR / f"{CANDIDATE_PREFIX}x_1.png").write_bytes(b"png")
+            (RELIEF_DIR / f"{CANDIDATE_PREFIX}x_1.json").write_text("{}", encoding="utf-8")
+            before = {q: q.read_bytes() for q in root.rglob("*") if q.is_file()}
+
+            with contextlib.redirect_stderr(io.StringIO()):
+                code = main(["--update-app-data"])
+            assert code == 1, code
+            after = {q: q.read_bytes() for q in root.rglob("*") if q.is_file()}
+            assert after == before, "missing DEM inputs changed existing output"
+        finally:
+            globals().update(saved)
 
 
 if __name__ == "__main__":

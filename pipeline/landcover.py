@@ -20,8 +20,10 @@ stability or the warning.
 
 * ``uv run pipeline/landcover.py``                     -> results/landcover.json
 * ``uv run pipeline/landcover.py --update-app-data``   -> also writes only
-  conditions.bare_ground_share into frontend/public/data/sites.json (a full
-  ``build.py`` rerun needs the raw DEMs under data/raw/)
+  conditions.bare_ground_share into frontend/public/data/sites.json for the
+  manifest sites; scan candidates keep their values (a full ``build.py`` rerun
+  needs the raw DEMs under data/raw/)
+* ``uv run pipeline/landcover.py --selftest``          -> offline checks
 """
 from __future__ import annotations
 
@@ -180,18 +182,51 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
 
-def update_app_data(results: dict[str, dict[str, Any]]) -> None:
-    sites = json.loads(APP_SITES_PATH.read_text(encoding="utf-8"))
+def update_app_data(results: dict[str, dict[str, Any]], path: Path | None = None) -> None:
+    """Write bare_ground_share for the sites in ``results`` only.
+
+    Sites outside this run (the scan candidates from pipeline/scan.py) keep the
+    value they already have.
+    """
+    path = path or APP_SITES_PATH
+    sites = json.loads(path.read_text(encoding="utf-8"))
     for site in sites:
-        site["conditions"]["bare_ground_share"] = bare_ground_value(results.get(site["id"]))
-    write_json(APP_SITES_PATH, sites)
+        if site["id"] in results:
+            site["conditions"]["bare_ground_share"] = bare_ground_value(results[site["id"]])
+    write_json(path, sites)
+
+
+def selftest() -> int:
+    """Regression (PR #49 review): the partial updater must not clear candidates."""
+    import tempfile
+
+    cand_value = {"value": 0.9, "tier": "computed", "source": "scan"}
+    sites = [
+        {"id": "known", "conditions": {"bare_ground_share": {"value": None, "tier": "missing", "source": None}}},
+        {"id": "cand_x_1", "conditions": {"bare_ground_share": dict(cand_value)}},
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "sites.json"
+        write_json(path, sites)
+        update_app_data({"known": {"value": 0.25, "tier": "computed", "source": "wc"}}, path)
+        out = {s["id"]: s["conditions"]["bare_ground_share"] for s in json.loads(path.read_text(encoding="utf-8"))}
+    assert out["known"] == {"value": 0.25, "tier": "computed", "source": "wc"}, out
+    assert out["cand_x_1"] == cand_value, out
+
+    assert bare_ground_value(None) == {"value": None, "tier": "missing", "source": None}
+    assert bare_ground_value({"value": float("nan"), "tier": "computed", "source": "x"})["tier"] == "missing"
+    print("selftest: PASS (partial update keeps rows outside its results, missing values)")
+    return 0
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--update-app-data", action="store_true",
                         help="also write conditions.bare_ground_share into frontend/public/data/sites.json")
+    parser.add_argument("--selftest", action="store_true", help="offline checks, no network")
     args = parser.parse_args()
+    if args.selftest:
+        raise SystemExit(selftest())
 
     km = float(yaml.safe_load(WEIGHTS_PATH.read_text(encoding="utf-8"))["main_window_km"])
     sites = json.loads(SITES_PATH.read_text(encoding="utf-8"))["earth"]
