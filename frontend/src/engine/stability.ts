@@ -1,6 +1,6 @@
 import type { Config, Site, Stability, Target, Value, Weights } from '../types'
-import { PARAM_KEYS } from '../types'
-import { compareScores, terrainMatch } from './scoring'
+import { PARAM_KEYS } from '../types.ts'
+import { compareScores, terrainMatch } from './scoring.ts'
 
 /** Seeded generator (mulberry32). Never use Math.random in the engine. */
 export function rng(seed: number): () => number {

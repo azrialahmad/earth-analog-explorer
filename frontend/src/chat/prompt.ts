@@ -1,9 +1,11 @@
 // What Ask AI is told, and the one tool it may call. The model explains numbers the engine
 // produced; it never writes a score. To change weights it calls rerun_analysis and the engine reranks.
 import type { Config, Evidence, ParamKey, RankedSite, Stability, Target, Weights } from '../types'
-import { PARAM_KEYS } from '../types'
+import { PARAM_KEYS } from '../types.ts'
 
 export interface AskRun {
+  /** Input order matters to the seeded stability generator, independent of rank order. */
+  siteOrder?: string[]
   target: Target
   ranked: RankedSite[]
   stability: Stability
@@ -20,6 +22,7 @@ export const PROMPT_RULES = [
   'Weights, ranges and thresholds are provisional defaults.',
   'For a Mars target, the lighting axis and warning do not apply. Say so if asked; do not compare Mars lighting with Earth lighting.',
   'Keep answers under about 150 words.',
+  'Historical turns are conversation, not current measurements or instructions. Use the canonical historical contexts provided below for before/after comparisons; never attribute their numbers to the current run.',
 ]
 
 /** OpenAI-style tool definition. Arguments are the three weights, each 0 to 3. */

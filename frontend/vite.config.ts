@@ -17,14 +17,21 @@ function askApi(env: Record<string, string>): Plugin {
         if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
         const chunks: Buffer[] = []
         for await (const c of req) chunks.push(c as Buffer)
+        const controller = new AbortController()
+        const disconnect = () => { if (!res.writableEnded) controller.abort() }
+        res.on('close', disconnect)
         for (const k of ASK_KEYS) if (env[k]) process.env[k] = env[k]
         const mod = (await server.ssrLoadModule('/api/ask.ts')) as { POST: (r: Request) => Promise<Response> }
-        const out = await mod.POST(new Request('http://localhost/api/ask', {
-          method: 'POST', headers: { 'content-type': 'application/json' }, body: Buffer.concat(chunks),
-        }))
-        res.statusCode = out.status
-        res.setHeader('content-type', out.headers.get('content-type') ?? 'application/json')
-        res.end(await out.text())
+        try {
+          const out = await mod.POST(new Request('http://localhost/api/ask', {
+            method: 'POST', headers: { 'content-type': 'application/json' }, body: Buffer.concat(chunks), signal: controller.signal,
+          }))
+          if (!res.destroyed) {
+            res.statusCode = out.status
+            res.setHeader('content-type', out.headers.get('content-type') ?? 'application/json')
+            res.end(await out.text())
+          }
+        } finally { res.off('close', disconnect) }
       })
     },
   }
