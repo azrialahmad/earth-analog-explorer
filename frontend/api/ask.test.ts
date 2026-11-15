@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { OPTIONS, POST, SERVER_RERUN_TOOL } from './ask'
 import { RERUN_TOOL, buildSystemPrompt, compactRun } from '../src/chat/prompt'
-import { CONTEXT_VERSION, MAX_HISTORY, reference, runFor, snapshot, type AskRequest } from '../src/chat/context'
+import { CONTEXT_VERSION, MAX_HISTORY, reference, runFor, snapshot, type AskRequest, type AskReply } from '../src/chat/context'
 import { checkReply } from '../src/chat/transport'
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
@@ -129,6 +129,75 @@ describe('POST /api/ask canonical protocol', () => {
       { ...good, history: [{ role: 'user', text: 'old', context: wrong }] },
     ]) expect((await POST(req(body))).status).toBe(409)
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('reconstructs Moon→Moon→Mars history separately from the current target', async () => {
+    configure()
+    const refs = await Promise.all(data.targets.map(async target => ({
+      s: snapshot(runFor(data, target.id, weights)),
+      ref: await reference(snapshot(runFor(data, target.id, weights))),
+    })))
+    const current = refs.find(x => x.s.run.target.body === 'mars')!
+    const moons = refs.filter(x => x.s.run.target.body === 'moon')
+    const request: AskRequest = {
+      ...good, context: current.ref, question: 'Compare the previous targets with this one',
+      history: moons.flatMap(({ ref }) => [
+        { role: 'user' as const, text: 'Earlier question', context: ref },
+        { role: 'assistant' as const, text: 'Earlier answer', context: ref },
+      ]),
+    }
+    const fetchMock = vi.fn(async () => answer())
+    vi.stubGlobal('fetch', fetchMock)
+    const response = await POST(req(request))
+    expect(response.status).toBe(200)
+    const result = await response.json() as AskReply
+    expect((await checkReply(result, request, current.s)).snapshots).toHaveLength(0)
+    expect(result.base).toEqual(current.ref)
+    const sent = JSON.parse((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body as string)
+    expect(sent.messages[0].content).toContain(buildSystemPrompt(current.s.run))
+    for (const { ref, s } of moons) {
+      expect(sent.messages[0].content).toContain(JSON.stringify({ context: ref, data: compactRun(s.run) }))
+    }
+    expect(sent.messages.slice(1, -1)).toEqual(request.history.map(t => ({
+      role: t.role, content: JSON.stringify({ historical_context: t.context.id, conversation_text: t.text }),
+    })))
+  })
+
+  it('rejects forged or unknown cross-target history before contacting the provider', async () => {
+    configure()
+    const other = data.targets.find(t => t.id !== baseRef.targetId)!
+    const otherRef = await reference(snapshot(runFor(data, other.id, weights)))
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    for (const context of [
+      { ...otherRef, id: baseRef.id },
+      { ...otherRef, targetId: 'unknown' },
+      { ...otherRef, weights: { ...weights, roughness_m: 2 } },
+    ]) {
+      expect((await POST(req({ ...good, history: [{ role: 'assistant', text: 'old', context }] }))).status).toBe(409)
+    }
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('keeps rerun tools on the current target even with a different historical target', async () => {
+    configure()
+    const target = data.targets.find(t => t.body === 'mars')!
+    const current = snapshot(runFor(data, target.id, weights))
+    const currentRef = await reference(current)
+    const nextWeights = { ...weights, roughness_m: 2 }
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ choices: [{ message: { tool_calls: [
+        { id: 'current-only', type: 'function', function: { name: 'rerun_analysis', arguments: JSON.stringify(nextWeights) } },
+      ] } }] })))
+      .mockResolvedValueOnce(answer())
+    vi.stubGlobal('fetch', fetchMock)
+    const request: AskRequest = { ...good, context: currentRef, history: [{ role: 'user', text: 'Moon before', context: baseRef }] }
+    const response = await POST(req(request))
+    expect(response.status).toBe(200)
+    const result = await response.json() as AskReply
+    expect(result.reruns[0].base.targetId).toBe(target.id)
+    expect(result.reruns[0].result.targetId).toBe(target.id)
+    expect((await checkReply(result, request, current)).snapshots[0].run.target.id).toBe(target.id)
   })
 
   it('keeps zero-weight runs unscored and accepts a provider null tool list', async () => {

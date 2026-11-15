@@ -18,3 +18,30 @@
 .weight output { font-size: 13px; color: var(--terrain); }
 .weight input { grid-column: 1 / -1; }
 .weights .reset { justify-self: start; font-size: 12.5px; }
+
+/* Embedded workbench controls share the center column, not an overlay. */
+.weights.embedded {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  inline-size: 100%;
+  min-inline-size: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
+  gap: 8px 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.weights.embedded header { grid-column: 1 / -1; flex-wrap: wrap; padding-inline-end: 110px; }
+.weights.embedded h2 { font-size: 13px; }
+.weights.embedded .provisional { font-size: 9px; }
+.weights.embedded .weight { min-inline-size: 0; grid-template-columns: minmax(0, 1fr) auto; }
+.weights.embedded .weight label { font-size: 11px; overflow-wrap: anywhere; }
+.weights.embedded .weight input { min-inline-size: 0; }
+.weights.embedded .reset { position: absolute; inset-block-start: 10px; inset-inline-end: 10px; padding: 5px 8px; font-size: 10px; }
+@media (max-width: 899px) {
+  .weights.embedded { grid-template-columns: minmax(0, 1fr); }
+  .weights.embedded header { padding-inline-end: 0; }
+  .weights.embedded .reset { position: static; }
+}

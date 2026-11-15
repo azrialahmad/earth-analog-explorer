@@ -32,6 +32,8 @@ export interface SplitRenderer {
   setVisible(side: Side, visible: boolean): void
   setLight(side: Side, preset: LightPreset, instant: boolean): void
   setLayout(layout: ViewLayout): void
+  /** Display-only title/source band, in CSS pixels, excluded from that side's mesh viewport. */
+  setLabelHeight(side: Side, height: number): void
   setAutoRotate(on: boolean): void
   orbit(dAzimuth: number, dElevation: number): void
   zoom(factor: number): void
@@ -167,6 +169,7 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
   const HOME = { az: 0.75, elev: 0.7, radius: 285 }
   let az = HOME.az, elev = HOME.elev, radius = HOME.radius, auto = false, layout: ViewLayout = 'row'
   let last = performance.now(), frame = 0
+  const labelHeights: Record<Side, number> = { left: 0, right: 0 }
 
   const placeSun = (w: World) => {
     const e = (w.el * Math.PI) / 180, d = 320
@@ -187,12 +190,14 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
     const row = layout === 'row'
     const vw = row ? (W - VIEW_GAP) / 2 : W
     const vh = row ? H : (H - VIEW_GAP) / 2
-    const views: [World, number, number][] = row
-      ? [[worlds.left, 0, 0], [worlds.right, vw + VIEW_GAP, 0]]
-      : [[worlds.left, 0, vh + VIEW_GAP], [worlds.right, 0, 0]]
-    cam.aspect = vw / vh
+    const views: [Side, number, number][] = row
+      ? [['left', 0, 0], ['right', vw + VIEW_GAP, 0]]
+      : [['left', 0, vh + VIEW_GAP], ['right', 0, 0]]
+    // The taller label band reserves equal space on both sides, preserving one
+    // shared projection/zoom rather than rescaling one terrain for a longer name.
+    const sceneHeight = Math.max(1, vh - Math.max(labelHeights.left, labelHeights.right))
+    cam.aspect = vw / sceneHeight
     cam.updateProjectionMatrix()
-    // frame the tile to the viewport: pull back in tall or narrow views, move in a little in wide, short ones
     const r = radius * (vw < 420 ? 1.35 : 1) * (cam.aspect < 1 ? 1 / Math.max(0.6, cam.aspect) : cam.aspect > 1.7 ? 0.82 : 1)
     cam.position.set(Math.sin(az) * Math.cos(elev) * r, Math.sin(elev) * r, Math.cos(az) * Math.cos(elev) * r)
     cam.lookAt(0, -24, 0)
@@ -223,10 +228,10 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
     renderer.setClearColor(0x000000, 0)
     renderer.clear()
     renderer.setScissorTest(true)
-    for (const [w, x, y] of views) {
-      renderer.setViewport(x, y, vw, vh)
-      renderer.setScissor(x, y, vw, vh)
-      renderer.render(w.scene, cam)
+    for (const [side, x, y] of views) {
+      renderer.setViewport(x, y, vw, sceneHeight)
+      renderer.setScissor(x, y, vw, sceneHeight)
+      renderer.render(worlds[side].scene, cam)
     }
   }
   frame = requestAnimationFrame(tick)
@@ -248,6 +253,7 @@ export function createSplitRenderer(canvas: HTMLCanvasElement, reducedMotion: ()
     },
     setVisible(side, visible) { for (const o of worlds[side].ground) o.visible = visible },
     setLayout(l) { layout = l },
+    setLabelHeight(side, height) { labelHeights[side] = Math.max(0, height) },
     resetView() { az = HOME.az; elev = HOME.elev; radius = HOME.radius },
     setAutoRotate(on) { auto = on },
     orbit(dAz, dEl) { az += dAz; elev = Math.max(0.12, Math.min(1.25, elev + dEl)) },

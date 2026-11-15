@@ -77,19 +77,32 @@ describe('immutable analysis contexts', () => {
 })
 
 describe('request generations and cancellation', () => {
-  it('starts a new generation on either Moon→Moon or Moon→Mars but retains actual weights', () => {
+  it('keeps one conversation across Moon→Moon and Moon→Mars while cancelling old requests', () => {
     const session = new AskSession(changed)
     for (const targetId of ['moon-b', 'mars']) {
       const before = session.conversationId
       const ticket = session.start()!
       const next = snapshot(runFor(data, targetId, changed.run.weights))
       expect(session.update(next)).toEqual({ targetChanged: true, interrupted: true })
-      expect(session.conversationId).not.toBe(before)
+      expect(session.conversationId).toBe(before)
       expect(ticket.controller.signal.aborted).toBe(true)
       expect(session.current(ticket)).toBe(false)
       expect(session.start()!.snapshot.run.weights).toEqual(changed.run.weights)
       session.cancel()
     }
+  })
+  it('never revives a cross-target request after Moon→Mars→Moon', () => {
+    const session = new AskSession(a)
+    const old = session.start()!
+    session.update(snapshot(runFor(data, 'mars', weights)))
+    session.update(a)
+    const newer = session.start()!
+    expect(newer.conversationId).toBe(old.conversationId)
+    expect(newer.requestId).not.toBe(old.requestId)
+    expect(old.controller.signal.aborted).toBe(true)
+    expect(session.current(old)).toBe(false)
+    expect(session.finish(old)).toBe(false)
+    expect(session.current(newer)).toBe(true)
   })
   it('invalidates same-target edits and A→B→A, including old success, error and finally cleanup', () => {
     const session = new AskSession(a)

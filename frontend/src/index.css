@@ -150,25 +150,39 @@ input[type='range']:focus-visible { outline: 2px solid var(--sun); outline-offse
 /* Workbench shell: top bar, then three panes (ranked sites | linked terrain views | selected-site details).
    The page itself never scrolls; each side pane scrolls on its own. */
 .app {
+  --sites-width: 290px;
+  --details-width: 360px;
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(10px + env(safe-area-inset-bottom, 0px)) var(--gutter);
   gap: 10px;
 }
 .workspace {
-  position: relative; /* auxiliary panels (Weights, Data, Evidence, Ask) are placed against this */
+  position: relative; /* Data and Evidence remain accessible auxiliary panels. */
   min-block-size: 0;
   display: grid;
-  grid-template-columns: minmax(230px, 290px) minmax(0, 1fr) minmax(300px, 400px);
+  grid-template-columns: var(--sites-width) minmax(0, 1fr) var(--details-width);
   gap: 10px;
 }
 .pane { min-block-size: 0; min-inline-size: 0; border-radius: var(--radius-lg); overflow: hidden; display: grid; }
-.pane-view { position: relative; overflow: visible; }
+.pane-view {
+  position: relative;
+  border-radius: 0;
+  grid-template-rows: minmax(260px, 1.2fr) max-content minmax(250px, 1fr);
+  gap: 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.pane-view:has(.view-info[open]) { grid-template-rows: minmax(380px, 1.2fr) max-content minmax(250px, 1fr); }
+.terrain-region { display: grid; min-inline-size: 0; min-block-size: 0; }
 .pane[hidden] { display: none; }
 
 /* smaller desktops and tablets: narrower side panes; the two terrain views stack (TerrainViews picks by shape) */
 @media (max-width: 1199px) {
-  .workspace { grid-template-columns: minmax(210px, 240px) minmax(0, 1fr) minmax(280px, 330px); }
+  .app { --sites-width: 230px; --details-width: 300px; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .pane-view { grid-template-rows: minmax(380px, 1.2fr) max-content minmax(250px, 1fr); }
 }
 
 /* narrow screens: one pane at a time behind the Sites / View / Details tabs */
@@ -176,8 +190,9 @@ input[type='range']:focus-visible { outline: 2px solid var(--sun); outline-offse
 .pane-tabs [role='tab'] { padding: 7px 10px; border-radius: var(--radius-sm); font-weight: 500; color: var(--muted); }
 .pane-tabs [role='tab'][aria-selected='true'] { background: rgb(255 255 255 / 0.1); color: var(--fg); box-shadow: inset 0 0 0 1px var(--edge-strong); }
 @media (max-width: 899px) {
-  .app { gap: 8px; }
+  .app { gap: 8px; grid-template-rows: auto auto minmax(0, 1fr); }
   .workspace { grid-template-columns: minmax(0, 1fr); }
+  .pane-view, .pane-view:has(.view-info[open]) { grid-template-rows: 400px max-content minmax(320px, auto); }
 }
 .app-status { position: absolute; inset: 0; display: grid; place-items: center; padding: 40px; text-align: center; color: var(--muted); }
 .fixture-tag {

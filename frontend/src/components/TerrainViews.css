@@ -1,18 +1,20 @@
-.views-pane { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; min-block-size: 0; min-inline-size: 0; }
+.views-pane { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 6px; min-block-size: 0; min-inline-size: 0; }
+.views-pane.local-controls { grid-template-rows: auto minmax(0, 1fr) auto; }
 
 .views-tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
-.views-tools .btn { padding: 6px 12px; font-size: 12.5px; }
+.views-tools .btn { min-block-size: 36px; padding: 6px 10px; font-size: 12px; }
+.views-tools .btn[aria-pressed='true'] { color: var(--terrain); background: var(--terrain-soft); }
 
 /* the canvas fills this box; the renderer draws two complete viewports into it with an 8px gap (VIEW_GAP) */
-.views { position: relative; min-block-size: 0; overflow: hidden; border-radius: var(--radius); }
+.views { position: relative; min-block-size: 0; overflow: hidden; border: 1px solid var(--edge); background: #12151b; border-radius: var(--radius); }
 .views-gl { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: block; cursor: grab; touch-action: none; border-radius: inherit; }
 .views-gl:active { cursor: grabbing; }
 .views-gl:focus-visible { outline-offset: -3px; }
 
 /* label overlay laid out exactly like the two viewports */
 .view-cells { position: absolute; inset: 0; display: grid; gap: 8px; pointer-events: none; }
-.views.row .view-cells { grid-template-columns: 1fr 1fr; }
-.views.column .view-cells { grid-template-rows: 1fr 1fr; }
+.views.row .view-cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.views.column .view-cells { grid-template-rows: repeat(2, minmax(0, 1fr)); }
 .view-cell { position: relative; min-inline-size: 0; min-block-size: 0; }
 .view-label {
   position: absolute;
@@ -26,7 +28,7 @@
 .view-label h2 {
   font-family: var(--f-dot);
   font-weight: 800;
-  font-size: clamp(18px, 2vw, 26px);
+  font-size: clamp(17px, 1.5vw, 23px);
   line-height: 1;
   text-transform: uppercase;
   text-wrap: balance;
@@ -59,4 +61,11 @@
 .src-tag.data { color: var(--terrain); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--terrain) 45%, transparent); }
 .src-tag.none { color: var(--sun); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sun) 55%, transparent); }
 
-.views-foot { font-size: 11.5px; color: var(--muted); text-wrap: pretty; }
+.views-foot { font-size: 11px; color: var(--muted); text-wrap: pretty; }
+.view-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 4px; }
+.view-info { flex: 1 1 5rem; min-inline-size: 0; }
+.view-info summary { inline-size: fit-content; min-block-size: 32px; padding: 6px 8px; font-size: 11px; color: var(--muted); cursor: pointer; }
+.view-info .views-foot { padding: 8px; border: 1px solid var(--edge); border-radius: 8px; }
+.view-arrangement { display: flex; flex-wrap: wrap; gap: 4px; }
+.view-arrangement button { min-block-size: 32px; padding: 5px 8px; font-size: 10px; color: var(--muted); border: 1px solid transparent; border-radius: 8px; }
+.view-arrangement button[aria-pressed='true'] { color: var(--fg); background: var(--glass-strong); border-color: var(--edge-strong); }

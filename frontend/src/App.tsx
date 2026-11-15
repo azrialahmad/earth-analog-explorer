@@ -15,8 +15,8 @@ import { buildDemoSteps, type DemoStep } from './demo/steps'
 import AskPanel from './chat/AskPanel'
 import { explainCard } from './explain/card'
 
-type Panel = 'none' | 'weights' | 'data' | 'evidence' | 'ask'
-const PANEL_IDS: Record<Exclude<Panel, 'none'>, string> = { weights: 'weights-panel', data: 'data-drawer', evidence: 'evidence-panel', ask: 'ask-panel' }
+type Panel = 'none' | 'data' | 'evidence'
+const PANEL_IDS: Record<Exclude<Panel, 'none'>, string> = { data: 'data-drawer', evidence: 'evidence-panel' }
 
 /** Narrow screens show one pane at a time behind a Sites / View / Details switcher. */
 type Pane = 'sites' | 'view' | 'details'
@@ -40,6 +40,7 @@ export default function App() {
   const [siteId, setSiteId] = useState<string | null>(null)
   const [panel, setPanel] = useState<Panel>('none')
   const [relit, setRelit] = useState(false)
+  const [controlsHost, setControlsHost] = useState<HTMLDivElement | null>(null)
   const [demo, setDemo] = useState<DemoStep[] | null>(null)
   const narrow = useMediaQuery('(max-width: 899px)')
   const [pane, setPane] = useState<Pane>('sites')
@@ -132,6 +133,7 @@ export default function App() {
         fixture={data.config._fixture === true}
         panel={panel}
         onTogglePanel={toggle}
+        onControlsMount={setControlsHost}
       />
       {narrow && (
         <div className="pane-tabs" role="tablist" aria-label="Workbench panes">
@@ -162,13 +164,26 @@ export default function App() {
           />
         </div>
         <div id="pane-view" className="pane pane-view" {...paneProps('view')}>
-          <TerrainViews
-            target={target}
-            site={selected?.site ?? null}
-            relit={relit && target.body === 'moon'}
-            onToggleRelit={() => setRelit(r => !r)}
-            mainWindowKm={data.config.main_window_km}
+          <div className="terrain-region">
+            <TerrainViews
+              target={target}
+              site={selected?.site ?? null}
+              relit={relit && target.body === 'moon'}
+              onToggleRelit={() => setRelit(r => !r)}
+              mainWindowKm={data.config.main_window_km}
+              controlsHost={controlsHost}
+            />
+          </div>
+          <WeightsPanel
+            embedded
+            open
+            config={data.config}
+            weights={weights}
+            onWeights={setWeights}
+            onReset={() => setWeights(defaultWeights(data.config))}
+            onClose={() => {}}
           />
+          {askRun && <AskPanel embedded open run={askRun} onRerun={setWeights} onClose={() => {}} />}
           {demo && (
             <DemoTour
               steps={demo}
@@ -187,14 +202,6 @@ export default function App() {
           <SiteDetails ex={explanation} />
         </div>
 
-        <WeightsPanel
-          open={panel === 'weights'}
-          config={data.config}
-          weights={weights}
-          onWeights={setWeights}
-          onReset={() => setWeights(defaultWeights(data.config))}
-          onClose={() => setPanel('none')}
-        />
         <DataDrawer
           open={panel === 'data'}
           entry={selected}
@@ -205,12 +212,6 @@ export default function App() {
           onClose={() => setPanel('none')}
         />
         <EvidencePanel open={panel === 'evidence'} evidence={data.evidence} onClose={() => setPanel('none')} />
-        {askRun && <AskPanel
-          open={panel === 'ask'}
-          run={askRun}
-          onRerun={setWeights}
-          onClose={() => setPanel('none')}
-        />}
       </main>
     </div>
   )

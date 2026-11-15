@@ -20,7 +20,6 @@ export class AskSession {
     const changed = this.context.key !== next.key
     const interrupted = changed && this.active !== null
     if (changed) this.cancel()
-    if (targetChanged) this.conversationId = crypto.randomUUID()
     this.context = next
     return { targetChanged, interrupted }
   }

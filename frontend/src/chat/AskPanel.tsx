@@ -19,6 +19,7 @@ const displayNames = (run: AskRun): Record<string, string> => ({
 
 export type { AskRun } from './prompt'
 export interface AskPanelProps {
+  embedded?: boolean
   open: boolean
   run: AskRun
   onRerun: (w: Weights) => void
@@ -27,11 +28,6 @@ export interface AskPanelProps {
 
 type Line = { kind: 'user' | 'answer' | 'note' | 'error'; text: string; snapshot?: Snapshot }
 const ASK_URL: string = import.meta.env.VITE_ASK_URL || '/api/ask'
-const EXAMPLES = [
-  'Which site is the best match and why is it flagged?',
-  'What changes if roughness counts three times as much?',
-  'How sure is the top 3?',
-]
 
 /** No extra rounding: preserve every distinction exposed by the sliders. */
 export function ContextValues({ context }: { context: Snapshot }) {
@@ -45,7 +41,7 @@ export function ContextValues({ context }: { context: Snapshot }) {
 }
 
 /** Each displayed turn owns its snapshot; only the live strip follows the controls. */
-export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps) {
+export default function AskPanel({ embedded = false, open, run, onRerun, onClose }: AskPanelProps) {
   const live = useMemo(() => snapshot(run), [run])
   const sessionRef = useRef<AskSession | null>(null)
   if (!sessionRef.current) sessionRef.current = new AskSession(live)
@@ -58,19 +54,18 @@ export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps)
   const listRef = useRef<HTMLOListElement>(null)
 
   useLayoutEffect(() => {
-    const { targetChanged, interrupted } = session.update(live)
-    if (targetChanged) {
-      history.current = []
-      lastUsed.current = null
-      setLines([{ kind: 'note', text: `New conversation for ${live.run.target.name}. Previous target conversation cleared.${interrupted ? ' Pending question interrupted.' : ''}` }])
-      setText('')
-    } else if (interrupted) {
-      setLines(ls => [...ls, { kind: 'note', text: 'Question interrupted because the analysis changed. Ask again to use the new context.' }])
+    const { interrupted } = session.update(live)
+    if (interrupted) {
+      setLines(ls => [...ls, { kind: 'note', text: 'Pending question interrupted because the analysis changed. Conversation kept; your next message uses the current target and weights.' }])
+      setBusy(false)
     }
-    if (targetChanged || interrupted) setBusy(false)
   }, [live, session])
   useLayoutEffect(() => () => session.cancel(), [session])
-  useEffect(() => { listRef.current?.lastElementChild?.scrollIntoView({ block: 'nearest' }) }, [lines])
+  useEffect(() => {
+    // Scroll only the transcript, not the center pane away from its terrain/controls.
+    const list = listRef.current
+    if (list) list.scrollTop = list.scrollHeight
+  }, [lines])
 
   async function ask(question: string) {
     const q = question.trim()
@@ -85,7 +80,7 @@ export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps)
     setLines(ls => [
       ...ls,
       ...(changedContext
-        ? [{ kind: 'note' as const, text: 'Analysis changed. This question uses the weights below; earlier turns keep their original context.' }]
+        ? [{ kind: 'note' as const, text: `Analysis changed. This question uses ${captured.run.target.name} and the weights below; earlier messages keep their original context.`, snapshot: captured }]
         : []),
       { kind: 'user', text: q, snapshot: captured },
     ])
@@ -126,32 +121,40 @@ export default function AskPanel({ open, run, onRerun, onClose }: AskPanelProps)
   }
 
   return (
-    <aside id="ask-panel" className="drawer panel glass ask" aria-label="Ask AI" hidden={!open}>
+    <aside id="ask-panel" className={`panel glass ask${embedded ? ' embedded' : ' drawer'}`} aria-label="Analysis assistant" hidden={!open}>
       <header>
-        <div><span className="label">About {run.target.name}</span><h2>Ask AI</h2></div>
-        <button type="button" className="close" aria-label="Close Ask AI" onClick={onClose}>×</button>
+        <h2>Analysis assistant</h2>
+        <section className="ask-context-next" aria-label="Next message context">
+          <h3 className="label">Next message uses</h3>
+          <ContextValues context={live} />
+        </section>
+        {!embedded && <button type="button" className="close" aria-label="Close Ask AI" onClick={onClose}>×</button>}
       </header>
-      <p className="ask-scope">Answers use the analysis data sent with your question, across the whole ranking—not the selected card. It cannot change a score; it can request new weights for the engine.</p>
+      <p id="chat-scope" className="ask-scope">New messages use the current target and weights, across the whole ranking—not the selected card. Earlier messages keep their original context. Scores come from the ranking engine.</p>
       <ol ref={listRef} className="ask-lines" aria-label="Conversation" tabIndex={lines.length ? 0 : -1} aria-live="polite" aria-relevant="additions">
+        {lines.length === 0 && <li className="chat-empty">What would you like to explore?</li>}
         {lines.map((l, i) => <li key={i} className={`ask-line ${l.kind}`}>
           <div>{l.text}</div>
           {l.snapshot && <details className="ask-context-used"><summary>{l.kind === 'error' ? 'Context requested' : 'Context used'}</summary><ContextValues context={l.snapshot} /></details>}
         </li>)}
         {busy && <li className="ask-line note" role="status">Working…</li>}
       </ol>
-      {lines.length === 0 && <div className="ask-examples">
-        {EXAMPLES.map(q => <button key={q} type="button" className="btn glass" onClick={() => void ask(q)} disabled={busy}>{q}</button>)}
-      </div>}
-      <section className="ask-context-next" aria-label="Next message context">
-        <h3 className="label">Next message uses</h3>
-        <ContextValues context={live} />
-      </section>
-      <form className="ask-form" onSubmit={e => { e.preventDefault(); void ask(text) }}>
-        <label htmlFor="ask-input" className="label">Your question</label>
-        <textarea id="ask-input" rows={2} value={text} onChange={e => setText(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void ask(text) } }}
-          placeholder="Why is this site ranked first?" />
-        <button type="submit" className="btn primary" disabled={busy || !text.trim()}>Ask</button>
+      <form className="ask-form" aria-label="Analysis message" onSubmit={e => { e.preventDefault(); void ask(text) }}>
+        <label htmlFor="ask-input" className="label">Message</label>
+        <div className="chat-composer">
+          <textarea id="ask-input" name="message" rows={1} value={text} aria-describedby="chat-scope" onChange={e => setText(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.nativeEvent.isComposing || e.keyCode === 229) return
+                e.preventDefault()
+                e.currentTarget.form?.requestSubmit()
+              }
+            }}
+            placeholder="Ask about the analysis…" />
+          <button type="submit" className="btn primary chat-send" aria-label="Send message" title="Send message" disabled={busy || !text.trim()}>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5m-6 6 6-6 6 6" /></svg>
+          </button>
+        </div>
       </form>
     </aside>
   )
