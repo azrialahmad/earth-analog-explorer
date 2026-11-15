@@ -64,7 +64,7 @@
 .app .studio-center .weights .close,
 .app .studio-center .ask .close { display: none; }
 
-.app .studio-center > .ask { min-block-size: 0; grid-template-rows: auto auto minmax(0, 1fr) auto auto; align-content: stretch; gap: 6px; overflow-y: auto; }
+.app .studio-center > .ask { min-block-size: 0; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: stretch; gap: 6px; overflow-y: auto; }
 .app .studio-center .ask > header { grid-row: 1; }
 .app .studio-center .ask-scope { grid-row: 2; }
 .app .studio-center .ask header { align-items: center; }
@@ -75,12 +75,18 @@
 .studio-chat-empty { font-size: 12px; color: var(--fg); margin-block: 7px 2px; }
 .app .studio-center .ask-lines { grid-row: 3; min-block-size: 0; align-content: start; overflow-y: auto; overscroll-behavior: contain; }
 .app .studio-center .ask-lines:empty { display: block; }
-.app .studio-center .ask-examples { grid-row: 4; display: flex; flex-wrap: wrap; gap: 6px; }
-.app .studio-center .ask-examples .btn { padding: 5px 8px; font-size: 10px; border-radius: 6px; }
-.app .studio-center .ask-form { grid-row: 5; margin-block-start: 2px; }
-.app .studio-center .ask-form .label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
-.app .studio-center .ask-form textarea { box-sizing: border-box; min-inline-size: 0; block-size: 42px; min-block-size: 42px; max-block-size: 42px; font-size: 11px; resize: none; }
-.app .studio-center .ask-form .btn { block-size: 42px; font-size: 11px; padding: 9px 15px; border-radius: 8px; }
+.app .studio-center .ask-form { grid-row: 4; grid-template-columns: minmax(0, 1fr); gap: 0; margin-block-start: 2px; }
+.app .studio-center .ask-form .label { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.app .studio-center .studio-composer { --studio-send-size: 36px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 6px; padding: 6px; border: 1px solid var(--edge-strong); border-radius: 14px; background: rgb(0 0 0 / 0.25); }
+.app .studio-center .studio-composer:focus-within { border-color: var(--sun); }
+.app .studio-center .ask-form textarea { box-sizing: border-box; inline-size: 100%; min-inline-size: 0; block-size: var(--studio-send-size); min-block-size: var(--studio-send-size); max-block-size: 120px; padding: 8px 10px; border: 0; border-radius: 8px; background: transparent; font-size: 12px; line-height: 20px; resize: vertical; }
+.app .studio-center .ask-form .studio-send { inline-size: var(--studio-send-size); min-inline-size: var(--studio-send-size); block-size: var(--studio-send-size); min-block-size: var(--studio-send-size); display: grid; place-items: center; padding: 0; border-radius: 10px; }
+.studio-send svg { pointer-events: none; }
+
+@media (pointer: coarse) {
+  .app .studio-center .studio-composer { --studio-send-size: 48px; }
+  .app .studio-center .ask-form textarea { font-size: 16px; }
+}
 
 /* Demo stays secondary and explicit; these are not five equal-priority tools. */
 .app .tools .btn { padding: 8px 14px; gap: 7px; min-inline-size: 0; }

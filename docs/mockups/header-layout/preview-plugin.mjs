@@ -12,6 +12,7 @@ function replaceOnce(source, before, after) {
 
 /** Dev-only presentation changes. Never writes to the app's source files. */
 export function transformHeaderModule(source, id) {
+  source = source.replace(/\r\n/g, '\n')
   const path = id.split('?')[0]
   if (path.endsWith('/src/components/TopBar.tsx')) {
     let next = replaceOnce(source,

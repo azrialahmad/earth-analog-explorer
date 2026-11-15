@@ -5,6 +5,15 @@ import { transformHeaderModule } from './preview-plugin.mjs'
 
 const component = name => readFileSync(new URL(`../../../frontend/src/components/${name}.tsx`, import.meta.url), 'utf8')
 
+for (const name of ['TopBar', 'TerrainViews']) {
+  test(`${name} produces the same header preview for LF and CRLF checkouts`, () => {
+    const lf = component(name).replace(/\r\n/g, '\n')
+    const crlf = lf.replace(/\n/g, '\r\n')
+    const id = `/src/components/${name}.tsx`
+    assert.equal(transformHeaderModule(crlf, id), transformHeaderModule(lf, id))
+  })
+}
+
 test('header controls precede targets in DOM order, with existing handlers preserved', () => {
   const next = transformHeaderModule(component('TopBar'), '/src/components/TopBar.tsx')
   assert.ok(next.indexOf('className="brand glass"') < next.indexOf('id="header-view-controls"'))

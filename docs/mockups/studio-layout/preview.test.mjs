@@ -1,10 +1,52 @@
 import { readFileSync } from 'node:fs'
+import { runInNewContext } from 'node:vm'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { transformWithOxc } from '../../../frontend/node_modules/vite/dist/node/index.js'
 import { transformStudioModule } from './preview-plugin.mjs'
 
 const source = path => readFileSync(new URL(`../../../frontend/src/${path}`, import.meta.url), 'utf8')
 const previewCss = readFileSync(new URL('./preview.css', import.meta.url), 'utf8')
+
+for (const path of ['App.tsx', 'components/TopBar.tsx', 'components/TerrainViews.tsx', 'chat/AskPanel.tsx']) {
+  test(`${path} produces the same studio preview for LF and CRLF checkouts`, () => {
+    const lf = source(path).replace(/\r\n/g, '\n')
+    const crlf = lf.replace(/\n/g, '\r\n')
+    assert.equal(transformStudioModule(crlf, `/src/${path}`), transformStudioModule(lf, `/src/${path}`))
+  })
+}
+
+for (const ending of ['\n', '\r\n']) {
+  const label = ending === '\n' ? 'LF' : 'CRLF'
+  const ask = source('chat/AskPanel.tsx').replace(/\r\n/g, '\n')
+  const transform = text => transformStudioModule(text.replace(/\n/g, ending), '/src/chat/AskPanel.tsx')
+
+  test(`${label}: the chat API stub runs without making a request`, async () => {
+    const next = transform(ask)
+    assert.ok(next.includes("throw new AskError('Layout preview only"))
+    assert.ok(!next.includes('fetch(ASK_URL'))
+    const post = next.match(/async function post\([\s\S]*?\n}\n/)[0]
+    const { code } = await transformWithOxc(post, 'post.ts')
+    let requests = 0
+    const result = runInNewContext(`class AskError extends Error {}\n${code}\npost([])`, {
+      fetch() { requests++; throw new Error('Unexpected network request') },
+    })
+    await assert.rejects(result, /Layout preview only/)
+    assert.equal(requests, 0)
+  })
+
+  for (const [pattern, renamed, duplicate, error] of [
+    ['async function post(', 'async function renamedPost(', '\nasync function post() {\n}\n', /no longer matches.*post/],
+    ['const EXAMPLES = [', 'const RENAMED_EXAMPLES = [', '\nconst EXAMPLES = [\n]\n', /no longer matches.*EXAMPLES/],
+  ]) {
+    test(`${label}: a missing ${pattern} anchor stops the preview`, () => {
+      assert.throws(() => transform(ask.replace(pattern, renamed)), error)
+    })
+    test(`${label}: a duplicate ${pattern} anchor stops the preview`, () => {
+      assert.throws(() => transform(ask + duplicate), error)
+    })
+  }
+}
 
 test('moves the existing controls into the center in visual, weights, assistant order', () => {
   const next = transformStudioModule(source('App.tsx'), '/src/App.tsx')
@@ -66,4 +108,48 @@ test('empty-chat guidance occupies the scrollable conversation track, not an ext
   const list = next.slice(next.indexOf('<ol ref={listRef}'), next.indexOf('</ol>'))
   assert.ok(list.includes('<li className="studio-chat-empty">'))
   assert.ok(!next.includes('<p className="studio-chat-empty">'))
+})
+
+test('chat copy is rank-neutral and suggested prompts are removed from the module', () => {
+  const next = transformStudioModule(source('chat/AskPanel.tsx'), '/src/chat/AskPanel.tsx')
+  assert.ok(next.includes('placeholder="Ask about the analysis…"'))
+  assert.ok(next.includes('What would you like to explore?'))
+  assert.ok(next.includes('Scores come from the ranking engine.'))
+  for (const removed of ['Why is this site ranked first?', 'Ask about this terrain, its ranking', 'EXAMPLES', 'ask-examples']) {
+    assert.ok(!next.includes(removed), removed)
+  }
+})
+
+test('the composer contains a labeled textarea and a native icon-only submit button', () => {
+  const next = transformStudioModule(source('chat/AskPanel.tsx'), '/src/chat/AskPanel.tsx')
+  const composer = next.slice(next.indexOf('<div className="studio-composer">'), next.indexOf('</form>'))
+  assert.ok(composer.includes('<textarea'))
+  assert.ok(composer.includes('type="submit"'))
+  assert.ok(composer.includes('aria-label="Send message"'))
+  assert.ok(composer.includes('disabled={busy || !text.trim()}'))
+  assert.ok(composer.includes('aria-hidden="true" focusable="false"'))
+  assert.ok(!composer.includes('>Ask</button>'))
+  assert.ok(next.includes('<label htmlFor="ask-input" className="label">Message</label>'))
+  assert.ok(composer.includes('aria-describedby="studio-chat-scope"'))
+  assert.match(previewCss, /\.studio-composer\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) auto/)
+  assert.match(previewCss, /@media \(pointer: coarse\)[\s\S]*?--studio-send-size:\s*48px/)
+})
+
+test('Enter uses native form submission, Shift+Enter keeps a newline, and IME confirmation is ignored', () => {
+  const next = transformStudioModule(source('chat/AskPanel.tsx'), '/src/chat/AskPanel.tsx')
+  const handler = next.match(/onKeyDown=\{e => \{([\s\S]*?)\n            \}\}/)?.[1]
+  assert.ok(handler)
+  for (const [key, shiftKey, isComposing, keyCode, submits] of [
+    ['Enter', false, false, 13, true],
+    ['Enter', true, false, 13, false],
+    ['Enter', false, true, 13, false],
+    ['Enter', false, false, 229, false],
+    ['a', false, false, 65, false],
+  ]) {
+    let count = 0
+    runInNewContext(`(e => {${handler}})(e)`, {
+      e: { key, shiftKey, keyCode, nativeEvent: { isComposing }, preventDefault() {}, currentTarget: { form: { requestSubmit() { count++ } } } },
+    })
+    assert.equal(count, submits ? 1 : 0, JSON.stringify({ key, shiftKey, isComposing, keyCode }))
+  }
 })

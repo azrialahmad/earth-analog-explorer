@@ -26,4 +26,12 @@ Check the local transformations from the repository root:
 node --test docs/mockups/header-layout/preview.test.mjs
 ```
 
-Keep this branch local for visual review; no PR, commit, or push is required.
+This executable preview is a branch-only review artifact for
+[PR #45](https://github.com/azrialahmad/earth-analog-explorer/pull/45), pinned to
+the app source on
+[`studio-layout-mockup`](https://github.com/azrialahmad/earth-analog-explorer/tree/studio-layout-mockup).
+It is not maintained against future frontend changes. As agreed in
+[issue #47](https://github.com/azrialahmad/earth-analog-explorer/issues/47), only
+selected screenshots and documentation are intended for `main`; the executable
+preview and its tests stay on this branch. Product-layout decisions remain
+separate from that artifact-lifecycle agreement.

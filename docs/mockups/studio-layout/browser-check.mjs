@@ -1,7 +1,12 @@
 // No browser dependencies or downloads. Connect to an isolated Firefox instance
 // started with --headless --remote-debugging-port 9223 and a temporary profile.
 import assert from 'node:assert/strict'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+
+const output = mkdtempSync(join(tmpdir(), 'earth-analog-studio-check-'))
+console.log(`Browser-check output: ${output}`)
 
 const ws = new WebSocket(process.env.BIDI_URL ?? 'ws://127.0.0.1:9223/session')
 await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject })
@@ -55,7 +60,7 @@ try {
           const rect = s => { const e = typeof s === 'string' ? document.querySelector(s) : s; const r = e.getBoundingClientRect(); return { x:r.x, y:r.y, right:r.right, bottom:r.bottom, width:r.width, height:r.height } };
           const pane = document.querySelector('#pane-view');
           const inputs = [...document.querySelectorAll('.weight input')].map(rect);
-          return { viewport: [innerWidth, innerHeight], pane: rect(pane), overflow: pane.scrollHeight - pane.clientHeight, horizontalOverflow: pane.scrollWidth - pane.clientWidth, viewer:rect('.views'), visual:rect('.studio-visual'), weights:rect('#weights-panel'), chat:rect('#ask-panel'), form:rect('.ask-form'), prompt:rect('#ask-input'), send:rect('.ask-form button'), toolbar:rect('.studio-view-toolbar'), inputs, layout:document.querySelector('.views').className, standaloneCaveat:!!document.querySelector('.views-pane > .views-foot'), info:document.querySelector('.studio-view-info').textContent };
+          return { viewport: [innerWidth, innerHeight], pane: rect(pane), overflow: pane.scrollHeight - pane.clientHeight, horizontalOverflow: pane.scrollWidth - pane.clientWidth, viewer:rect('.views'), visual:rect('.studio-visual'), weights:rect('#weights-panel'), chat:rect('#ask-panel'), form:rect('.ask-form'), composer:rect('.studio-composer'), prompt:rect('#ask-input'), send:rect('.studio-send'), sendLabel:document.querySelector('.studio-send').getAttribute('aria-label'), suggestions:!!document.querySelector('.ask-examples'), placeholder:document.querySelector('#ask-input').placeholder, toolbar:rect('.studio-view-toolbar'), inputs, layout:document.querySelector('.views').className, standaloneCaveat:!!document.querySelector('.views-pane > .views-foot'), info:document.querySelector('.studio-view-info').textContent };
         })())`))
         const label = `${width}x${height} ${target} ${layout}`
         results.push({ width, height, target, layout, ...measure })
@@ -70,7 +75,14 @@ try {
         }
         assert.ok(measure.toolbar.x >= measure.viewer.x && measure.toolbar.right <= measure.viewer.right, `${label}: toolbar horizontal containment`)
         assert.ok(measure.toolbar.y >= measure.viewer.y && measure.toolbar.bottom <= measure.viewer.bottom, `${label}: toolbar vertical containment`)
-        assert.equal(measure.prompt.height, measure.send.height, `${label}: prompt/send alignment`)
+        assert.equal(measure.suggestions, false, `${label}: suggested prompts removed`)
+        assert.equal(measure.placeholder, 'Ask about the analysis…', `${label}: rank-neutral prompt`)
+        assert.equal(measure.sendLabel, 'Send message', `${label}: accessible send button`)
+        for (const control of [measure.prompt, measure.send]) {
+          assert.ok(control.x >= measure.composer.x && control.right <= measure.composer.right, `${label}: composer horizontal containment`)
+          assert.ok(control.y >= measure.composer.y && control.bottom <= measure.composer.bottom, `${label}: composer vertical containment`)
+        }
+        assert.ok(measure.prompt.right <= measure.send.x, `${label}: text does not overlap send button`)
         assert.ok(measure.form.bottom <= measure.chat.bottom + 1, `${label}: composer overflows chat`)
         if (width >= 1000) {
           assert.ok(measure.overflow <= 1, `${label}: center overflows by ${measure.overflow}px`)
@@ -78,15 +90,13 @@ try {
         }
         if (width === 1512 && target === 'Shackleton rim' && layout === 'row') {
           const { data } = await send('browsingContext.captureScreenshot', { context })
-          mkdirSync('.openchamber/screenshots', { recursive: true })
-          writeFileSync('.openchamber/screenshots/firefox-studio-1512x780-moon.png', Buffer.from(data, 'base64'))
+          writeFileSync(join(output, 'firefox-studio-1512x780-moon.png'), Buffer.from(data, 'base64'))
         }
       }
     }
     if (width === 1440 || width === 1280 || width === 390) {
       const { data } = await send('browsingContext.captureScreenshot', { context })
-      mkdirSync('.openchamber/screenshots', { recursive: true })
-      writeFileSync(`.openchamber/screenshots/firefox-studio-${width}x${height}.png`, Buffer.from(data, 'base64'))
+      writeFileSync(join(output, `firefox-studio-${width}x${height}.png`), Buffer.from(data, 'base64'))
     }
     console.log(`PASS ${width}x${height}: Moon/Mars, side by side/stacked`)
   }
@@ -100,15 +110,22 @@ try {
   await send('input.performActions', { context, actions: [{ type: 'key', id: 'keyboard', actions: [{ type: 'keyDown', value: '\uE014' }, { type: 'keyUp', value: '\uE014' }] }] })
   await settle()
   assert.ok(Number(await evaluate("document.querySelector('.weight input').value")) > weightBefore)
-  await evaluate("document.querySelector('.ask-examples button').click(); true")
+  await evaluate(`(() => {
+    const input = document.querySelector('#ask-input');
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, 'Explain the current comparison.');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  })()`)
+  await settle()
+  assert.equal(await evaluate("document.querySelector('.studio-send').disabled"), false)
+  await evaluate("document.querySelector('.studio-send').click(); true")
   await settle()
   assert.ok(await evaluate("document.querySelector('.ask-line.error')?.textContent.includes('Layout preview only')"))
   assert.ok(await evaluate("document.querySelector('.ask-form').getBoundingClientRect().bottom <= document.querySelector('#ask-panel').getBoundingClientRect().bottom"))
   console.log('PASS info disclosure, native slider keyboard input, and chat error layout')
   console.log(`${results.length} browser layout checks passed`)
 } finally {
-  mkdirSync('.openchamber', { recursive: true })
-  writeFileSync('.openchamber/studio-browser-check.json', JSON.stringify(results, null, 2))
+  writeFileSync(join(output, 'studio-browser-check.json'), JSON.stringify(results, null, 2))
   await send('session.end', {}).catch(() => {})
   ws.close()
 }

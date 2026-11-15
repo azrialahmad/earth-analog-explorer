@@ -8,6 +8,7 @@ function replaceOnce(source, before, after) {
 
 /** Image/design preview only. Uses the app's real ranking and controls, without source edits. */
 export function transformStudioModule(source, id) {
+  source = source.replace(/\r\n/g, '\n')
   let next = transformHeaderModule(source, id) ?? source
   const path = id.split('?')[0]
   if (path.endsWith('/src/components/TopBar.tsx')) {
@@ -43,11 +44,43 @@ export function transformStudioModule(source, id) {
   }
   if (path.endsWith('/src/chat/AskPanel.tsx')) {
     // Show the real empty chat UI, never send an API call for a layout mockup.
-    next = next.replace(/async function post\([\s\S]*?\n}\n/, `async function post(_messages: ApiMessage[]): Promise<{ content: string | null; tool_calls?: ToolCall[] }> {\n  throw new AskError('Layout preview only — no AI request was sent.')\n}\n`)
-    next = next.replace(/const EXAMPLES = \[[\s\S]*?\n\]/, `const EXAMPLES = [\n  'Why is this site ranked first?',\n  'What if roughness mattered more?',\n]`)
+    next = replaceOnce(next, /async function post\([\s\S]*?\n}\n/, `async function post(_messages: ApiMessage[]): Promise<{ content: string | null; tool_calls?: ToolCall[] }> {\n  throw new AskError('Layout preview only — no AI request was sent.')\n}\n`)
+    next = replaceOnce(next, /const EXAMPLES = \[[\s\S]*?\n\]/, '')
+    next = replaceOnce(next, /      \{lines.length === 0 && \(\n        <div className="ask-examples">[\s\S]*?      \)}\n/, '')
     next = replaceOnce(next, '<h2>Ask AI</h2>', '<h2>Analysis assistant</h2>')
-    next = replaceOnce(next, '<ol ref={listRef} className="ask-lines" aria-live="polite">', '<ol ref={listRef} className="ask-lines" aria-live="polite">\n        {lines.length === 0 && <li className="studio-chat-empty">Ask about this terrain, its ranking, or changing the weights.</li>}')
-    return next
+    next = replaceOnce(next,
+      '<p className="ask-scope">Answers come only from the numbers on screen. It cannot change a score; it can rerun the ranking with other weights.</p>',
+      '<p id="studio-chat-scope" className="ask-scope">Uses the current analysis and evidence. Scores come from the ranking engine.</p>',
+    )
+    next = replaceOnce(next, '<ol ref={listRef} className="ask-lines" aria-live="polite">', '<ol ref={listRef} className="ask-lines" aria-live="polite">\n        {lines.length === 0 && <li className="studio-chat-empty">What would you like to explore?</li>}')
+    return replaceOnce(next, /      <form className="ask-form"[\s\S]*?      <\/form>/,
+      `      <form className="ask-form" aria-label="Analysis message" onSubmit={e => { e.preventDefault(); void ask(text) }}>
+        <label htmlFor="ask-input" className="label">Message</label>
+        <div className="studio-composer">
+          <textarea
+            id="ask-input"
+            name="message"
+            rows={1}
+            value={text}
+            aria-describedby="studio-chat-scope"
+            onChange={e => setText(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                if (e.nativeEvent.isComposing || e.keyCode === 229) return
+                e.currentTarget.form?.requestSubmit()
+              }
+            }}
+            placeholder="Ask about the analysis…"
+          />
+          <button type="submit" className="btn primary studio-send" aria-label="Send message" title="Send message" disabled={busy || !text.trim()}>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <path d="M12 19V5m-6 6 6-6 6 6" />
+            </svg>
+          </button>
+        </div>
+      </form>`,
+    )
   }
   return next === source ? null : next
 }
