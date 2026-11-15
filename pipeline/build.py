@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P3 - build the app's JSON data and terrain display assets (issue #4)."""
+"""Build the app's static data and display assets with safe publication (issue #55)."""
 from __future__ import annotations
 
 import json
@@ -21,6 +21,17 @@ from terrain import (
     open_lola,
     read_earth_window,
     read_lola_window,
+)
+from publication import (
+    PublicationError,
+    load_candidates,
+    publish_staged_dirs,
+    staged_public_dirs,
+    validate_asset_references,
+    validate_finite_json_tree,
+    validate_output_shapes,
+    validate_unique_ids,
+    selftest as publication_selftest,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -81,7 +92,9 @@ def source_res_m(row: dict[str, Any]) -> float | None:
     return float(res) if res is not None else None
 
 
-def render_hillshade(identifier: str, elevation: np.ndarray, valid: np.ndarray) -> str:
+def render_hillshade(
+    identifier: str, elevation: np.ndarray, valid: np.ndarray, *, img_dir: Path | None = None
+) -> str:
     """Render a display-only, north-up grayscale hillshade from the 12 km DEM."""
     source = np.where(valid, elevation, np.nan).astype(np.float32)
     shade = LightSource(azdeg=HILLSHADE_AZIMUTH_DEG, altdeg=HILLSHADE_ALTITUDE_DEG).hillshade(
@@ -91,15 +104,18 @@ def render_hillshade(identifier: str, elevation: np.ndarray, valid: np.ndarray) 
     rgba = np.empty((*shade.shape, 4), dtype=np.float32)
     rgba[..., :3] = shade[..., None]
     rgba[..., 3] = valid.astype(np.float32)
-    IMG_DIR.mkdir(parents=True, exist_ok=True)
-    path = IMG_DIR / f"{identifier}.png"
+    output_dir = img_dir if img_dir is not None else IMG_DIR
+    output_dir.mkdir(parents=True, exist_ok=True)
+    path = output_dir / f"{identifier}.png"
     from matplotlib.image import imsave
 
     imsave(path, rgba, origin="upper")
     return f"img/{identifier}.png"
 
 
-def write_relief(identifier: str, elevation: np.ndarray, valid: np.ndarray) -> str:
+def write_relief(
+    identifier: str, elevation: np.ndarray, valid: np.ndarray, *, relief_dir: Path | None = None
+) -> str:
     """Sample the 12 km 30 m DEM to the contract's 129 × 129 north-up grid."""
     rows = np.linspace(0, elevation.shape[0] - 1, RELIEF_SIZE)
     cols = np.linspace(0, elevation.shape[1] - 1, RELIEF_SIZE)
@@ -111,7 +127,8 @@ def write_relief(identifier: str, elevation: np.ndarray, valid: np.ndarray) -> s
     sampled[weight < 0.9999] = np.nan
     flat = [float(x) if math.isfinite(float(x)) else None for x in sampled.ravel(order="C")]
     cell_m = (elevation.shape[0] - 1) * WORK_RES_M / (RELIEF_SIZE - 1)
-    write_json(RELIEF_DIR / f"{identifier}.json", {
+    output_dir = relief_dir if relief_dir is not None else RELIEF_DIR
+    write_json(output_dir / f"{identifier}.json", {
         "id": identifier,
         "size": RELIEF_SIZE,
         "cell_m": cell_m,
@@ -123,6 +140,7 @@ def write_relief(identifier: str, elevation: np.ndarray, valid: np.ndarray) -> s
 def output_for_identity(
     row: dict[str, Any], identity: dict[str, Any], lighting: dict[str, Any], main_window: str,
     sizes: list[float], elevation_assets: tuple[np.ndarray, np.ndarray] | None,
+    *, img_dir: Path | None = None, relief_dir: Path | None = None,
 ) -> dict[str, Any]:
     params = ordered_params(row["windows"].get(main_window, {}), row.get("source"), source_res_m(row))
     windows = ordered_windows(row, sizes)
@@ -130,8 +148,8 @@ def output_for_identity(
     relief = None
     if elevation_assets is not None:
         z, valid = elevation_assets
-        hillshade = render_hillshade(row["id"], z, valid)
-        relief = write_relief(row["id"], z, valid)
+        hillshade = render_hillshade(row["id"], z, valid, img_dir=img_dir)
+        relief = write_relief(row["id"], z, valid, relief_dir=relief_dir)
     return {
         **identity,
         "params": params,
@@ -204,7 +222,9 @@ def build_evidence() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     return evidence, etna_rows
 
 
-def main() -> None:
+def build_app_data(
+    candidates: list[dict[str, Any]], *, data_dir: Path, img_dir: Path, relief_dir: Path
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     sites_manifest = read_json(SITES_PATH)
     weights = yaml.safe_load(WEIGHTS_PATH.read_text(encoding="utf-8"))
     terrain_rows = read_json(TERRAIN_PATH)
@@ -240,7 +260,7 @@ def main() -> None:
                 "note": item["why"], "body": "moon",
             },
             value(source_light.get("value"), source_light.get("tier", "missing"), source_light.get("source")),
-            main_window, sizes, assets,
+            main_window, sizes, assets, img_dir=img_dir, relief_dir=relief_dir,
         )
         targets.append(target)
 
@@ -271,8 +291,8 @@ def main() -> None:
             "params": ordered_params(row["windows"].get(main_window, {}), row.get("source"), source_res_m(row)),
             "windows": ordered_windows(row, sizes),
             "low_sun_share": mars_light,
-            "hillshade": "img/target_jezero.png" if (IMG_DIR / "target_jezero.png").exists() else "",
-            "relief": "data/relief/jezero.json" if (RELIEF_DIR / "jezero.json").exists() else None,
+            "hillshade": "img/target_jezero.png" if (img_dir / "target_jezero.png").exists() else "",
+            "relief": "data/relief/jezero.json" if (relief_dir / "jezero.json").exists() else None,
         })
 
     evidence, etna_evidence = build_evidence()
@@ -298,8 +318,8 @@ def main() -> None:
         hillshade = ""
         relief = None
         if assets is not None:
-            hillshade = render_hillshade(item["id"], *assets)
-            relief = write_relief(item["id"], *assets)
+            hillshade = render_hillshade(item["id"], *assets, img_dir=img_dir)
+            relief = write_relief(item["id"], *assets, relief_dir=relief_dir)
         sites.append({
             "id": item["id"], "name": item["name"], "lat": item["lat"], "lon": item["lon"],
             "why": item["why"], "elev_m": row.get("elev_m"), "params": params,
@@ -308,23 +328,142 @@ def main() -> None:
             "known_analog": True, "flags": flags, "hillshade": hillshade, "relief": relief,
         })
 
-    # New candidates from pipeline/scan.py (issue #48), when that step has been run.
-    candidates_path = ROOT / "results" / "candidates.json"
-    candidates = read_json(candidates_path)["candidates"] if candidates_path.exists() else []
+    # Candidate input is selected by main(): absent candidates never silently mean none.
     sites.extend(candidates)
 
-    # Include all targets, preserving null terrain and empty imagery until a sourced DEM exists.
-    write_json(DATA_DIR / "config.json", build_config(weights, sites_manifest))
-    write_json(DATA_DIR / "targets.json", targets)
-    write_json(DATA_DIR / "sites.json", sites)
-    write_json(DATA_DIR / "evidence.json", evidence)
+    # All writes target the staged release directories, never the live public output.
+    write_json(data_dir / "config.json", build_config(weights, sites_manifest))
+    write_json(data_dir / "targets.json", targets)
+    write_json(data_dir / "sites.json", sites)
+    write_json(data_dir / "evidence.json", evidence)
     validate_outputs(targets, sites, evidence, {row["id"] for row in candidates})
-    print(f"Built {len(targets)} targets, {len(sites)} sites, and {len(evidence['cited']['rows'])} cited evidence rows.")
-    print(f"Hillshades: {len(list(IMG_DIR.glob('*.png')))}; relief grids: {len(list(RELIEF_DIR.glob('*.json')))}")
+    return targets, sites, evidence
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Build the app's static data and terrain assets safely.")
+    parser.add_argument("--selftest", action="store_true", help="run small synthetic publication checks")
+    parser.add_argument(
+        "--reference-only", action="store_true",
+        help="intentionally build without scan candidates (otherwise results/candidates.json is required)",
+    )
+    args = parser.parse_args(argv)
+    if args.selftest:
+        return selftest()
+
+    try:
+        candidates_path = ROOT / "results" / "candidates.json"
+        candidates = load_candidates(candidates_path, reference_only=args.reference_only)
+        # Required inputs are checked before staging or doing expensive raster work.
+        for required in (SITES_PATH, WEIGHTS_PATH, TERRAIN_PATH, LIGHTING_PATH):
+            if not required.is_file():
+                raise PublicationError(f"required build input is missing: {required}")
+
+        with staged_public_dirs(DATA_DIR, IMG_DIR, root=DATA_DIR.parent.parent) as (staged_data, staged_img):
+            staged_relief = staged_data / "relief"
+            staged_relief.mkdir(parents=True, exist_ok=True)
+            targets, sites, evidence = build_app_data(
+                candidates, data_dir=staged_data, img_dir=staged_img, relief_dir=staged_relief,
+            )
+            validate_asset_references(
+                targets, sites, evidence, staged_data=staged_data, staged_img=staged_img,
+            )
+            validate_outputs(targets, sites, evidence, {row["id"] for row in candidates})
+            validate_finite_json_tree(staged_data)
+            publish_staged_dirs(staged_data, staged_img, DATA_DIR, IMG_DIR)
+        print(f"Built {len(targets)} targets, {len(sites)} sites, and {len(evidence['cited']['rows'])} cited evidence rows.")
+        print(f"Hillshades: {len(list(IMG_DIR.glob('*.png')))}; relief grids: {len(list(RELIEF_DIR.glob('*.json')))}")
+        return 0
+    except (PublicationError, OSError, ValueError, KeyError) as exc:
+        import sys
+
+        print(f"error: {exc}; existing public output was not accepted as a new release", file=sys.stderr)
+    return 1
+
+
+def selftest() -> int:
+    """Exercise publication helpers and the explicit reference-only build path."""
+    import contextlib
+    import io
+    import tempfile
+
+    publication_selftest()
+    names = (
+        "ROOT", "SITES_PATH", "WEIGHTS_PATH", "TERRAIN_PATH", "LIGHTING_PATH", "MARS_PATH",
+        "LANDCOVER_PATH", "DATA_DIR", "IMG_DIR", "RELIEF_DIR", "build_app_data",
+    )
+    saved = {name: globals()[name] for name in names}
+    with tempfile.TemporaryDirectory(prefix="earth-analog-build-test-") as temporary:
+        root = Path(temporary)
+        sites_path = root / "config" / "sites.json"
+        sites_path.parent.mkdir(parents=True)
+        sites_path.write_text(
+            json.dumps({"lunar": [], "mars": [], "earth": [{"id": "reference"}]}), encoding="utf-8",
+        )
+        weights_path = root / "config" / "weights.yaml"
+        terrain_path, lighting_path = root / "results" / "terrain.json", root / "results" / "lighting.json"
+        weights_path.write_text("fixture", encoding="utf-8")
+        terrain_path.parent.mkdir(parents=True)
+        terrain_path.write_text("[]", encoding="utf-8")
+        lighting_path.write_text("{}", encoding="utf-8")
+        data_dir, img_dir = root / "frontend" / "public" / "data", root / "frontend" / "public" / "img"
+        data_dir.mkdir(parents=True)
+        img_dir.mkdir(parents=True)
+        (data_dir / "previous-release.json").write_text('{"keep": "preserve"}', encoding="utf-8")
+        candidates_path = root / "results" / "candidates.json"
+        assert not candidates_path.exists()
+
+        def fixture_build(candidates, *, data_dir, img_dir, relief_dir):
+            assert candidates == [], "reference-only mode must not consume candidate records"
+            targets = []
+            sites = [{
+                "id": "reference", "name": "Reference site", "lat": 0.0, "lon": 0.0, "why": "fixture",
+                "elev_m": None, "params": {}, "windows": {}, "conditions": {}, "depth_evidence": [],
+                "known_analog": True, "flags": [], "hillshade": "", "relief": None,
+            }]
+            evidence = {"cited": {"rows": [{"id": str(i)} for i in range(4)]}, "ours": {"images": []}}
+            write_json(data_dir / "config.json", {})
+            write_json(data_dir / "targets.json", targets)
+            write_json(data_dir / "sites.json", sites)
+            write_json(data_dir / "evidence.json", evidence)
+            return targets, sites, evidence
+
+        try:
+            globals().update({
+                "ROOT": root, "SITES_PATH": sites_path, "WEIGHTS_PATH": weights_path,
+                "TERRAIN_PATH": terrain_path, "LIGHTING_PATH": lighting_path,
+                "MARS_PATH": root / "results" / "mars.json", "LANDCOVER_PATH": root / "results" / "landcover.json",
+                "DATA_DIR": data_dir, "IMG_DIR": img_dir, "RELIEF_DIR": data_dir / "relief",
+                "build_app_data": fixture_build,
+            })
+            before = {p.relative_to(root / "frontend" / "public").as_posix(): p.read_bytes()
+                      for p in (root / "frontend" / "public").rglob("*") if p.is_file()}
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                code = main([])
+            after = {p.relative_to(root / "frontend" / "public").as_posix(): p.read_bytes()
+                     for p in (root / "frontend" / "public").rglob("*") if p.is_file()}
+            assert code == 1, "default build without candidate input should fail closed"
+            assert after == before, "missing candidate input changed public output"
+
+            with contextlib.redirect_stdout(io.StringIO()):
+                code = main(["--reference-only"])
+            assert code == 0, "explicit reference-only build did not complete"
+            published_sites = json.loads((data_dir / "sites.json").read_text(encoding="utf-8"))
+            assert [site["id"] for site in published_sites] == ["reference"]
+            assert json.loads((data_dir / "previous-release.json").read_text(encoding="utf-8")) == {"keep": "preserve"}
+        finally:
+            globals().update(saved)
+
+    print("selftest: PASS (safe staging plus explicit reference-only build path)")
+    return 0
 
 
 def validate_outputs(targets: list[dict[str, Any]], sites: list[dict[str, Any]], evidence: dict[str, Any],
                      candidate_ids: set[str] = frozenset()) -> None:
+    validate_unique_ids(targets, sites)
+    validate_output_shapes(targets, sites)
     expected_ids = {row["id"] for row in read_json(SITES_PATH)["lunar"] + read_json(SITES_PATH)["mars"]}
     expected_ids |= {row["id"] for row in read_json(SITES_PATH)["earth"]}
     expected_ids |= set(candidate_ids)
@@ -348,4 +487,4 @@ def validate_outputs(targets: list[dict[str, Any]], sites: list[dict[str, Any]],
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
