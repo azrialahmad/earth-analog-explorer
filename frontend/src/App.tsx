@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { AppData, Config, Evidence, Site, Target, Weights } from './types'
-import { PARAM_KEYS } from './types'
 import { defaultWeights, rankSites, stability as computeStability } from './engine'
 import { asset, useMediaQuery } from './ui'
+import { selectedEntry } from './selection'
 import TopBar from './components/TopBar'
 import TerrainViews from './components/TerrainViews'
 import SiteList from './components/SiteList'
@@ -69,7 +69,7 @@ export default function App() {
   )
 
   // One selection drives all three panes: the chosen site, or the top-ranked one when it is gone.
-  const selected = ranked.find(r => r.site.id === siteId) ?? ranked[0] ?? null
+  const selected = selectedEntry(ranked, siteId)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPanel('none') }
@@ -101,9 +101,6 @@ export default function App() {
     setPanel('none'); setPane('view'); setDemo(steps)
   }
 
-  const defaults = defaultWeights(data.config)
-  const adjusted = PARAM_KEYS.some(k => weights[k] !== defaults[k])
-  const weightsText = adjusted ? 'Adjusted weights' : data.config.provisional ? 'Provisional default weights' : 'Default weights'
   const explanation = selected
     ? explainCard(selected, ranked, target, data.config, stability[selected.site.id] ?? null, weights)
     : null
@@ -156,8 +153,6 @@ export default function App() {
             target={target}
             selectedId={selected?.site.id ?? null}
             onSelect={setSiteId}
-            mainWindowKm={data.config.main_window_km}
-            weightsText={weightsText}
           />
         </div>
         <div id="pane-view" className="pane pane-view" {...paneProps('view')}>

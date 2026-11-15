@@ -70,9 +70,15 @@ export default function SiteDetails({ ex }: SiteDetailsProps) {
         <section aria-label="Site">
           <p className="coords num">{coords(ex.site.lat, ex.site.lon, ex.site.coordsApproximate)}</p>
           <p>{ex.site.why}</p>
-          {(otherFlags.length > 0 || ex.site.knownAnalog) && (
+          <p className="note entry-source">
+            {ex.site.knownAnalog
+              ? <>Entry source: the project&apos;s initial list of places reported as analog test areas. Being on that list is
+                not an independent check of this site&apos;s terrain.</>
+              : <>Entry source: picked by this project&apos;s terrain scan of a limited set of DEM tiles (issue #48). Not a
+                search of all of Earth, and not checked on imagery or in the field.</>}
+          </p>
+          {otherFlags.length > 0 && (
             <ul className="flags" aria-label="Site caveats">
-              {ex.site.knownAnalog && <li className="chip">Known analog</li>}
               {otherFlags.map(f => <li key={f} className="chip caveat">{sentence(f)}</li>)}
             </ul>
           )}
