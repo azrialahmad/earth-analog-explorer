@@ -12,6 +12,13 @@ the intended `main` deliverable is selected screenshots and documentation only.
 The current PR still needs narrowing before merge; this does not approve any
 production layout change.
 
+The preview's app-source baseline is [`a1c6548`](https://github.com/azrialahmad/earth-analog-explorer/commit/a1c65489d525281f53cb98e0ce19787356703e4d)
+(#39/#40), before the SPICE-derived target-lighting update in #43/#44. Any
+screenshot captured from this branch must be captioned with that app revision and
+must not be presented as showing current `main` Moon-lighting values. Refresh the
+preview against current `main` before using screenshots that need to show the
+current target-lighting data.
+
 - Ranked sites remain left; selected-site details remain right.
 - The center stacks terrain views, always-visible weight sliders, and an open
   analysis-assistant panel.

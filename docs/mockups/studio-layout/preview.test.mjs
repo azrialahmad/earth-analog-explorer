@@ -1,9 +1,14 @@
 import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { runInNewContext } from 'node:vm'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { transformWithOxc } from '../../../frontend/node_modules/vite/dist/node/index.js'
+import { pathToFileURL } from 'node:url'
 import { transformStudioModule } from './preview-plugin.mjs'
+
+const require = createRequire(new URL('../../../frontend/package.json', import.meta.url))
+const vite = await import(pathToFileURL(require.resolve('vite')))
+const { transformWithOxc } = vite
 
 const source = path => readFileSync(new URL(`../../../frontend/src/${path}`, import.meta.url), 'utf8')
 const previewCss = readFileSync(new URL('./preview.css', import.meta.url), 'utf8')
@@ -147,9 +152,11 @@ test('Enter uses native form submission, Shift+Enter keeps a newline, and IME co
     ['a', false, false, 65, false],
   ]) {
     let count = 0
+    let prevented = 0
     runInNewContext(`(e => {${handler}})(e)`, {
-      e: { key, shiftKey, keyCode, nativeEvent: { isComposing }, preventDefault() {}, currentTarget: { form: { requestSubmit() { count++ } } } },
+      e: { key, shiftKey, keyCode, nativeEvent: { isComposing }, preventDefault() { prevented++ }, currentTarget: { form: { requestSubmit() { count++ } } } },
     })
     assert.equal(count, submits ? 1 : 0, JSON.stringify({ key, shiftKey, isComposing, keyCode }))
+    assert.equal(prevented, submits || (key === 'Enter' && !shiftKey && !isComposing && keyCode !== 229) ? 1 : 0, JSON.stringify({ key, shiftKey, isComposing, keyCode, prevented }))
   }
 })

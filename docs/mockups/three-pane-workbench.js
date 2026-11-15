@@ -173,7 +173,7 @@ function renderExplanation() {
   }
   content.append(breakdown)
   if (target.body === 'moon') {
-    content.append(section('Lighting is a separate comparison', `${percent(e.lowSun.site)} of daylight has low sun at this Earth site; ${percent(e.lowSun.target)} for the target. Lighting does not contribute to Terrain Match. Target lighting source: ${e.lowSun.targetSource ?? 'missing'}`, 'lighting'))
+    content.append(section('Lighting is a separate comparison', `${percent(e.lowSun.site)} of daylight has low sun at this Earth site; ${percent(e.lowSun.target)} for the target. Lighting does not contribute to Terrain Match. Target lighting: ${e.lowSun.targetTier ?? 'missing'}; source: ${e.lowSun.targetSource ?? 'missing'}`, 'lighting'))
     if (e.warning.fired) content.append(section('Lighting warning', e.warning.text, 'lighting'))
   } else {
     content.append(section('Lighting is not applicable', 'The Mars comparison is terrain-only. No lunar lighting warning is applied.'))
@@ -227,5 +227,5 @@ $('target').addEventListener('change', event => {
   target = targets.find(t => t.id === event.target.value)
   updateTarget()
 })
-$('reset-view').addEventListener('click', () => { initRenderers(); updateSurfaces() })
+$('reset-view').addEventListener('click', () => renderers.forEach(renderer => { renderer.resetView(); renderer.setAutoRotate(false) }))
 updateTarget()

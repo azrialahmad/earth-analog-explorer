@@ -14,24 +14,24 @@ const renderLighting = (target, targetSource) => {
   const sections = []
   runInNewContext(`${percent}\n${source.slice(start, end)}`, {
     target,
-    e: { lowSun: { site: null, target: null, targetSource }, warning: { fired: false } },
+    e: { lowSun: { site: null, target: null, targetTier: target.low_sun_share?.tier ?? null, targetSource }, warning: { fired: false } },
     section: (title, copy) => ({ title, copy }),
     content: { append: section => sections.push(section) },
   })
   return sections
 }
 
-test('Moon lighting shows the supplied source instead of a fixed origin claim', () => {
+test('Moon lighting shows the supplied tier and source instead of a fixed origin claim', () => {
   const target = targets.find(t => t.body === 'moon')
   const [{ copy }] = renderLighting(target, target.low_sun_share.source)
-  assert.ok(copy.includes(`Target lighting source: ${target.low_sun_share.source}`))
+  assert.ok(copy.includes(`Target lighting: ${target.low_sun_share.tier}; source: ${target.low_sun_share.source}`))
   assert.ok(!copy.includes('for the target by definition'))
   assert.ok(copy.includes('Lighting does not contribute to Terrain Match.'))
 })
 
 test('an unknown Moon lighting source is shown as missing', () => {
   const [{ copy }] = renderLighting(targets.find(t => t.body === 'moon'), null)
-  assert.ok(copy.includes('Target lighting source: missing'))
+  assert.ok(copy.includes(`Target lighting: ${targets.find(t => t.body === 'moon').low_sun_share.tier}; source: missing`))
   assert.ok(!copy.includes('null'))
 })
 
@@ -39,4 +39,12 @@ test('Mars retains terrain-only presentation without a lunar lighting comparison
   const [section] = renderLighting(targets.find(t => t.body === 'mars'), null)
   assert.equal(section.title, 'Lighting is not applicable')
   assert.equal(section.copy, 'The Mars comparison is terrain-only. No lunar lighting warning is applied.')
+})
+
+test('Reset view resets existing renderer cameras without recreating WebGL contexts', () => {
+  const reset = source.match(/\$\('reset-view'\)\.addEventListener\('click', \(\) => ([^\n]+)\)/)?.[1]
+  assert.ok(reset)
+  assert.ok(reset.includes('renderer.resetView()'))
+  assert.ok(reset.includes('renderer.setAutoRotate(false)'))
+  assert.ok(!reset.includes('initRenderers'))
 })

@@ -1,14 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { replaceOnce } from '../replace-once.mjs'
 
 const stylesheet = fileURLToPath(new URL('./preview.css', import.meta.url))
-
-function replaceOnce(source, before, after) {
-  if (!source.includes(before) || source.indexOf(before) !== source.lastIndexOf(before)) {
-    throw new Error(`Header preview no longer matches the app: ${before}`)
-  }
-  return source.replace(before, after)
-}
 
 /** Dev-only presentation changes. Never writes to the app's source files. */
 export function transformHeaderModule(source, id) {

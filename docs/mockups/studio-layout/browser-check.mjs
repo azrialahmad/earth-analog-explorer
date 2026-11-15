@@ -9,25 +9,52 @@ const output = mkdtempSync(join(tmpdir(), 'earth-analog-studio-check-'))
 console.log(`Browser-check output: ${output}`)
 
 const ws = new WebSocket(process.env.BIDI_URL ?? 'ws://127.0.0.1:9223/session')
-await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject })
 let id = 0
 const pending = new Map()
+const rejectPending = error => {
+  for (const entry of pending.values()) {
+    clearTimeout(entry.timeout)
+    entry.reject(error)
+  }
+  pending.clear()
+}
 ws.onmessage = event => {
   const message = JSON.parse(event.data)
   const entry = pending.get(message.id)
   if (!entry) return
   pending.delete(message.id)
+  clearTimeout(entry.timeout)
   if (message.type === 'error') entry.reject(new Error(JSON.stringify(message)))
   else entry.resolve(message.result)
 }
+ws.onclose = () => rejectPending(new Error('Firefox WebDriver BiDi connection closed'))
+ws.onerror = () => rejectPending(new Error('Firefox WebDriver BiDi connection failed'))
 const send = (method, params) => new Promise((resolve, reject) => {
-  pending.set(++id, { resolve, reject })
-  ws.send(JSON.stringify({ id, method, params }))
+  const requestId = ++id
+  const timeout = setTimeout(() => {
+    pending.delete(requestId)
+    reject(new Error(`Timed out after 15 seconds waiting for ${method}`))
+  }, 15_000)
+  pending.set(requestId, { resolve, reject, timeout })
+  try {
+    ws.send(JSON.stringify({ id: requestId, method, params }))
+  } catch (error) {
+    pending.delete(requestId)
+    clearTimeout(timeout)
+    reject(error)
+  }
 })
 
 const results = []
+let sessionStarted = false
 try {
+  await new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Timed out connecting to Firefox WebDriver BiDi')), 10_000)
+    ws.addEventListener('open', () => { clearTimeout(timeout); resolve() }, { once: true })
+    ws.addEventListener('error', () => { clearTimeout(timeout); reject(new Error('Could not connect to Firefox WebDriver BiDi')) }, { once: true })
+  })
   const session = await send('session.new', { capabilities: {} })
+  sessionStarted = true
   console.log(session.capabilities.browserName, session.capabilities.browserVersion)
   const { context } = await send('browsingContext.create', { type: 'tab' })
   const evaluate = async expression => {
@@ -40,9 +67,10 @@ try {
     await send('browsingContext.setViewport', { context, viewport: { width, height }, devicePixelRatio: 1 })
     await send('browsingContext.navigate', { context, url: 'http://localhost:4177/earth-analog-explorer/', wait: 'complete' })
     await evaluate(`(async () => {
-      if (!document.querySelector('#ask-input')) await new Promise(resolve => {
+      if (!document.querySelector('#ask-input')) await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => { observer.disconnect(); reject(new Error('Timed out waiting for #ask-input')) }, 10000);
         const observer = new MutationObserver(() => {
-          if (document.querySelector('#ask-input')) { observer.disconnect(); resolve() }
+          if (document.querySelector('#ask-input')) { clearTimeout(timeout); observer.disconnect(); resolve() }
         }); observer.observe(document.body, { childList: true, subtree: true });
       });
       await document.fonts.ready;
@@ -126,6 +154,7 @@ try {
   console.log(`${results.length} browser layout checks passed`)
 } finally {
   writeFileSync(join(output, 'studio-browser-check.json'), JSON.stringify(results, null, 2))
-  await send('session.end', {}).catch(() => {})
-  ws.close()
+  if (sessionStarted && ws.readyState === WebSocket.OPEN) await send('session.end', {}).catch(() => {})
+  rejectPending(new Error('Browser check finished'))
+  if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) ws.close()
 }
